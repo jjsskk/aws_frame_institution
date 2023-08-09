@@ -73,10 +73,70 @@ class GraphQLController {
           return;
         }
         safePrint('Mutation result: ${createdUser.toString()}');
-        print('User created successfully: ${response.data}');
+        // print('User created successfully: ${response.data}');
           birth += 10000;
           useridint++;
           userid = "$useridint";
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  Future<void> createAnnounceData() async {
+    final row = {
+      'ANNOUNCEMENT_ID': userid,
+      'CONTENT': 'fdfdf',
+      'IMAGE': 'dfdf',
+      'INSTITUTION': 'String',
+      'INSTITUTION_ID': 'String!',
+      'TITLE': 'String',
+      'URL': 'String',
+      'createdAt' : '${TemporalDateTime.now()}',
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+    // final row = UserTable(
+    //     ID: userid,
+    //     BIRTH: birth.toString(),
+    //     NAME: "김수",
+    //     INSTITUTION: "FRAME",
+    //     SEX: "남",
+    //     CREATEDAT: TemporalDateTime.now(),
+    //     UPDATEDAT: TemporalDateTime.now());
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation CreateInstitutionAnnouncementTable(\$input: CreateInstitutionAnnouncementTableInput!) {
+                  createInstitutionAnnouncementTable(input: \$input) {
+                    ANNOUNCEMENT_ID
+                    CONTENT
+                    IMAGE
+                    INSTITUTION
+                    INSTITUTION_ID
+                    TITLE
+                    URL
+                    createdAt
+                    updatedAt
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+      {
+        final createdData = response.data;
+        if (createdData == null) {
+          safePrint('errors: ${response.errors}');
+          return;
+        }
+        safePrint('Mutation result: ${createdData.toString()}');
+        // print('User created successfully: ${response.data}');
+        birth += 10000;
+        useridint++;
+        userid = "$useridint";
       }
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
