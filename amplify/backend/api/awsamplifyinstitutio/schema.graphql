@@ -130,7 +130,8 @@ type Query {
   getInstitutionScheduleTable(INSTITUTION_ID: String!, SCHEDULE_ID: String!): InstitutionScheduleTable
   getInstitutionShuttleTImeTable(DATE: String!, INSTITUTION_ID: String!): InstitutionShuttleTImeTable
   getUserTable(ID: String!): UserTable
-  listInstitutionAnnouncementTables(filter: TableInstitutionAnnouncementTableFilterInput, limit: Int, nextToken: String): InstitutionAnnouncementTableConnection
+  listInstitutionAnnouncement(ANNOUNCEMENT_ID: ModelStringKeyConditionInput, filter: TableInstitutionAnnouncementTableFilterInput, limit: Int, nextToken: String,  sortDirection: ModelSortDirection, sortField: String): InstitutionAnnouncementTableConnection
+  listInstitutionAnnouncementTables(INSTITUTION_ID:ID, ANNOUNCEMENT_ID: ModelStringKeyConditionInput, filter: TableInstitutionAnnouncementTableFilterInput, limit: Int, nextToken: String,  sortDirection: ModelSortDirection): InstitutionAnnouncementTableConnection
   listInstitutionEssentialCareTables(filter: TableInstitutionEssentialCareTableFilterInput, limit: Int, nextToken: String): InstitutionEssentialCareTableConnection
   listInstitutionFoodMenuTables(filter: TableInstitutionFoodMenuTableFilterInput, limit: Int, nextToken: String): InstitutionFoodMenuTableConnection
   listInstitutionNewsTables(filter: TableInstitutionNewsTableFilterInput, limit: Int, nextToken: String): InstitutionNewsTableConnection
@@ -491,4 +492,18 @@ input UpdateUserTableInput {
   NAME: String
   SEX: String
   UPDATEDAT: AWSDateTime
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+input ModelStringKeyConditionInput {
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  between: [String]
+  beginsWith: String
 }

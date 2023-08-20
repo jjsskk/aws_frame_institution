@@ -47,6 +47,7 @@ export 'InstitutionScheduleTable.dart';
 export 'InstitutionScheduleTableConnection.dart';
 export 'InstitutionShuttleTImeTable.dart';
 export 'InstitutionShuttleTImeTableConnection.dart';
+export 'ModelSortDirection.dart';
 export 'UserTable.dart';
 export 'UserTableConnection.dart';
 
@@ -65,7 +66,6 @@ class ModelProvider implements amplify_core.ModelProviderInterface {
   amplify_core.ModelType<amplify_core.Model> getModelTypeByModelName(String modelName) {
     // TODO: implement getModelTypeByModelName
     throw UnimplementedError();
-
   }
 }
 

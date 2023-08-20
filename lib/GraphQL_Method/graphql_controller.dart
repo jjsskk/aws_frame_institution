@@ -19,7 +19,7 @@ class GraphQLController {
 
   //user
   var birth = 19640101;
-  var userid = "1";
+  var userid = "11111";
   var useridint = 2;
 
   //brain signal
@@ -142,6 +142,67 @@ class GraphQLController {
       safePrint('Mutation failed: $e');
     }
   }
+
+Future<InstitutionAnnouncementTable?> queryAnnounceItem() async {
+  try {
+    var ID = 'INST_ID_123';
+    int limit =
+        3; // Fetch the latest 1 data items, you can change this value to fetch more or less
+    String sortDirection =
+        "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
+
+    var operation = Amplify.API.query(
+      request: GraphQLRequest(
+        document: """
+      query listInstitutionAnnouncementTables(\$filter: TableInstitutionAnnouncementTableFilterInput, \$limit: Int) {
+        listInstitutionAnnouncementTables(
+          filter: \$filter,
+          limit: \$limit,
+        ) {
+          items {
+            INSTITUTION_ID
+            ANNOUNCEMENT_ID
+            CONTENT
+            IMAGE
+            INSTITUTION
+            TITLE
+            URL
+            createdAt
+            updatedAt
+          }
+        }
+      }
+    """,
+        variables: {
+          "filter": {
+            "INSTITUTION_ID": {
+              "eq": ID
+            }
+          },
+          "limit": limit,
+        },
+      ),
+    );
+
+    var response = await operation.response;
+    print('here: ${response.data}');
+    // Map<String, dynamic> json = jsonDecode(response.data);
+    // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
+    InstitutionAnnouncementTable AnnounceDBitem =
+        (jsonDecode(response.data)['listInstitutionAnnouncementTables']['items'] as List)
+            .map((item) => InstitutionAnnouncementTable.fromJson(item))
+            .toList()
+            .first;
+    if (AnnounceDBitem == null) {
+      safePrint('errors: ${response.errors}');
+      // safePrint('errors: ${response}');
+    }
+    return AnnounceDBitem;
+  } on ApiException catch (e) {
+    safePrint('Query failed: $e');
+    return null;
+  }
+}
 
   // Future<void> createMonthlyData() async {
   //   try {

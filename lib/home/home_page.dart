@@ -166,6 +166,12 @@ class _HomePageState extends State<HomePage> {
                     TextButton(onPressed: (){
                       gql.createAnnounceData();
                     }, child: Text('공지 추가')),
+
+                    TextButton(onPressed: (){
+                      gql.queryAnnounceItem().then((value){
+                        print(value);
+                      });
+                    }, child: Text('값 부르기')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
