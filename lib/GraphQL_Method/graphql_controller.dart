@@ -19,7 +19,7 @@ class GraphQLController {
 
   //user
   var birth = 19640101;
-  var userid = "11111";
+  var userid = "1";
   var useridint = 2;
 
   //brain signal
@@ -143,68 +143,297 @@ class GraphQLController {
     }
   }
 
-Future<InstitutionAnnouncementTable?> queryAnnounceItem() async {
-  try {
-    var ID = 'INST_ID_123';
-    int limit =
-        3; // Fetch the latest 1 data items, you can change this value to fetch more or less
-    String sortDirection =
-        "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
-
-    var operation = Amplify.API.query(
-      request: GraphQLRequest(
-        document: """
-      query listInstitutionAnnouncementTables(\$filter: TableInstitutionAnnouncementTableFilterInput, \$limit: Int) {
-        listInstitutionAnnouncementTables(
-          filter: \$filter,
-          limit: \$limit,
-        ) {
-          items {
-            INSTITUTION_ID
-            ANNOUNCEMENT_ID
-            CONTENT
-            IMAGE
-            INSTITUTION
-            TITLE
-            URL
-            createdAt
-            updatedAt
-          }
-        }
-      }
-    """,
-        variables: {
-          "filter": {
-            "INSTITUTION_ID": {
-              "eq": ID
-            }
-          },
-          "limit": limit,
-        },
-      ),
+  Future<void> createFoodMenuData(String date, String image, String institution_id) async {
+    final row = InstitutionFoodMenuTable(
+      DATE: date,
+      IMAGE_URL: image,
+      INSTITUTION_ID: institution_id,
+      createdAt: TemporalDateTime.now(),
+      updatedAt: TemporalDateTime.now(),
     );
 
-    var response = await operation.response;
-    print('here: ${response.data}');
-    // Map<String, dynamic> json = jsonDecode(response.data);
-    // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
-    InstitutionAnnouncementTable AnnounceDBitem =
-        (jsonDecode(response.data)['listInstitutionAnnouncementTables']['items'] as List)
-            .map((item) => InstitutionAnnouncementTable.fromJson(item))
-            .toList()
-            .first;
-    if (AnnounceDBitem == null) {
-      safePrint('errors: ${response.errors}');
-      // safePrint('errors: ${response}');
-    }
-    return AnnounceDBitem;
-  } on ApiException catch (e) {
-    safePrint('Query failed: $e');
-    return null;
-  }
-}
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation CreateInstitutionFoodMenuTable(\$input: CreateInstitutionFoodMenuTableInput!) {
+            createInstitutionFoodMenuTable(input: \$input) {
+              DATE
+              IMAGE_URL
+              INSTITUTION_ID
+              createdAt
+              updatedAt
+            }
+          }
+        ''',
+          variables: {
+            'input': row.toMap(),
+          },
+        ),
+      ).response;
 
-  // Future<void> createMonthlyData() async {
+      final createdData = response.data;
+      if (createdData == null) {
+        print('errors: ${response.errors}');
+        return;
+      }
+      print('Mutation result: ${createdData.toString()}');
+
+      birth += 10000;
+      useridint++;
+      userid = "$useridint";
+    } on ApiException catch (e) {
+      print('Mutation failed: $e');
+    }
+  }
+
+  //공지사항용
+  Future<void> createAnnouncement(String content, String image, String institution, String institution_id, String title, String url) async {
+    final row = {
+      'ANNOUNCEMENT_ID': userid,
+      'CONTENT': content,
+      'IMAGE': image,
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': institution_id,
+      'TITLE': title,
+      'URL': url,
+      'createdAt' : '${TemporalDateTime.now()}',
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation CreateInstitutionAnnouncementTable(\$input: CreateInstitutionAnnouncementTableInput!) {
+                  createInstitutionAnnouncementTable(input: \$input) {
+                    ANNOUNCEMENT_ID
+                    CONTENT
+                    IMAGE
+                    INSTITUTION
+                    INSTITUTION_ID
+                    TITLE
+                    URL
+                    createdAt
+                    updatedAt
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+      {
+        final createdData = response.data;
+        if (createdData == null) {
+          safePrint('errors: ${response.errors}');
+          return;
+        }
+        safePrint('Mutation result: ${createdData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        useridint++;
+        userid = "$useridint";
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  Future<void> createInstitutionNews(String content, String image, String institution, String New_id, String title, String url) async {
+    final row = {
+      'NEWS_ID': userid,
+      'CONTENT': content,
+      'IMAGE': image,
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': New_id,
+      'TITLE': title,
+      'URL': url,
+      'createdAt' : '${TemporalDateTime.now()}',
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation createInstitutionNewsTable(\$input: CreateInstitutionNewsTableInput!) {
+                  createInstitutionNewsTable(input: \$input) {
+                    INSTITUTION_ID
+                    CONTENT
+                    IMAGE
+                    INSTITUTION
+                    NEWS_ID
+                    TITLE
+                    URL
+                    createdAt
+                    updatedAt
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+      {
+        final createdData = response.data;
+        if (createdData == null) {
+          safePrint('errors: ${response.errors}');
+          return;
+        }
+        safePrint('Mutation result: ${createdData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        useridint++;
+        userid = "$useridint";
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  // Future<void> createInstitutionNews(String content, String image, String institution, String New_id, String title, String url) async {
+  //   final row = {
+  //     'NEWS_ID': userid,
+  //     'CONTENT': content,
+  //     'IMAGE': image,
+  //     'INSTITUTION': institution,
+  //     'INSTITUTION_ID': New_id,
+  //     'TITLE': title,
+  //     'URL': url,
+  //     'createdAt' : '${TemporalDateTime.now()}',
+  //     'updatedAt' : '${TemporalDateTime.now()}'
+  //   };
+  //   try {
+  //     final response = await Amplify.API.mutate(
+  //       request: GraphQLRequest<String>(
+  //         document: '''
+  //           mutation createInstitutionNewsTable(\$input: CreateInstitutionNewsTableInput!) {
+  //                 createInstitutionNewsTable(input: \$input) {
+  //                   INSTITUTION_ID
+  //                   CONTENT
+  //                   IMAGE
+  //                   INSTITUTION
+  //                   NEWS_ID
+  //                   TITLE
+  //                   URL
+  //                   createdAt
+  //                   updatedAt
+  //              }
+  //             }
+  //           ''',
+  //         variables: {
+  //           'input': row,
+  //         },
+  //       ),
+  //     ).response;
+  //     {
+  //       final createdData = response.data;
+  //       if (createdData == null) {
+  //         safePrint('errors: ${response.errors}');
+  //         return;
+  //       }
+  //       safePrint('Mutation result: ${createdData.toString()}');
+  //       // print('User created successfully: ${response.data}');;
+  //       useridint++;
+  //       userid = "$useridint";
+  //     }
+  //   } on ApiException catch (e) {
+  //     safePrint('Mutation failed: $e');
+  //   }
+  // }
+
+
+
+  Future<List<InstitutionAnnouncementTable>> queryInstitutionAnnouncementsByInstitutionId(String institutionId) async {
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          document: """
+          query ListInstitutionAnnouncementTables(\$INSTITUTION_ID: String) {
+            listInstitutionAnnouncementTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}) {
+              items {
+                ANNOUNCEMENT_ID
+                CONTENT
+                IMAGE
+                INSTITUTION
+                INSTITUTION_ID
+                TITLE
+                URL
+                createdAt
+                updatedAt
+              }
+            }
+          }
+        """,
+          variables: {
+            "INSTITUTION_ID": institutionId,
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      List<InstitutionAnnouncementTable> announcements =
+      (jsonDecode(response.data)['listInstitutionAnnouncementTables']['items'] as List)
+          .map((item) => InstitutionAnnouncementTable.fromJson(item))
+          .toList();
+      if (announcements == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
+      return announcements;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+  Future<List<InstitutionNewsTable>> queryInstitutionNewsByInstitutionId(String institutionId) async {
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          document: """
+          query ListInstitutionNewsTables(\$INSTITUTION_ID: String) {
+            listInstitutionNewsTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}) {
+              items {
+                NEWS_ID
+                CONTENT
+                IMAGE
+                INSTITUTION
+                INSTITUTION_ID
+                TITLE
+                URL
+                createdAt
+                updatedAt
+              }
+            }
+          }
+        """,
+          variables: {
+            "INSTITUTION_ID": institutionId,
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      List<InstitutionNewsTable> news =
+      (jsonDecode(response.data)['listInstitutionNewsTables']['items'] as List)
+          .map((item) => InstitutionNewsTable.fromJson(item))
+          .toList();
+      if (news == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
+      return news;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+
+
+
+
+// Future<void> createMonthlyData() async {
   //   try {
   //     final row = MonthlyDBTest(
   //       id: "3",

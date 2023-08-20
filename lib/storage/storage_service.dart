@@ -17,6 +17,27 @@ class StorageService {
     getImages();
     print('hhhhh');
   }
+  Future<String> uploadImageAtPathUrlProtected(String path) async {
+    try {
+      final imageFile = File(path);
+      final imageKey = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final options = S3UploadFileOptions(
+          accessLevel: StorageAccessLevel.guest); // 나중에 protected로 변경할 것
+
+      await Amplify.Storage.uploadFile(
+          local: imageFile, key: imageKey, options: options);
+
+      // S3에서 이미지 URL 가져오기
+      GetUrlResult getUrlResult = await Amplify.Storage.getUrl(key: imageKey);
+
+      // 업로드 성공 후 이미지 URL 반환
+      return imageKey;
+    } on AmplifyException catch (e) {
+      print('Error uploading image: $e');
+      return ""; // 에러 발생 시 빈 문자열 반환
+    }
+  }
+
   // 2 이 기능은 GalleryPage에 표시해야 하는 이미지를 가져오는 프로세스를 시작합니다.
   void getImages() async {
     try {
@@ -50,6 +71,30 @@ class StorageService {
     }
   }
 
+
+  //s3업로드인데 공지랑 기관소식을 전하는
+  Future<String> uploadImageAtPathUrl(String path) async {
+    try {
+      final imageFile = File(path);
+      final imageKey = '${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final options = S3UploadFileOptions(
+          accessLevel: StorageAccessLevel.private);
+
+      await Amplify.Storage.uploadFile(
+          local: imageFile, key: imageKey, options: options);
+
+      // S3에서 이미지 URL 가져오기
+      GetUrlResult getUrlResult = await Amplify.Storage.getUrl(key: imageKey);
+
+      // 업로드 성공 후 이미지 URL 반환
+      return imageKey;
+    } on AmplifyException catch (e) {
+      print('Error uploading image: $e');
+      return ""; // 에러 발생 시 빈 문자열 반환
+    }
+  }
+
+
   // 1
   void uploadImageAtPath(String imagePath) async {
     final imageFile = File(imagePath);
@@ -71,5 +116,18 @@ class StorageService {
       print('upload error - $e');
     }
   }
+
+  Future<String> getImageUrlFromS3(String key) async {
+    try {
+      final getUrlOptions = GetUrlOptions(accessLevel: StorageAccessLevel.guest);
+      GetUrlResult urlResult = await Amplify.Storage.getUrl(key: key, options: getUrlOptions);
+
+      return urlResult.url;
+    } on AmplifyException catch (e) {
+      print('Error getting image from S3: $e');
+      return "";
+    }
+  }
+
 
 }
