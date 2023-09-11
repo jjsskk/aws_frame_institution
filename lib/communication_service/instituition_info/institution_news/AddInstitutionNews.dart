@@ -103,10 +103,7 @@ class _AddInstitutionNewsPageState extends State<AddInstitutionNewsPage> {
               );
 
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InstitutionInfoPage(initialIndex: 1)),
-              );
+              Navigator.pop(context);
             },
             child: Text('완료'),
           ),

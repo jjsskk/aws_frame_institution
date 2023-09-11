@@ -38,10 +38,20 @@ class _InstitutionInfoPageState extends State<InstitutionInfoPage> with SingleTi
 
   void _onCreateIconPressed(BuildContext context) {
     if (_tabController.index == 0) {
-      Navigator.push(
+
+      Navigator.push<bool>(
         context,
         MaterialPageRoute(builder: (context) => AddAnnouncementPage()),
-      );
+      ).then((value) {
+        if (value == true) {
+          // 공지사항이 성공적으로 추가되었다면 상태 업데이트
+          setState(() {
+            AnnouncementPage();
+            print("oooo");
+          });
+        }
+      });
+
     } else if (_tabController.index == 1) {
       Navigator.push(
         context,

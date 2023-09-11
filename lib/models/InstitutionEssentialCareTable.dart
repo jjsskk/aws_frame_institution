@@ -31,6 +31,7 @@ class InstitutionEssentialCareTable {
   final String? _MEDICATION;
   final String? _MEDICATION_WAY;
   final String? _NAME;
+  final String? _IMAGE;
   final String? _PHONE_NUMBER;
   final String? _USER_ID;
   final amplify_core.TemporalDateTime? _createdAt;
@@ -69,6 +70,10 @@ class InstitutionEssentialCareTable {
     return _NAME;
   }
   
+  String? get IMAGE {
+    return _IMAGE;
+  }
+  
   String? get PHONE_NUMBER {
     return _PHONE_NUMBER;
   }
@@ -94,9 +99,9 @@ class InstitutionEssentialCareTable {
     return _updatedAt;
   }
   
-  const InstitutionEssentialCareTable._internal({BIRTH, INSTITUTION, required INSTITUTION_ID, MEDICATION, MEDICATION_WAY, NAME, PHONE_NUMBER, required USER_ID, createdAt, updatedAt}): _BIRTH = BIRTH, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _MEDICATION = MEDICATION, _MEDICATION_WAY = MEDICATION_WAY, _NAME = NAME, _PHONE_NUMBER = PHONE_NUMBER, _USER_ID = USER_ID, _createdAt = createdAt, _updatedAt = updatedAt;
+  const InstitutionEssentialCareTable._internal({BIRTH, INSTITUTION, required INSTITUTION_ID, MEDICATION, MEDICATION_WAY, NAME, IMAGE, PHONE_NUMBER, required USER_ID, createdAt, updatedAt}): _BIRTH = BIRTH, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _MEDICATION = MEDICATION, _MEDICATION_WAY = MEDICATION_WAY, _NAME = NAME, _IMAGE = IMAGE, _PHONE_NUMBER = PHONE_NUMBER, _USER_ID = USER_ID, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory InstitutionEssentialCareTable({String? BIRTH, String? INSTITUTION, required String INSTITUTION_ID, String? MEDICATION, String? MEDICATION_WAY, String? NAME, String? PHONE_NUMBER, required String USER_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory InstitutionEssentialCareTable({String? BIRTH, String? INSTITUTION, required String INSTITUTION_ID, String? MEDICATION, String? MEDICATION_WAY, String? NAME, String? IMAGE, String? PHONE_NUMBER, required String USER_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionEssentialCareTable._internal(
       BIRTH: BIRTH,
       INSTITUTION: INSTITUTION,
@@ -104,6 +109,7 @@ class InstitutionEssentialCareTable {
       MEDICATION: MEDICATION,
       MEDICATION_WAY: MEDICATION_WAY,
       NAME: NAME,
+      IMAGE: IMAGE,
       PHONE_NUMBER: PHONE_NUMBER,
       USER_ID: USER_ID,
       createdAt: createdAt,
@@ -124,6 +130,7 @@ class InstitutionEssentialCareTable {
       _MEDICATION == other._MEDICATION &&
       _MEDICATION_WAY == other._MEDICATION_WAY &&
       _NAME == other._NAME &&
+      _IMAGE == other._IMAGE &&
       _PHONE_NUMBER == other._PHONE_NUMBER &&
       _USER_ID == other._USER_ID &&
       _createdAt == other._createdAt &&
@@ -144,6 +151,7 @@ class InstitutionEssentialCareTable {
     buffer.write("MEDICATION=" + "$_MEDICATION" + ", ");
     buffer.write("MEDICATION_WAY=" + "$_MEDICATION_WAY" + ", ");
     buffer.write("NAME=" + "$_NAME" + ", ");
+    buffer.write("IMAGE=" + "$_IMAGE" + ", ");
     buffer.write("PHONE_NUMBER=" + "$_PHONE_NUMBER" + ", ");
     buffer.write("USER_ID=" + "$_USER_ID" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -153,7 +161,7 @@ class InstitutionEssentialCareTable {
     return buffer.toString();
   }
   
-  InstitutionEssentialCareTable copyWith({String? BIRTH, String? INSTITUTION, String? INSTITUTION_ID, String? MEDICATION, String? MEDICATION_WAY, String? NAME, String? PHONE_NUMBER, String? USER_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  InstitutionEssentialCareTable copyWith({String? BIRTH, String? INSTITUTION, String? INSTITUTION_ID, String? MEDICATION, String? MEDICATION_WAY, String? NAME, String? IMAGE, String? PHONE_NUMBER, String? USER_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionEssentialCareTable._internal(
       BIRTH: BIRTH ?? this.BIRTH,
       INSTITUTION: INSTITUTION ?? this.INSTITUTION,
@@ -161,6 +169,7 @@ class InstitutionEssentialCareTable {
       MEDICATION: MEDICATION ?? this.MEDICATION,
       MEDICATION_WAY: MEDICATION_WAY ?? this.MEDICATION_WAY,
       NAME: NAME ?? this.NAME,
+      IMAGE: IMAGE ?? this.IMAGE,
       PHONE_NUMBER: PHONE_NUMBER ?? this.PHONE_NUMBER,
       USER_ID: USER_ID ?? this.USER_ID,
       createdAt: createdAt ?? this.createdAt,
@@ -174,6 +183,7 @@ class InstitutionEssentialCareTable {
     ModelFieldValue<String?>? MEDICATION,
     ModelFieldValue<String?>? MEDICATION_WAY,
     ModelFieldValue<String?>? NAME,
+    ModelFieldValue<String?>? IMAGE,
     ModelFieldValue<String?>? PHONE_NUMBER,
     ModelFieldValue<String>? USER_ID,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
@@ -186,6 +196,7 @@ class InstitutionEssentialCareTable {
       MEDICATION: MEDICATION == null ? this.MEDICATION : MEDICATION.value,
       MEDICATION_WAY: MEDICATION_WAY == null ? this.MEDICATION_WAY : MEDICATION_WAY.value,
       NAME: NAME == null ? this.NAME : NAME.value,
+      IMAGE: IMAGE == null ? this.IMAGE : IMAGE.value,
       PHONE_NUMBER: PHONE_NUMBER == null ? this.PHONE_NUMBER : PHONE_NUMBER.value,
       USER_ID: USER_ID == null ? this.USER_ID : USER_ID.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
@@ -200,13 +211,14 @@ class InstitutionEssentialCareTable {
       _MEDICATION = json['MEDICATION'],
       _MEDICATION_WAY = json['MEDICATION_WAY'],
       _NAME = json['NAME'],
+      _IMAGE = json['IMAGE'],
       _PHONE_NUMBER = json['PHONE_NUMBER'],
       _USER_ID = json['USER_ID'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'BIRTH': _BIRTH, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'MEDICATION': _MEDICATION, 'MEDICATION_WAY': _MEDICATION_WAY, 'NAME': _NAME, 'PHONE_NUMBER': _PHONE_NUMBER, 'USER_ID': _USER_ID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'BIRTH': _BIRTH, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'MEDICATION': _MEDICATION, 'MEDICATION_WAY': _MEDICATION_WAY, 'NAME': _NAME, 'IMAGE': _IMAGE, 'PHONE_NUMBER': _PHONE_NUMBER, 'USER_ID': _USER_ID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -216,6 +228,7 @@ class InstitutionEssentialCareTable {
     'MEDICATION': _MEDICATION,
     'MEDICATION_WAY': _MEDICATION_WAY,
     'NAME': _NAME,
+    'IMAGE': _IMAGE,
     'PHONE_NUMBER': _PHONE_NUMBER,
     'USER_ID': _USER_ID,
     'createdAt': _createdAt,
@@ -258,6 +271,12 @@ class InstitutionEssentialCareTable {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'NAME',
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'IMAGE',
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));

@@ -19,6 +19,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  DateTime dt = DateTime.now();
 
   File? _image;
   final ImagePicker _picker = ImagePicker();
@@ -99,7 +100,8 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
                 "INSTITUTION_NAME",
                 "INST_ID_123",
                 _titleController.text,
-                  _urlController.text
+                  _urlController.text,
+                "${dt}"
               );
 
               print(_contentController.text);
@@ -107,13 +109,18 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
               print(_titleController.text);
               print(_urlController.text);
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InstitutionInfoPage(initialIndex: 0)),
-              );
+              Navigator.pop(context, true);
             },
             child: Text('완료'),
           ),
+          ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+            onPressed: (){
+              Navigator.pop(context, true);
+            },
+            child: Text('취소', style: TextStyle(color: Colors.white)),
+          ),
+
         ],
       ),
     );

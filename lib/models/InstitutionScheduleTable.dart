@@ -31,6 +31,7 @@ class InstitutionScheduleTable {
   final String? _SCHEDULE_ID;
   final String? _TAG;
   final String? _TIME;
+  final String? _DATE;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
@@ -76,6 +77,10 @@ class InstitutionScheduleTable {
     return _TIME;
   }
   
+  String? get DATE {
+    return _DATE;
+  }
+  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -84,9 +89,9 @@ class InstitutionScheduleTable {
     return _updatedAt;
   }
   
-  const InstitutionScheduleTable._internal({CONTENT, INSTITUTION, required INSTITUTION_ID, required SCHEDULE_ID, TAG, TIME, createdAt, updatedAt}): _CONTENT = CONTENT, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _SCHEDULE_ID = SCHEDULE_ID, _TAG = TAG, _TIME = TIME, _createdAt = createdAt, _updatedAt = updatedAt;
+  const InstitutionScheduleTable._internal({CONTENT, INSTITUTION, required INSTITUTION_ID, required SCHEDULE_ID, TAG, TIME, DATE, createdAt, updatedAt}): _CONTENT = CONTENT, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _SCHEDULE_ID = SCHEDULE_ID, _TAG = TAG, _TIME = TIME, _DATE = DATE, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory InstitutionScheduleTable({String? CONTENT, String? INSTITUTION, required String INSTITUTION_ID, required String SCHEDULE_ID, String? TAG, String? TIME, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory InstitutionScheduleTable({String? CONTENT, String? INSTITUTION, required String INSTITUTION_ID, required String SCHEDULE_ID, String? TAG, String? TIME, String? DATE, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionScheduleTable._internal(
       CONTENT: CONTENT,
       INSTITUTION: INSTITUTION,
@@ -94,6 +99,7 @@ class InstitutionScheduleTable {
       SCHEDULE_ID: SCHEDULE_ID,
       TAG: TAG,
       TIME: TIME,
+      DATE: DATE,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -112,6 +118,7 @@ class InstitutionScheduleTable {
       _SCHEDULE_ID == other._SCHEDULE_ID &&
       _TAG == other._TAG &&
       _TIME == other._TIME &&
+      _DATE == other._DATE &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -130,6 +137,7 @@ class InstitutionScheduleTable {
     buffer.write("SCHEDULE_ID=" + "$_SCHEDULE_ID" + ", ");
     buffer.write("TAG=" + "$_TAG" + ", ");
     buffer.write("TIME=" + "$_TIME" + ", ");
+    buffer.write("DATE=" + "$_DATE" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -137,7 +145,7 @@ class InstitutionScheduleTable {
     return buffer.toString();
   }
   
-  InstitutionScheduleTable copyWith({String? CONTENT, String? INSTITUTION, String? INSTITUTION_ID, String? SCHEDULE_ID, String? TAG, String? TIME, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  InstitutionScheduleTable copyWith({String? CONTENT, String? INSTITUTION, String? INSTITUTION_ID, String? SCHEDULE_ID, String? TAG, String? TIME, String? DATE, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionScheduleTable._internal(
       CONTENT: CONTENT ?? this.CONTENT,
       INSTITUTION: INSTITUTION ?? this.INSTITUTION,
@@ -145,6 +153,7 @@ class InstitutionScheduleTable {
       SCHEDULE_ID: SCHEDULE_ID ?? this.SCHEDULE_ID,
       TAG: TAG ?? this.TAG,
       TIME: TIME ?? this.TIME,
+      DATE: DATE ?? this.DATE,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
@@ -156,6 +165,7 @@ class InstitutionScheduleTable {
     ModelFieldValue<String>? SCHEDULE_ID,
     ModelFieldValue<String?>? TAG,
     ModelFieldValue<String?>? TIME,
+    ModelFieldValue<String?>? DATE,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
@@ -166,6 +176,7 @@ class InstitutionScheduleTable {
       SCHEDULE_ID: SCHEDULE_ID == null ? this.SCHEDULE_ID : SCHEDULE_ID.value,
       TAG: TAG == null ? this.TAG : TAG.value,
       TIME: TIME == null ? this.TIME : TIME.value,
+      DATE: DATE == null ? this.DATE : DATE.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
@@ -178,11 +189,12 @@ class InstitutionScheduleTable {
       _SCHEDULE_ID = json['SCHEDULE_ID'],
       _TAG = json['TAG'],
       _TIME = json['TIME'],
+      _DATE = json['DATE'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'CONTENT': _CONTENT, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'SCHEDULE_ID': _SCHEDULE_ID, 'TAG': _TAG, 'TIME': _TIME, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'CONTENT': _CONTENT, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'SCHEDULE_ID': _SCHEDULE_ID, 'TAG': _TAG, 'TIME': _TIME, 'DATE': _DATE, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
@@ -192,6 +204,7 @@ class InstitutionScheduleTable {
     'SCHEDULE_ID': _SCHEDULE_ID,
     'TAG': _TAG,
     'TIME': _TIME,
+    'DATE': _DATE,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
@@ -232,6 +245,12 @@ class InstitutionScheduleTable {
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'TIME',
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'DATE',
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
