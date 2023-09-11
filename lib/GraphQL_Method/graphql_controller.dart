@@ -906,6 +906,276 @@ class GraphQLController {
       safePrint('Mutation failed: $e');
     }
   }
+
+/*  ----------- jinsu method ------------------        */
+
+  Future<bool?> createScheduledata(
+      String institution,
+      String inst_id,
+      String schedule_id,
+      String content,
+      String tag,
+      String time,
+      String date) async {
+    final row = {
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': inst_id,
+      'SCHEDULE_ID': schedule_id,
+      'CONTENT': content,
+      'TAG': tag,
+      'TIME': time,
+      'DATE': date,
+      'createdAt': '${TemporalDateTime.now()}',
+      'updatedAt': '${TemporalDateTime.now()}'
+    };
+    try {
+      final response = await Amplify.API
+          .mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation createInstitutionScheduleTable(\$input: CreateInstitutionScheduleTableInput!) {
+                  createInstitutionScheduleTable(input: \$input) {
+                    INSTITUTION
+                    INSTITUTION_ID
+                    SCHEDULE_ID
+                    CONTENT
+                    TAG
+                    TIME
+                    DATE
+                    createdAt
+                    updatedAt
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+      {
+        final createdData = response.data;
+        if (jsonDecode(createdData!)['createInstitutionScheduleTable'] ==
+            null) {
+          safePrint('errors: ${response.errors}');
+          return false;
+        }
+        safePrint('Mutation result: ${createdData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        useridint++;
+        userid = "$useridint";
+        return true;
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      return false;
+    }
+  }
+
+  Future<List<InstitutionScheduleTable>>
+  queryInstitutionScheduleByInstitutionId(String institutionId,String date) async {
+    String inst_id = 'aaa';
+    int dateNext = int.parse(date);
+    dateNext += 40;
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          document: """
+      query listInstitutionScheduleTables(\$filter: TableInstitutionScheduleTableFilterInput) {
+        listInstitutionScheduleTables(
+          filter: \$filter,
+        ) {
+          items {
+                    INSTITUTION
+                    INSTITUTION_ID
+                    SCHEDULE_ID
+                    CONTENT
+                    TAG
+                    TIME
+                    DATE
+                    createdAt
+                    updatedAt
+          }
+        }
+      }
+    """,
+          variables: {
+            "filter": {
+              "INSTITUTION_ID": {"eq": institutionId},
+              "DATE": {"between": [date,'$dateNext']}
+            },
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      List<InstitutionScheduleTable> schedules =
+      (jsonDecode(response.data)['listInstitutionScheduleTables']['items']
+      as List)
+          .map((item) => InstitutionScheduleTable.fromJson(item))
+          .toList();
+      if (schedules == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
+      return schedules;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+  Future<List<InstitutionScheduleTable>>
+  subscribeInstitutionScheduleByInstitutionId(String institutionId) async {
+    String inst_id = 'aaa';
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          document: """
+      query listInstitutionScheduleTables(\$filter: TableInstitutionScheduleTableFilterInput) {
+        listInstitutionScheduleTables(
+          filter: \$filter,
+        ) {
+          items {
+                    INSTITUTION
+                    INSTITUTION_ID
+                    SCHEDULE_ID
+                    CONTENT
+                    TAG
+                    TIME
+                    DATE
+                    createdAt
+                    updatedAt
+          }
+        }
+      }
+    """,
+          variables: {
+            "filter": {
+              "INSTITUTION_ID": {"eq": institutionId}
+            },
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      List<InstitutionScheduleTable> schedules =
+      (jsonDecode(response.data)['listInstitutionScheduleTables']['items']
+      as List)
+          .map((item) => InstitutionScheduleTable.fromJson(item))
+          .toList();
+      if (schedules == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
+      return schedules;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+  Future<bool?> updateScheduledata(
+      String institution,
+      String inst_id,
+      String sche_id,
+      String content,
+      String tag,
+      String time,
+      String date) async {
+    final row = {
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': inst_id,
+      'SCHEDULE_ID': sche_id,
+      'CONTENT': content,
+      'TAG': tag,
+      'TIME': time,
+      'DATE': date,
+      'createdAt': '${TemporalDateTime.now()}',
+      'updatedAt': '${TemporalDateTime.now()}'
+    };
+    // final condition = {
+    //   'INSTITUTION_ID': {'eq': inst_id},
+    //   'SCHEDULE_ID': {'eq': sche_id}
+    // };
+    try {
+
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation updateInstitutionScheduleTable(\$input: UpdateInstitutionScheduleTableInput!) {
+            updateInstitutionScheduleTable(input: \$input) {
+              INSTITUTION
+              INSTITUTION_ID
+              SCHEDULE_ID
+              CONTENT
+              TAG
+              TIME
+              DATE
+              createdAt
+              updatedAt
+            }  
+          }
+        ''',
+          variables: {
+            'input': row
+          },
+        ),
+      ).response;
+      {
+        final updatedData = response.data;
+        if (updatedData == null || jsonDecode(updatedData!)['updateInstitutionScheduleTable'] ==
+            null) {
+          safePrint('errors: ${response.errors}');
+          return false;
+        }
+        safePrint('Mutation result: ${updatedData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        return true;
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      return false;
+    }
+  }
+
+  Future<bool?> deleteScheduledata(
+      String inst_id,
+      String schedule_id,
+      ) async {
+    final row = {'INSTITUTION_ID': inst_id, 'SCHEDULE_ID': schedule_id};
+    try {
+      final response = await Amplify.API
+          .mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation deleteInstitutionScheduleTable(\$input: DeleteInstitutionScheduleTableInput!) {
+                  deleteInstitutionScheduleTable(input: \$input) {
+                    INSTITUTION_ID
+                    SCHEDULE_ID
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      )
+          .response;
+      {
+        final deletedData = response.data;
+        if (jsonDecode(deletedData!)['deleteInstitutionScheduleTable'] ==
+            null) {
+          safePrint('errors: ${response.errors}');
+          return false;
+        }
+        safePrint('Mutation result: ${deletedData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        return true;
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+      return false;
+    }
+  }
   // Future<void> createMonthlyData() async {
   //   try {
   //     final row = MonthlyDBTest(
