@@ -4,7 +4,7 @@ import 'package:aws_frame_institution/analytics/analytics_events.dart';
 import 'package:aws_frame_institution/analytics/analytics_service.dart';
 import 'package:aws_frame_institution/storage/storage_service.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 
 // 1
 class GalleryPage extends StatefulWidget {
@@ -220,14 +220,14 @@ class _GalleryPageState extends State<GalleryPage> {
                       },
                       child: Padding(
                         padding: EdgeInsets.all(5),
-                        child: CachedNetworkImage(
-                          imageUrl: snapshot.data![index],
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                              alignment: Alignment.center,
-                              child: CircularProgressIndicator()),
-                          //이미지가 로드되는 동안 위젯에 CircularProgressIndicator가 표시됩니다
-                        ),
+                        // child: CachedNetworkImage(
+                        //   imageUrl: snapshot.data![index],
+                        //   fit: BoxFit.cover,
+                        //   placeholder: (context, url) => Container(
+                        //       alignment: Alignment.center,
+                        //       child: CircularProgressIndicator()),
+                        //   //이미지가 로드되는 동안 위젯에 CircularProgressIndicator가 표시됩니다
+                        // ),
                       ),
                     );
                   });

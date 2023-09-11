@@ -19,6 +19,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
+  DateTime dt = DateTime.now();
 
   File? _image;
   final ImagePicker _picker = ImagePicker();
@@ -60,14 +61,12 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
         padding: EdgeInsets.all(16),
         children: [
           TextField(
-            enabled: false,
             controller: _titleController,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(labelText: '제목'),
           ),
           SizedBox(height: 16),
           TextField(
-            enabled: false,
             controller: _contentController,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(labelText: '내용'),
@@ -101,7 +100,8 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
                 "INSTITUTION_NAME",
                 "INST_ID_123",
                 _titleController.text,
-                  _urlController.text
+                  _urlController.text,
+                "${dt}"
               );
 
               print(_contentController.text);
@@ -109,10 +109,18 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
               print(_titleController.text);
               print(_urlController.text);
 
-              Navigator.pop(context);
+              Navigator.pop(context, true);
             },
             child: Text('완료'),
           ),
+          ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+            onPressed: (){
+              Navigator.pop(context, true);
+            },
+            child: Text('취소', style: TextStyle(color: Colors.white)),
+          ),
+
         ],
       ),
     );
