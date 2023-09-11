@@ -32,6 +32,8 @@ import 'InstitutionScheduleTable.dart';
 import 'InstitutionScheduleTableConnection.dart';
 import 'InstitutionShuttleTImeTable.dart';
 import 'InstitutionShuttleTImeTableConnection.dart';
+import 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
+import 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.dart';
 import 'UserTable.dart';
 import 'UserTableConnection.dart';
 
@@ -48,16 +50,18 @@ export 'InstitutionScheduleTableConnection.dart';
 export 'InstitutionShuttleTImeTable.dart';
 export 'InstitutionShuttleTImeTableConnection.dart';
 export 'ModelSortDirection.dart';
+export 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
+export 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.dart';
 export 'UserTable.dart';
 export 'UserTableConnection.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "74a79499ca678ed9f489c61518b08b3e";
+  String version = "4d4132a9da2fafc07af00d2d1e0ddace";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [];
   @override
-  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTImeTable.schema, InstitutionShuttleTImeTableConnection.schema, UserTable.schema, UserTableConnection.schema];
+  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTImeTable.schema, InstitutionShuttleTImeTableConnection.schema, MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.schema, MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.schema, UserTable.schema, UserTableConnection.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;

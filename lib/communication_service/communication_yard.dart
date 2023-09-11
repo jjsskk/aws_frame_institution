@@ -1,5 +1,5 @@
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
-import 'package:aws_frame_institution/communication_service/comment_view.dart';
+import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/communication_service/user_activity.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information.dart';

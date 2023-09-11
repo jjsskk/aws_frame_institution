@@ -92,10 +92,7 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
               print(imageUrl);
 
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InstitutionInfoPage(initialIndex: 3)),
-              );
+              Navigator.pop(context);
             },
             child: Text('완료'),
           ),

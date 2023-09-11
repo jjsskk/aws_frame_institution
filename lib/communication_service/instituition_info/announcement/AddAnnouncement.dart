@@ -60,12 +60,14 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
         padding: EdgeInsets.all(16),
         children: [
           TextField(
+            enabled: false,
             controller: _titleController,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(labelText: '제목'),
           ),
           SizedBox(height: 16),
           TextField(
+            enabled: false,
             controller: _contentController,
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(labelText: '내용'),
@@ -107,10 +109,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
               print(_titleController.text);
               print(_urlController.text);
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => InstitutionInfoPage(initialIndex: 0)),
-              );
+              Navigator.pop(context);
             },
             child: Text('완료'),
           ),
