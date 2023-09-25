@@ -1,4 +1,4 @@
-import 'package:aws_frame_institution/communication_service/comment_view.dart';
+import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
 import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/communication_service/user_activity.dart';

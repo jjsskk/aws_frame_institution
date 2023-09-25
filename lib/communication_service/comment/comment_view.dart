@@ -1,4 +1,6 @@
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
+import 'package:aws_frame_institution/communication_service/comment/Add_comment.dart';
+import 'package:aws_frame_institution/communication_service/comment/Detail_comment.dart';
 import 'package:aws_frame_institution/drawer/drawer.dart';
 import 'package:aws_frame_institution/bottomappbar/globalkey.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
@@ -69,6 +71,20 @@ class _CommentViewPageState extends State<CommentViewPage> {
       appBar: AppBar(
         title: Text('코멘트 모아보기'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.add,
+            ),
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => AddCommentPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Padding(
@@ -156,56 +172,65 @@ class _CommentViewPageState extends State<CommentViewPage> {
     ;
   }
 
-  List<Card> _buildListCards(BuildContext context) {
+  List<StatelessWidget> _buildListCards(BuildContext context) {
     if (_foundComments.isEmpty) {
       return const <Card>[];
     }
     final ThemeData theme = Theme.of(context);
 
     return _foundComments.map((comment) {
-      return Card(
-        clipBehavior: Clip.antiAlias,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: Card(
-                  child: AspectRatio(
-                    aspectRatio: 1 / 1,
-                    child: CircleAvatar(
-                      child: Image.asset(
-                        'image/frame.png',
+      return InkWell(
+        onTap: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DetailCommentPage()),
+          );
+        },
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Card(
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: CircleAvatar(
+                        child: Image.asset(
+                          'image/frame.png',
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(comment['date']),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    // TODO: Handle overflowing labels (103)
-                    Text(
-                      comment['content'],
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4.0),
-                  ],
+                SizedBox(
+                  width: 8,
                 ),
-              ),
-            ],
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(comment['date']),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      // TODO: Handle overflowing labels (103)
+                      Text(
+                        comment['content'],
+                        style:
+                            TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4.0),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );

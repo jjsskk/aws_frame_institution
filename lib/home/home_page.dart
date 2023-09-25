@@ -2,6 +2,7 @@ import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/backey/backKey_dialog.dart';
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
 import 'package:aws_frame_institution/camera_gallary/graph_page.dart';
+import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
 import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
@@ -169,6 +170,12 @@ class _HomePageState extends State<HomePage> {
                     TextButton(onPressed: (){
                       gql.createAnnounceData();
                     }, child: Text('공지 추가')),
+
+                    TextButton(onPressed: (){
+                      gql.queryAnnounceItem().then((value){
+                        print(value);
+                      });
+                    }, child: Text('값 부르기')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -289,7 +296,13 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Text('보호자 코멘트'),
+                    TextButton(onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CommentViewPage()),
+                      );
+                    }, child: Text('보호자 코멘트')),
                   ],
                 ),
               ),

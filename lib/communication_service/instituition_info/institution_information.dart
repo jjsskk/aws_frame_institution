@@ -1,3 +1,4 @@
+import 'package:aws_frame_institution/communication_service/instituition_info/schedule/AddSchedule.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/schedule/schedule.dart';
 import 'package:flutter/material.dart';
 
@@ -15,13 +16,15 @@ class InstitutionInfoPage extends StatefulWidget {
   _InstitutionInfoPageState createState() => _InstitutionInfoPageState();
 }
 
-class _InstitutionInfoPageState extends State<InstitutionInfoPage> with SingleTickerProviderStateMixin {
+class _InstitutionInfoPageState extends State<InstitutionInfoPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(initialIndex: widget.initialIndex, length: 4, vsync: this);
+    _tabController = TabController(
+        initialIndex: widget.initialIndex, length: 4, vsync: this);
     _tabController.addListener(_handleTabIndex);
   }
 
@@ -70,14 +73,26 @@ class _InstitutionInfoPageState extends State<InstitutionInfoPage> with SingleTi
         centerTitle: true,
         actions: _tabController.index < 2 // 수정된 부분
             ? [
-          IconButton(
-            icon: Icon(Icons.create),
-            onPressed: () {
-              _onCreateIconPressed(context);
-            },
-          ),
-        ]
-            : [],
+                IconButton(
+                  icon: Icon(Icons.create),
+                  onPressed: () {
+                    _onCreateIconPressed(context);
+                  },
+                ),
+              ]
+            : [
+                _tabController.index == 2
+                    ? IconButton(
+                        icon: Icon(Icons.add_box_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AddSchedulePage()),
+                          );
+                        },
+                      )
+                    : SizedBox()
+              ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
