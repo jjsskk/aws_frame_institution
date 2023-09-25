@@ -121,7 +121,7 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
         month = int.parse(value.month.substring(4, 6));
         print("month : $month");
         year = int.parse(value.month.substring(0, 4));
-        extractSimilarAge();
+        // extractSimilarAge();
       });
     });
   }
@@ -151,45 +151,45 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
     return future;
   }
 
-  void extractSimilarAge() {
-    users = [];
-    String birth = "19651008";
-    int year = int.parse(birth.substring(0, 4));
-    int month = int.parse(birth.substring(4, 6));
-    int day = int.parse(birth.substring(6, 8));
-    DateTime birthday = DateTime(year, month, day);
-
-    DateDuration duration;
-
-    // Find out your age as of today's date 2021-03-08
-    duration = AgeCalculator.age(birthday);
-    int age = duration.years;
-    print('Your age is ${age}'); // Your age is Years: 24, Months: 0, Days: 3
-
-    ageEra = ((duration.years ~/ 10) * 10);
-
-    int diff = age - ageEra;
-
-    print(diff);
-
-    int maxYear = (year + diff) * 10000;
-    int minYear = (year - (9 - diff)) * 10000;
-    print(minYear);
-    print(maxYear);
-
-    gql.queryListUserDBItems(minYear, maxYear).then((result) {
-      // extract SimilarAge users Ids
-      // print(result);
-      result.forEach((value) {
-        // print("${value.id}");
-        users.add(value.id);
-      });
-      futuresList = [];
-      calculateAverageSignal();
-    }).catchError((error) {
-      print(error);
-    });
-  }
+  // void extractSimilarAge() {
+  //   users = [];
+  //   String birth = "19651008";
+  //   int year = int.parse(birth.substring(0, 4));
+  //   int month = int.parse(birth.substring(4, 6));
+  //   int day = int.parse(birth.substring(6, 8));
+  //   DateTime birthday = DateTime(year, month, day);
+  //
+  //   DateDuration duration;
+  //
+  //   // Find out your age as of today's date 2021-03-08
+  //   duration = AgeCalculator.age(birthday);
+  //   int age = duration.years;
+  //   print('Your age is ${age}'); // Your age is Years: 24, Months: 0, Days: 3
+  //
+  //   ageEra = ((duration.years ~/ 10) * 10);
+  //
+  //   int diff = age - ageEra;
+  //
+  //   print(diff);
+  //
+  //   int maxYear = (year + diff) * 10000;
+  //   int minYear = (year - (9 - diff)) * 10000;
+  //   print(minYear);
+  //   print(maxYear);
+  //
+  //   gql.queryListUserDBItems(minYear, maxYear).then((result) {
+  //     // extract SimilarAge users Ids
+  //     // print(result);
+  //     result.forEach((value) {
+  //       // print("${value.id}");
+  //       users.add(value.id);
+  //     });
+  //     futuresList = [];
+  //     calculateAverageSignal();
+  //   }).catchError((error) {
+  //     print(error);
+  //   });
+  // }
 
   void calculateAverageSignal() async {
     // futuresList = [];

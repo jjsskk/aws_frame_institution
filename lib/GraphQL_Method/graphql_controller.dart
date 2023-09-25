@@ -197,6 +197,92 @@ class GraphQLController {
     }
   }
 
+  Future<void> updateAnnouncement({required String announcementId, required String content, required String image, required String institution, required String institution_id, required String title, required String url}) async {
+    final row = {
+      'ANNOUNCEMENT_ID': announcementId,
+      'CONTENT': content,
+      'IMAGE': image,
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': institution_id,
+      'TITLE': title,
+      'URL': url,
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation UpdateInstitutionAnnouncementTable(\$input: UpdateInstitutionAnnouncementTableInput!) {
+            updateInstitutionAnnouncementTable(input: \$input) {
+              ANNOUNCEMENT_ID
+              CONTENT
+              IMAGE
+              INSTITUTION
+              INSTITUTION_ID
+              TITLE
+              URL              
+            }  
+          }
+        ''',
+          variables: {
+            'input': row,
+          },
+        ),
+
+      ).response;
+
+      final updatedData = response.data;
+      if (updatedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      safePrint('Mutation result: ${updatedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  Future<void> deleteAnnouncement({required String institution_id, required String announcementId}) async {
+    final row = {
+      'INSTITUTION_ID': institution_id,
+      'ANNOUNCEMENT_ID': announcementId,
+    };
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation DeleteInstitutionAnnouncementTable(\$input: DeleteInstitutionAnnouncementTableInput!) {
+            deleteInstitutionAnnouncementTable(input: \$input) {
+              INSTITUTION_ID
+              ANNOUNCEMENT_ID             
+            }  
+          }
+        ''',
+          variables: {
+            'input': row,
+          },
+        ),
+
+      ).response;
+
+      final deletedData = response.data;
+      if (deletedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      safePrint('Mutation result: ${deletedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+
+
+
   //공지사항용
   Future<void> createEssentialCare(String age,String name, String image,String phoneNumber,String institution, String institution_id, String medicationWay, String medication, String userId) async {
     //todo 이미지가 없넹...
@@ -269,6 +355,7 @@ class GraphQLController {
     }
   }
 
+//news
   Future<void> createInstitutionNews(String content, String image, String institution, String New_id, String title, String url) async {
     final row = {
       'NEWS_ID': userid,
@@ -319,6 +406,90 @@ class GraphQLController {
       safePrint('Mutation failed: $e');
     }
   }
+  Future<void> updateInstitutionNews({required String newsId, required String content, required String image, required String institution, required String institution_id, required String title, required String url}) async {
+    final row = {
+      'NEWS_ID': newsId,
+      'CONTENT': content,
+      'IMAGE': image,
+      'INSTITUTION': institution,
+      'INSTITUTION_ID': institution_id,
+      'TITLE': title,
+      'URL': url,
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation UpdateInstitutionNewsTable(\$input: UpdateInstitutionNewsTableInput!) {
+            updateInstitutionNewsTable(input: \$input) {
+              INSTITUTION_ID
+              CONTENT
+              IMAGE
+              INSTITUTION
+              NEWS_ID
+              TITLE
+              URL          
+            }  
+          }
+        ''',
+          variables: {
+            'input': row,
+          },
+        ),
+
+      ).response;
+
+      final updatedData = response.data;
+      if (updatedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      safePrint('Mutation result: ${updatedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+  Future<void> deleteInstitutionNews({required String institutionId, required String newsId}) async {
+    final row = {
+      'INSTITUTION_ID': institutionId,
+      'NEWS_ID': newsId,
+    };
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation DeleteInstitutionNewsTable(\$input: DeleteInstitutionNewsTableInput!) {
+            deleteInstitutionNewsTable(input: \$input) {
+              INSTITUTION_ID
+              NEWS_ID
+            }  
+          }
+        ''',
+          variables: {
+            'input': row,
+          },
+        ),
+
+      ).response;
+
+      final deletedData = response.data;
+      if (deletedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+      safePrint('Mutation result: ${deletedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+
 
   Future<void> createFoodMenu(String dateTime, String imageUrl, String institutionId) async {
     final row = {
@@ -362,49 +533,73 @@ class GraphQLController {
       safePrint('Mutation failed: $e');
     }
   }
-
-  Future<void> createShuttleTime(String dateTime, String imageUrl, String institutionId) async {
+  Future<void> deleteFoodMenu({required String dateTime, required String institutionId}) async {
     final row = {
       'DATE': dateTime,
-      'IMAGE_URL': imageUrl,
       'INSTITUTION_ID': institutionId,
-      'createdAt' : '${TemporalDateTime.now()}',
-      'updatedAt' : '${TemporalDateTime.now()}'
     };
+    print("del");
+    print(dateTime);
+    print(institutionId);
+
+
     try {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation createInstitutionShuttleTImeTable(\$input: CreateInstitutionShuttleTImeTableInput!) {
-                  createInstitutionShuttleTImeTable(input: \$input) {
-                    DATE
-                    IMAGE_URL
+            mutation deleteInstitutionFoodMenuTable(\$input: DeleteInstitutionFoodMenuTableInput!) {
+                  deleteInstitutionFoodMenuTable(input: \$input) {
                     INSTITUTION_ID
-                    createdAt
-                    updatedAt
+                    DATE
                }  
-              }
+              } 
             ''',
           variables: {
             'input': row,
           },
         ),
       ).response;
-      {
-        final createdData = response.data;
-        if (createdData == null) {
-          safePrint('errors: ${response.errors}');
 
-        }
-        if (createdData.toString() == "{\"createInstitutionShuttleTimeTable\":null}"){
-          return updateShuttleTime(dateTime, imageUrl, institutionId);
-        }
-        safePrint('Mutation result: ${createdData.toString()}');
+      // final deletedData = response.data;
+      // if (deletedData == null) {
+      //   safePrint('errors: ${response.errors}');
+      //   return;
+      // }
+
+      final deletedData = response.data;
+      if (deletedData == null || jsonDecode(deletedData!)['deleteInstitutionFoodMenuTable'] ==
+          null) {
+        safePrint('errors: ${response.errors}');
+        return ;
       }
+      safePrint('Mutation result: ${deletedData.toString()}');
+      // print('User created successfully: ${response.data}');;
+      return ;
+
+
+      safePrint('Mutation result: ${deletedData.toString()}');
+
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
     }
   }
+
+/*
+*
+* final deletedData = response.data;
+        if (deletedData == null || jsonDecode(deletedData!)['deleteInstitutionScheduleTable'] ==
+            null) {
+          safePrint('errors: ${response.errors}');
+          return false;
+        }
+        safePrint('Mutation result: ${deletedData.toString()}');
+        // print('User created successfully: ${response.data}');;
+        return true;
+      }
+    }
+*
+* */
+
 
   Future<void> updateFoodMenu(String dateTime, String imageUrl, String institutionId) async {
     //todo update날짜만 바꾸면 될 거 같은뎅..
@@ -447,6 +642,89 @@ class GraphQLController {
     }
   }
 
+  Future<void> createShuttleTime(String dateTime, String imageUrl, String institutionId) async {
+    final row = {
+      'DATE': dateTime,
+      'IMAGE_URL': imageUrl,
+      'INSTITUTION_ID': institutionId,
+      'createdAt' : '${TemporalDateTime.now()}',
+      'updatedAt' : '${TemporalDateTime.now()}'
+    };
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation createInstitutionShuttleTImeTable(\$input: CreateInstitutionShuttleTImeTableInput!) {
+                  createInstitutionShuttleTImeTable(input: \$input) {
+                    DATE
+                    IMAGE_URL
+                    INSTITUTION_ID
+                    createdAt
+                    updatedAt
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+      {
+        final createdData = response.data;
+        if (createdData == null) {
+          safePrint('errors: ${response.errors}');
+
+        }
+        if (createdData.toString() == "{\"createInstitutionShuttleTImeTable\":null}"){
+          return updateShuttleTime(dateTime, imageUrl, institutionId);
+        }
+        safePrint('Mutation result: ${createdData.toString()}');
+      }
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+
+  Future<void> deleteShuttleTime({required String dateTime, required String institutionId}) async {
+    final row = {
+      'DATE': dateTime,
+      'INSTITUTION_ID': institutionId,
+    };
+
+    print("del");
+    print(dateTime);
+    print(institutionId);
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+            mutation deleteInstitutionShuttleTImeTable(\$input: DeleteInstitutionShuttleTImeTableInput!) {
+                  deleteInstitutionShuttleTImeTable(input: \$input) {
+                    INSTITUTION_ID
+                    DATE
+               }  
+              }
+            ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+
+      final deletedData = response.data;
+      if (deletedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+
+      safePrint('Mutation result: ${deletedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
 
 
   Future<void> updateShuttleTime(String dateTime, String imageUrl, String institutionId) async {
@@ -462,8 +740,8 @@ class GraphQLController {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation updateInstitutionShuttleTimeTable(\$input: UpdateInstitutionShuttleTimeTableInput!) {
-                  updateInstitutionShuttleTimeTable(input: \$input) {
+            mutation updateInstitutionShuttleTImeTable(\$input: UpdateInstitutionShuttleTImeTableInput!) {
+                  updateInstitutionShuttleTImeTable(input: \$input) {
                     DATE
                     IMAGE_URL
                     INSTITUTION_ID
@@ -645,6 +923,44 @@ class GraphQLController {
     }
   }
 
+  Future<void> deleteEssentialCare(String userId, String institutionId) async {
+    final row = {
+      'USER_ID': userId,
+      'INSTITUTION_ID': institutionId,
+    };
+
+    try {
+      final response = await Amplify.API.mutate(
+        request: GraphQLRequest<String>(
+          document: '''
+          mutation DeleteInstitutionEssentialCareTable(\$input: DeleteInstitutionEssentialCareTableInput!) {
+                deleteInstitutionEssentialCareTable(input: \$input) {
+                  USER_ID
+                  INSTITUTION_ID
+             }  
+            }
+          ''',
+          variables: {
+            'input': row,
+          },
+        ),
+      ).response;
+
+      final deletedData = response.data;
+      if (deletedData == null) {
+        safePrint('errors: ${response.errors}');
+        return;
+      }
+
+      safePrint('Mutation result: ${deletedData.toString()}');
+
+    } on ApiException catch (e) {
+      safePrint('Mutation failed: $e');
+    }
+  }
+
+
+
   Future<List<InstitutionEssentialCareTable>> queryEssentialCareInformationByInstitutionId(String institutionId) async {
     try {
       var operation = Amplify.API.query(
@@ -787,7 +1103,7 @@ class GraphQLController {
   //todo 봉인!!!
   Future<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?> queryMonthlyDBItem() async {
     try {
-      var ID = '3';
+      var ID = '2';
 
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -851,10 +1167,12 @@ class GraphQLController {
 
 
   Future<void> createMonthlyData() async {
+
     final row = {
-      'id': "15",
-      'month': "20230101",
+      'id': "2",
+      'month': "20231101",
       'avg_att': Random().nextInt(100) + 1,
+      'avg_med': Random().nextInt(100) + 1,
       'con_score': Random().nextInt(100) + 1,
       'spacetime_score': Random().nextInt(100) + 1,
       'exec_score': Random().nextInt(100) + 1,
@@ -862,7 +1180,9 @@ class GraphQLController {
       'ling_score' : Random().nextInt(100) + 1,
       'cal_score' : Random().nextInt(100) + 1,
       'reac_score' : Random().nextInt(100) + 1,
-      'orient_score' : Random().nextInt(100) + 1
+      'orient_score' : Random().nextInt(100) + 1,
+      'createdAt' : '${TemporalDateTime.now()}',
+      'updatedAt' : '${TemporalDateTime.now()}'
     };
 
     try {
@@ -874,6 +1194,7 @@ class GraphQLController {
                     id
                     month
                     avg_att
+                    avg_med
                     con_score
                     spacetime_score
                     exec_score
@@ -882,6 +1203,8 @@ class GraphQLController {
                     cal_score
                     reac_score
                     orient_score
+                    createdAt
+                    updatedAt
                }  
               }
             ''',
@@ -1039,10 +1362,10 @@ class GraphQLController {
   // //   }
   // // }
   //
-  Future<List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?>> queryListMonthlyDBItems() async {
+  Future<List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?>> queryListMonthlyDBItems({required String ID}) async {
     try {
-      var ID = '2';
-
+      print("id");
+      print(ID);
       var operation = Amplify.API.query(
         request: GraphQLRequest(
           document: """
@@ -1079,22 +1402,74 @@ class GraphQLController {
           },
         ),
       );
-      print("asdf");
-      var response = await operation.response;
 
+      var response = await operation.response;
       print(response.data);
-      print("1234");
+
       // Map<String, dynamic> json = jsonDecode(response.data);
       // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
       List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging> monthlyDBTests =
           (jsonDecode(response.data)['listMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings']['items'] as List)
               .map((item) => MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.fromJson(item))
               .toList();
-      if (monthlyDBTests == null) {
+
+      if (monthlyDBTests == null || jsonDecode(response.data)['listMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings']['items'] == null) {
+        safePrint('errors: ${response.errors}');
+        return const [];
+      }
+      // print("monthlyDBTests");
+      // print(monthlyDBTests);
+      return monthlyDBTests;
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+
+  Future<List<UserTable?>> queryListUsers({required String institutionId}) async {
+    try {
+
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          document: """
+          query listUserTables(\$INSTITUTION_ID: String) {
+            listUserTables(
+            filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}
+            ) {
+              items {
+                ID
+                BIRTH
+                CREATEDAT
+                INSTITUTION
+                INSTITUTION_ID
+                NAME
+                SEX
+                UPDATEDAT
+              }
+            }
+          }
+        """,
+          variables: {
+            "INSTITUTION_ID": institutionId,
+          },
+        ),
+      );
+      print("유저쿼리!!!");
+      var response = await operation.response;
+
+      print(response.data);
+      // Map<String, dynamic> json = jsonDecode(response.data);
+      // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
+      List<UserTable> Users =
+      (jsonDecode(response.data)['listUserTables']['items'] as List)
+          .map((item) => UserTable.fromJson(item))
+          .toList();
+      if (Users == null) {
         print('errors: ${response.errors}');
         return const [];
       }
-      return monthlyDBTests;
+      return Users;
     } on ApiException catch (e) {
       print('Query failed: $e');
       return const [];

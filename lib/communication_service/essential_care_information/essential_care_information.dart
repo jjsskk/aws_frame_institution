@@ -35,6 +35,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   List<String> nameList = [];
   String name = '';
   File? _image;
+  String institutionId = "";
+  String institution = '';
   final ImagePicker _picker = ImagePicker();
 
   String convertToE164(String phoneNumber, String countryCode) {
@@ -55,7 +57,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
         for (var care in value) {
           if (care.NAME != null) {
             // NAME이 null이 아닌 경우에만 추가
-            tempNameList.add(care.NAME!);
+            String tempName = "${care.NAME!} (${care.BIRTH!})";
+            tempNameList.add(tempName);
           }
         }
 
@@ -100,6 +103,12 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                 : "";
             userid = _essentialCare[index].USER_ID != null
                 ? _essentialCare[index].USER_ID!
+                : "";
+            institutionId = _essentialCare[index].INSTITUTION_ID != null
+                ? _essentialCare[index].INSTITUTION_ID!
+                : "";
+            institution = _essentialCare[index].INSTITUTION != null
+                ? _essentialCare[index].INSTITUTION!
                 : "";
           }
         });
@@ -154,6 +163,12 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             : "";
         userid = _essentialCare[index].USER_ID != null
             ? _essentialCare[index].USER_ID!
+            : "";
+        institutionId = _essentialCare[index].INSTITUTION_ID != null
+            ? _essentialCare[index].INSTITUTION_ID!
+            : "";
+        institution = _essentialCare[index].INSTITUTION != null
+            ? _essentialCare[index].INSTITUTION!
             : "";
       }
     });
@@ -338,9 +353,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                         _nameController.text,
                         imageUrl,
                         _phoneNumberController.text,
-                        "노인요양원",
-                        // 그냥 일단 institution으로 이미지를 보낼거임
-                        "INST_ID_123",
+                        institution,
+                        institutionId,
                         _medicationController.text,
                         _medicationWayController.text,
                         userid);
@@ -355,6 +369,21 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                 },
                 child: Text('완료'),
               ),
+              TextButton(
+                  onPressed: () async {
+                    gql.deleteEssentialCare(userid , institution);
+                    // 만약 필요한 업데이트가 있다면 setState() 호출
+
+                      setState(() {
+                        index = 0; //맨 처음 dropdown
+                        getEssentialCare();
+                        isImageSelected = false;
+                      });
+
+                  },
+                  child: Text("삭제 -")
+              ),
+
               TextButton(
                   onPressed: () async {
                     final result = await Navigator.push(

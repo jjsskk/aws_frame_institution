@@ -1,3 +1,4 @@
+import 'package:aws_frame_institution/communication_service/instituition_info/institution_news/updateInstitutionNews.dart';
 import 'package:aws_frame_institution/models/InstitutionNewsTable.dart';
 import 'package:flutter/material.dart';
 
@@ -73,6 +74,8 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
 class InstitutionNewsDetailPage extends StatelessWidget {
   final InstitutionNewsTable news;
   final StorageService storageService;
+  final gql = GraphQLController.Obj;
+
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
   }
@@ -83,6 +86,20 @@ class InstitutionNewsDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('기관소식 세부 정보'),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => updateInstitutionNewsPage(news: news, storageService: storageService),
+              ),
+            );
+          }, icon: Icon(Icons.create)),
+          IconButton(onPressed: (){
+            gql.deleteInstitutionNews(institutionId: news.INSTITUTION_ID! ,newsId: news.NEWS_ID!);
+            Navigator.pop(context);
+          }, icon: Icon(Icons.delete))
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

@@ -277,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            BrainSignalPage()),
+                                            AnalyzingReportPage()),
                                   );
                                 },
                                 icon: Icon(Icons.account_box),

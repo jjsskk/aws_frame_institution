@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../GraphQL_Method/graphql_controller.dart';
+import '../communication_service/instituition_info/convenience/Convenience.dart';
 import '../models/MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
 
 class BrainSignalPage extends StatefulWidget {
@@ -16,9 +17,11 @@ class BrainSignalPage extends StatefulWidget {
   State<BrainSignalPage> createState() => _BrainSignalPageState();
 }
 class _BrainSignalPageState extends State<BrainSignalPage> {
-
+  int index = 0;
+  String name = "";
   String? selectedLabel;
   bool useSides = false;
+  List<String> nameList = [];
 
   //그래프 버튼마다 색상을 다르게 하기 위해 존재함 각각 그래프의 색상!
   List<Color> buttomColors = [
@@ -109,16 +112,21 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
   //그래프의 데이터를 가져오는 메서드 입니다.
   //twelveMonthsAgo이라는 변수를 통해서 최근 1년까지를 설정하고 버튼을 눌렀을때 그 이름에 따른 데이터를 가져오게 됩니다.
   //그래프 데이터를 각각 수집한 것을 graphData라는 리스트에 넣어 반환하게 됩니다.
-  //TODO: 현재시각으로부터 1년을 설정하는 것이 아니라 12개의 데이터를 찾아야하는 건지 질문하기
   List<double> _getGraphData(String label,int colorIndex) {
     List<double> graphData = [];
     DateTime twelveMonthsAgo = DateTime.now().subtract(Duration(days: 365 * 1));
+    double maxValue = double.negativeInfinity; // 초기값 설정
+    double minValue = double.infinity; // 초기값 설정
+
+
+    int count = 0; // 데이터 개수 카운트
     for (var result in results) {
       // 날짜 필터링
       String? monthStr = result?.month;
       int year = int.parse(monthStr!.substring(0, 4));
       int month = int.parse(monthStr.substring(4, 6));
       DateTime date = DateTime(year, month);
+
       if (date.isBefore(twelveMonthsAgo)) {
         continue;
       }
@@ -180,6 +188,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
     List<Color> selectedGradientColors = [      buttomColors[colorIndex],
       buttomColors[colorIndex].withOpacity(0.8),
     ];
+
 
 
     return LineChartData(
@@ -247,13 +256,28 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
   //이 위젯은 컨테이너를 생성하고 그 안에 PADDING을 넣고 LineChart를 그리게 됩니다.
   // 정리하면 _buildLineChart는 LineChart를 불러오고 LineChart는 _getLineChartData함수를 통해서 _getGraphData이 데이터를 불러와
   //buttonColors를 통해 그래프의 색을 정하고, leftTitleWidgets를 통해 Y축을 정하고 bottomTitleWidgets으로 x축의 값을 정해 그리게 됩니다.
+
   Widget _buildLineChart() {
+    List<double> graphData=[];
+    if(selectedLabel!=null){
+      graphData=_getGraphData(selectedLabel!, buttonLabels.keys.toList().indexOf(selectedLabel!));
+      if(graphData.isNotEmpty){
+        var maxValue=graphData.reduce((a,b)=>a>b?a:b);
+        var minValue=graphData.reduce((a,b)=>a<b?a:b);
+        var sumValue = graphData.reduce((a,b) => a + b).toDouble();
+        var avgValue = sumValue / graphData.length;
+        print('최고 점수: $maxValue');
+        print('최소 점수: $minValue');
+        print('평균 점수: $avgValue');
+      }
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 300,
+      height:300,
       child: Padding(
-        padding: EdgeInsets.all(16),
-        child: LineChart(_getLineChartData()),
+          padding: EdgeInsets.all(16),
+          child: LineChart(_getLineChartData())
       ),
     );
   }
@@ -331,13 +355,34 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
   late final gql;
   int usercount = 0;
   int braincount = 0;
+  Map<String, String> nameToId = {};
+
+
 
   Future<void> fetchData() async {
-    gql = GraphQLController.Obj;
+
 
     try {
+      final userName = await gql.queryListUsers(institutionId: "123");
+      List<String> tempNameList = [];
+      for (var data in userName) {
+        if (data.NAME != null) {
+          // NAME이 null이 아닌 경우에만 추가
+          String tempName = "${data.NAME!} (${data.BIRTH!})";
+          print(tempName);
+          tempNameList.add(tempName);
+          nameToId[tempName] = data.ID!;
+        }
+      }
+      setState(() {
+        nameList = tempNameList;
+        name = nameList[index];
+        print(nameToId[name]);
+      });
 
-      final data = await gql.queryListMonthlyDBItems();
+      // final data = await gql.queryListMonthlyDB();
+      final data =  await gql.queryListMonthlyDBItems(ID: '1');
+      // final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
 
       print(data);
       print("Type of myResult: ${data.runtimeType}");
@@ -376,12 +421,64 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    fetchData();
+
+
+  Future<void> _NameSelected(String selectedName) async {
+    setState(()  {
+      name = selectedName;
+      index = nameList.indexOf(selectedName);
+      print(name);
+      print(nameToId[name]);
+      });
+
+
+      final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
+
+
+      print(data);
+
+      // 날짜에 따라 오름차순으로 정렬
+      data.sort((a, b) {
+        int yearA = int.parse(a.month.substring(0, 4));
+        int monthA = int.parse(a.month.substring(4, 6));
+        int dayA = int.parse(a.month.substring(6, 8));
+        DateTime aDate = DateTime(yearA, monthA, dayA);
+
+        int yearB = int.parse(b.month.substring(0, 4));
+        int monthB = int.parse(b.month.substring(4, 6));
+        int dayB = int.parse(b.month.substring(6, 8));
+        DateTime bDate = DateTime(yearB, monthB, dayB);
+
+        return aDate.compareTo(bDate);
+      });
+
+      for (int i = 0; i < data.length; i++) {
+        MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging? currentItem = data[i];
+        if (currentItem != null) {
+          // currentItem에 대한 작업 수행
+          print(data[i]);
+        } else {
+          // 아이템이 null인 경우에 대한 처리
+          print("null");
+        }
+      }
+
+      setState(() {
+        results = data;
+      });
+
+
   }
 
+
+  @override
+  void initState() {
+    gql = GraphQLController.Obj;
+    super.initState();
+    index = 0;
+    fetchData();
+  }
+  var brainbutton = '뇌파 데이터 추가';
 
   @override
   Widget build(BuildContext context) {
@@ -401,8 +498,25 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  nameList.isNotEmpty
+                      ? CustomDropDown(
+                    Items: nameList,
+                    selected: name,
+                    onChanged: _NameSelected,
+                  )
+                      : Container(),
 
                   _buildButtons(),
+                TextButton(
+                  onPressed: () async {
+                    await gql.createMonthlyData();
+                    setState(() {
+                      braincount++;
+                      brainbutton = "$braincount번 추가";
+                    });
+                  },
+                  child: Text(brainbutton),
+                )  ,
                   AspectRatio(
                     aspectRatio: 6 / 5,
                     child: Container(
@@ -413,7 +527,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
                           color: Color(0xff232d37)),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        child: _buildLineChart() ,
+                        child: _buildLineChart(),
                       ),
                     ),
                   ),
