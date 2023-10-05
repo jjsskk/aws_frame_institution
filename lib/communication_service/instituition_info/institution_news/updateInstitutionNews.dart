@@ -1,25 +1,26 @@
 import 'dart:io';
-import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
+import 'package:aws_frame_institution/models/InstitutionNewsTable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../storage/storage_service.dart';
-import 'announcement.dart';
+import '../institution_information.dart';
 
-class AddAnnouncementPage extends StatefulWidget {
-  const AddAnnouncementPage({Key? key}) : super(key: key);
+class updateInstitutionNewsPage extends StatefulWidget {
+  final InstitutionNewsTable news;
+  final StorageService storageService;
+  const updateInstitutionNewsPage({Key? key, required this.news, required this.storageService}) : super(key: key);
 
   @override
-  _AddAnnouncementPageState createState() => _AddAnnouncementPageState();
+  _updateInstitutionNewsPageState createState() => _updateInstitutionNewsPageState();
 }
 
-class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
+class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
   final StorageService _storageService = StorageService();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
-  DateTime dt = DateTime.now();
 
   File? _image;
   final ImagePicker _picker = ImagePicker();
@@ -49,7 +50,13 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
 
   }
 
-
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _titleController.text = widget.news.TITLE!;
+    _contentController.text = widget.news.CONTENT!;
+    _urlController.text = widget.news.URL!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +64,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('공지사항 추가'),
+        title: Text('기관소식 변경'),
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -86,43 +93,52 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
             onPressed: _pickImage,
             child: Text('이미지 선택'),
           ),
-          if (_image != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Image.file(_image!),
-            ),
+          _image != null
+              ? Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Image.file(_image!),
+          )
+              : widget.news.IMAGE!.isNotEmpty
+              ? FutureBuilder<String>(
+            future: _storageService
+                .getImageUrlFromS3(widget.news.IMAGE!),
+            builder: (BuildContext context,
+                AsyncSnapshot<String> snapshot) {
+              if (snapshot.hasData) {
+                String imageUrl = snapshot.data!;
+                return Image.network(imageUrl);
+              } else if (snapshot.hasError) {
+                return Text('이미지를 불러올 수 없습니다.');
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
+          )
+              : Container(),
           ElevatedButton(
             onPressed: () async {
               // TODO: AWS S3에 이미지 업로드
-              String imageUrl = await uploadImageToS3(_image);
+              String imageUrl = '';
 
-              await gql.createAnnouncement(
-                _contentController.text,
-                imageUrl,
-                "INSTITUTION_NAME",
-                "INST_ID_123",
-                _titleController.text,
-                  _urlController.text,
-                "${dt}"
+              _image != null
+                  ? imageUrl = await uploadImageToS3(_image)
+                  : imageUrl = widget.news.IMAGE!;
+
+              await gql.updateInstitutionNews(
+                newsId: widget.news.NEWS_ID,
+                content: _contentController.text,
+                image: imageUrl,
+                institution: widget.news.INSTITUTION,
+                institution_id: widget.news.INSTITUTION_ID,
+                title: _titleController.text,
+                url: _urlController.text,
               );
 
-              print(_contentController.text);
-              print(imageUrl);
-              print(_titleController.text);
-              print(_urlController.text);
 
-              Navigator.pop(context, true);
+              Navigator.pop(context);
             },
             child: Text('완료'),
           ),
-          ElevatedButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
-            onPressed: (){
-              Navigator.pop(context, true);
-            },
-            child: Text('취소', style: TextStyle(color: Colors.white)),
-          ),
-
         ],
       ),
     );

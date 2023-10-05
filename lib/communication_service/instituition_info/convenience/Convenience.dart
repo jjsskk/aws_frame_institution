@@ -20,13 +20,20 @@ class _ConveniencePageState extends State<ConveniencePage> {
   late final gql;
   final StorageService storageService = StorageService();
   String FOOD_IMAGE_URL = '';
+  String FOOD_INSTITUTION_ID = '';
+  String FOOD_DATETIME = '';
   String SHUTTLE_IMAGE_URL = '';
+  String SHUTTLE_INSTITUTION_ID = '';
+  String SHUTTLE_DATETIME = '';
 
   void getFoodMenu() {
     gql.queryFoodMenuByInstitutionIdAndDate("INST_ID_123", date).then((value) {
       if (value != null) {
         setState(() {
           FOOD_IMAGE_URL = value.IMAGE_URL;
+          FOOD_INSTITUTION_ID = value.INSTITUTION_ID;
+          FOOD_DATETIME = value.DATE;
+
         });
       } else {
         setState(() {
@@ -45,9 +52,9 @@ class _ConveniencePageState extends State<ConveniencePage> {
     gql.queryShuttleTimeByInstitutionId("INST_ID_123", "20200303").then((value) {
       if (value != null) {
         setState(() {
-          print("image");
-          print(SHUTTLE_IMAGE_URL);
           SHUTTLE_IMAGE_URL = value.IMAGE_URL;
+          SHUTTLE_INSTITUTION_ID = value.INSTITUTION_ID;
+          SHUTTLE_DATETIME = value.DATE;
         });
       } else {
         setState(() {
@@ -123,21 +130,31 @@ class _ConveniencePageState extends State<ConveniencePage> {
                           '식단정보',
                           style: Theme.of(context).textTheme.headline5,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.create),
-                          color: appBarColor,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddFoodMenuPage(
-                                  month: _generateDateItems(),
-                                  date: date,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.create),
+                              color: appBarColor,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddFoodMenuPage(
+                                      month: _generateDateItems(),
+                                      date: date,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(onPressed: (){
+                              gql.deleteFoodMenu(dateTime: FOOD_INSTITUTION_ID,institutionId: FOOD_DATETIME);
+
+                            }, icon: Icon(Icons.delete),
+                              color: appBarColor,),
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -201,17 +218,29 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               '셔틀시간표',
                               style: Theme.of(context).textTheme.headline5,
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.create),
-                              color: appBarColor,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AddShuttleTimePage(),
-                                  ),
-                                );
-                              }, // 기능 구현
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.create),
+                                  color: appBarColor,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => AddShuttleTimePage(),
+                                      ),
+                                    );
+                                  }, // 기능 구현
+                                ),
+                                IconButton(onPressed: () async {
+                                  await gql.deleteShuttleTime(dateTime: SHUTTLE_INSTITUTION_ID,institutionId: SHUTTLE_DATETIME);
+                                  setState(() {
+                                    getShuttleTime();
+                                  });
+                                }, icon: Icon(Icons.delete),
+                                  color: appBarColor,),
+                              ],
                             ),
                           ],
                         ),

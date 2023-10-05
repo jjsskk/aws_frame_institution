@@ -1,3 +1,4 @@
+import 'package:aws_frame_institution/communication_service/instituition_info/announcement/updateAnnouncement.dart';
 import 'package:flutter/material.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
@@ -72,6 +73,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
 class AnnouncementDetailPage extends StatelessWidget {
   final InstitutionAnnouncementTable announcement;
   final StorageService storageService;
+  final gql = GraphQLController.Obj;
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
   }
@@ -82,6 +84,22 @@ class AnnouncementDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('공지사항 세부 정보'),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => updateAnnouncementPage(announcement: announcement, storageService: storageService),
+              ),
+            );
+          }, icon: Icon(Icons.create)),
+          IconButton(onPressed: (){
+            print(announcement.INSTITUTION_ID!);
+            print(announcement.ANNOUNCEMENT_ID!);
+            gql.deleteAnnouncement(institution_id: announcement.INSTITUTION_ID! ,announcementId: announcement.ANNOUNCEMENT_ID!);
+            Navigator.pop(context);
+          }, icon: Icon(Icons.delete))
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
