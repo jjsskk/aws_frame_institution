@@ -24,12 +24,12 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
 
 
-/** This is an auto generated class representing the InstitutionShuttleTimeTableConnection type in your schema. */
-class InstitutionShuttleTimeTableConnection {
-  final List<InstitutionShuttleTimeTable>? _items;
+/** This is an auto generated class representing the InstitutionEventScheduleTableConnection type in your schema. */
+class InstitutionEventScheduleTableConnection {
+  final List<InstitutionEventScheduleTable>? _items;
   final String? _nextToken;
 
-  List<InstitutionShuttleTimeTable>? get items {
+  List<InstitutionEventScheduleTable>? get items {
     return _items;
   }
   
@@ -37,11 +37,11 @@ class InstitutionShuttleTimeTableConnection {
     return _nextToken;
   }
   
-  const InstitutionShuttleTimeTableConnection._internal({items, nextToken}): _items = items, _nextToken = nextToken;
+  const InstitutionEventScheduleTableConnection._internal({items, nextToken}): _items = items, _nextToken = nextToken;
   
-  factory InstitutionShuttleTimeTableConnection({List<InstitutionShuttleTimeTable>? items, String? nextToken}) {
-    return InstitutionShuttleTimeTableConnection._internal(
-      items: items != null ? List<InstitutionShuttleTimeTable>.unmodifiable(items) : items,
+  factory InstitutionEventScheduleTableConnection({List<InstitutionEventScheduleTable>? items, String? nextToken}) {
+    return InstitutionEventScheduleTableConnection._internal(
+      items: items != null ? List<InstitutionEventScheduleTable>.unmodifiable(items) : items,
       nextToken: nextToken);
   }
   
@@ -52,7 +52,7 @@ class InstitutionShuttleTimeTableConnection {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is InstitutionShuttleTimeTableConnection &&
+    return other is InstitutionEventScheduleTableConnection &&
       DeepCollectionEquality().equals(_items, other._items) &&
       _nextToken == other._nextToken;
   }
@@ -64,7 +64,7 @@ class InstitutionShuttleTimeTableConnection {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("InstitutionShuttleTimeTableConnection {");
+    buffer.write("InstitutionEventScheduleTableConnection {");
     buffer.write("items=" + (_items != null ? _items!.toString() : "null") + ", ");
     buffer.write("nextToken=" + "$_nextToken");
     buffer.write("}");
@@ -72,33 +72,33 @@ class InstitutionShuttleTimeTableConnection {
     return buffer.toString();
   }
   
-  InstitutionShuttleTimeTableConnection copyWith({List<InstitutionShuttleTimeTable>? items, String? nextToken}) {
-    return InstitutionShuttleTimeTableConnection._internal(
+  InstitutionEventScheduleTableConnection copyWith({List<InstitutionEventScheduleTable>? items, String? nextToken}) {
+    return InstitutionEventScheduleTableConnection._internal(
       items: items ?? this.items,
       nextToken: nextToken ?? this.nextToken);
   }
   
-  InstitutionShuttleTimeTableConnection copyWithModelFieldValues({
-    ModelFieldValue<List<InstitutionShuttleTimeTable>?>? items,
+  InstitutionEventScheduleTableConnection copyWithModelFieldValues({
+    ModelFieldValue<List<InstitutionEventScheduleTable>?>? items,
     ModelFieldValue<String?>? nextToken
   }) {
-    return InstitutionShuttleTimeTableConnection._internal(
+    return InstitutionEventScheduleTableConnection._internal(
       items: items == null ? this.items : items.value,
       nextToken: nextToken == null ? this.nextToken : nextToken.value
     );
   }
   
-  InstitutionShuttleTimeTableConnection.fromJson(Map<String, dynamic> json)  
+  InstitutionEventScheduleTableConnection.fromJson(Map<String, dynamic> json)  
     : _items = json['items'] is List
         ? (json['items'] as List)
           .where((e) => e != null)
-          .map((e) => InstitutionShuttleTimeTable.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .map((e) => InstitutionEventScheduleTable.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
       _nextToken = json['nextToken'];
   
   Map<String, dynamic> toJson() => {
-    'items': _items?.map((InstitutionShuttleTimeTable? e) => e?.toJson()).toList(), 'nextToken': _nextToken
+    'items': _items?.map((InstitutionEventScheduleTable? e) => e?.toJson()).toList(), 'nextToken': _nextToken
   };
   
   Map<String, Object?> toMap() => {
@@ -107,14 +107,14 @@ class InstitutionShuttleTimeTableConnection {
   };
 
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "InstitutionShuttleTimeTableConnection";
-    modelSchemaDefinition.pluralName = "InstitutionShuttleTimeTableConnections";
+    modelSchemaDefinition.name = "InstitutionEventScheduleTableConnection";
+    modelSchemaDefinition.pluralName = "InstitutionEventScheduleTableConnections";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.embedded(
       fieldName: 'items',
       isRequired: false,
       isArray: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.embeddedCollection, ofCustomTypeName: 'InstitutionShuttleTimeTable')
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.embeddedCollection, ofCustomTypeName: 'InstitutionEventScheduleTable')
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(

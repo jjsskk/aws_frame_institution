@@ -23,7 +23,7 @@ class LoginState extends ChangeNotifier {
 
   get authService => _authService;
 
-  // protector's attribute info
+  // institution's attribute info
   String _managerEmail = '';
   String _managerName = '';
   String _managerPhonenumber = '';

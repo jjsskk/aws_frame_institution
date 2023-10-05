@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:collection';
 
+import 'package:amplify_core/amplify_core.dart';
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/schedule/TableCalendarUtils.dart';
 import 'package:flutter/material.dart';
@@ -67,6 +69,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
 
   Map<DateTime, List<Event>> get event => _event;
 
+  StreamSubscription<GraphQLResponse<dynamic>>? listener = null;
+  late Stream<GraphQLResponse>? stream;
+
+
   @override
   void initState() {
     super.initState();
@@ -74,6 +80,55 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
     year = _focusedDay.year;
     _selectedDay = _focusedDay;
     getEventDataFromDB();
+    stream = gql.subscribeInstitutionSchedule("1234");
+    print(stream);
+    subscribeScheduleChange();
+  }
+
+  void subscribeScheduleChange() {
+    listener = stream!.listen(
+          (snapshot) {
+        print('data : ${snapshot.data!}');
+        // gql.listInstitutionCommentBoard('1234',nextToken: null).then((result) {
+        //   print(result);
+        //   _comments = [];
+        //   _foundComments = [];
+        //   result.forEach((value) {
+        //     // print(value.createdAt.toString().substring(0,10));
+        //     _comments.add({
+        //       'date': value.createdAt.toString().substring(0, 10)?? '',
+        //       'title': value.TITLE?? '',
+        //       'username': value.USERNAME?? '',
+        //       'user_id': value.USER_ID?? '',
+        //       'board_id': value.BOARD_ID?? '',
+        //       'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
+        //       'new_conversation_createdat':
+        //       value.NEW_CONVERSATION_CREATEDAT.toString()
+        //     });
+        //     // _foundComments.add({
+        //     //   'date': value.createdAt.toString().substring(0, 10),
+        //     //   'title': value.TITLE,
+        //     //   'username': value.USERNAME,
+        //     //   'user_id': value.USER_ID,
+        //     //   'board_id': value.BOARD_ID,
+        //     //   'new_conversation_createdat': value.NEW_CONVERSATION_CREATEDAT
+        //     //       .toString()
+        //     // });
+        //   });
+        //   _comments.sort((a, b) {
+        //     String aa = a['new_conversation_createdat'];
+        //
+        //     String bb = b['new_conversation_createdat'];
+        //     return bb.compareTo(aa);
+        //   });
+        //   _foundComments = List.from(_comments);
+        //   setState(() {
+        //     _foundComments = _foundComments;
+        //   });
+        // });
+      },
+      onError: (Object e) => safePrint('Error in subscription stream: $e'),
+    );
   }
 
   void getEventDataFromDB() {
@@ -98,10 +153,10 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
         int day = int.parse(value.DATE.substring(6, 8));
         final date = DateTime.utc(year, month, day);
         if (event.containsKey(date)) {
-          event[date]!.add(Event(value.CONTENT, value.TIME, value.SCHEDULE_ID));
+          event[date]!.add(Event(value.CONTENT?? '', value.TIME?? '', value.SCHEDULE_ID?? ''));
         } else {
           event.addAll({
-            date: [Event(value.CONTENT, value.TIME, value.SCHEDULE_ID)]
+            date: [Event(value.CONTENT?? '', value.TIME?? '', value.SCHEDULE_ID?? '')]
           });
         }
       });
@@ -133,6 +188,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
   @override
   void dispose() {
     _selectedEvents!.dispose();
+    if (listener != null) listener?.cancel();
     super.dispose();
   }
 
@@ -445,7 +501,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              IconButton(
+                              isCheckedEdit ? IconButton(
                                 onPressed: () {
                                   setState(() {
                                     isCheckedEdit = !isCheckedEdit;
@@ -457,7 +513,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                   });
                                 },
                                 icon: Icon(Icons.arrow_back),
-                              ),
+                              ): const SizedBox(),
                               Text(
                                   '${_selectedDay!.year}년 ${_selectedDay!.month}월 ${_selectedDay!.day}일'),
                               Row(
@@ -493,9 +549,8 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
 
                                             bool isChecked = isCheckedAddOrUpdate
                                                 ? await gql.updateScheduledata(
-                                                    inst,
                                                     '$inst_id',
-                                                    'saveScheduleId',
+                                                    saveScheduleId,
                                                     _programController.text
                                                         .trim(),
                                                     _tagController.getTags
@@ -503,7 +558,6 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                                     '$start ~ $end',
                                                     '${_selectedDay!.year}$monthStr$dateStr')
                                                 : await gql.createScheduledata(
-                                                    inst,
                                                     '$inst_id',
                                                     SCHE_ID,
                                                     _programController.text
@@ -584,7 +638,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                     isCheckedEdit
                         ? Column(
                             children: [
-                              Center(child: Text('프로그램 추가')),
+                              Center(child: Text(isCheckedAddOrUpdate? '프로그램 수정': '프로그램 추가')),
                               Row(
                                 children: [
                                   Text('태그 : '),
@@ -954,7 +1008,7 @@ class _AddSchedulePageState extends State<AddSchedulePage> {
                                                       useRootNavigator: false,
                                                       // without this, info.ifRouteChanged(context) dont recognize context change. check page stack
                                                       builder: (BuildContext
-                                                          context) {
+                                                          dontext) {
                                                         return AlertDialog(
                                                           title:
                                                               Text('삭제하시겠습니까?'),

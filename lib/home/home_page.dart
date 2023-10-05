@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void getProtectorAttributes() async {
+  void getInstitutionAttributes() async {
     try {
       checkAttribute = true;
       var attribute = await Amplify.Auth.fetchUserAttributes();
@@ -79,6 +79,7 @@ class _HomePageState extends State<HomePage> {
             setState(() {
               // username = element.value;
               appState.managerName = (element.value) ?? "no result";
+              print(appState.managerName);
             });
 
           if (element.userAttributeKey.key == "phone_number")
@@ -130,7 +131,7 @@ class _HomePageState extends State<HomePage> {
     var theme = Theme.of(context);
     appState = context.watch<LoginState>();
 
-    if (!checkAttribute) getProtectorAttributes();
+    if (!checkAttribute) getInstitutionAttributes();
 
     return (loading_Manager)
         ? LoadingPage()

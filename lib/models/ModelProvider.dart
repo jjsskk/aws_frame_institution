@@ -22,46 +22,57 @@
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'InstitutionAnnouncementTable.dart';
 import 'InstitutionAnnouncementTableConnection.dart';
+import 'InstitutionCommentBoardTable.dart';
+import 'InstitutionCommentBoardTableConnection.dart';
+import 'InstitutionCommentConversationTable.dart';
+import 'InstitutionCommentConversationTableConnection.dart';
 import 'InstitutionEssentialCareTable.dart';
 import 'InstitutionEssentialCareTableConnection.dart';
+import 'InstitutionEventScheduleTable.dart';
+import 'InstitutionEventScheduleTableConnection.dart';
 import 'InstitutionFoodMenuTable.dart';
 import 'InstitutionFoodMenuTableConnection.dart';
 import 'InstitutionNewsTable.dart';
 import 'InstitutionNewsTableConnection.dart';
 import 'InstitutionScheduleTable.dart';
 import 'InstitutionScheduleTableConnection.dart';
-import 'InstitutionShuttleTImeTable.dart';
-import 'InstitutionShuttleTImeTableConnection.dart';
-import 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
-import 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.dart';
+import 'InstitutionShuttleTimeTable.dart';
+import 'InstitutionShuttleTimeTableConnection.dart';
+import 'MonthlyBrainSignalTable.dart';
+import 'MonthlyBrainSignalTableConnection.dart';
 import 'UserTable.dart';
 import 'UserTableConnection.dart';
 
 export 'InstitutionAnnouncementTable.dart';
 export 'InstitutionAnnouncementTableConnection.dart';
+export 'InstitutionCommentBoardTable.dart';
+export 'InstitutionCommentBoardTableConnection.dart';
+export 'InstitutionCommentConversationTable.dart';
+export 'InstitutionCommentConversationTableConnection.dart';
 export 'InstitutionEssentialCareTable.dart';
 export 'InstitutionEssentialCareTableConnection.dart';
+export 'InstitutionEventScheduleTable.dart';
+export 'InstitutionEventScheduleTableConnection.dart';
 export 'InstitutionFoodMenuTable.dart';
 export 'InstitutionFoodMenuTableConnection.dart';
 export 'InstitutionNewsTable.dart';
 export 'InstitutionNewsTableConnection.dart';
 export 'InstitutionScheduleTable.dart';
 export 'InstitutionScheduleTableConnection.dart';
-export 'InstitutionShuttleTImeTable.dart';
-export 'InstitutionShuttleTImeTableConnection.dart';
-export 'ModelSortDirection.dart';
-export 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
-export 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.dart';
+export 'InstitutionShuttleTimeTable.dart';
+export 'InstitutionShuttleTimeTableConnection.dart';
+export 'MonthlyBrainSignalTable.dart';
+export 'MonthlyBrainSignalTableConnection.dart';
 export 'UserTable.dart';
 export 'UserTableConnection.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "4d4132a9da2fafc07af00d2d1e0ddace";
+  String version = "8777cb6d1a9b8df3de6e7430630c9e8d";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [];
   @override
-  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTImeTable.schema, InstitutionShuttleTImeTableConnection.schema, MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.schema, MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.schema, UserTable.schema, UserTableConnection.schema];
+  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionCommentBoardTable.schema, InstitutionCommentBoardTableConnection.schema, InstitutionCommentConversationTable.schema, InstitutionCommentConversationTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionEventScheduleTable.schema, InstitutionEventScheduleTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTimeTable.schema, InstitutionShuttleTimeTableConnection.schema, MonthlyBrainSignalTable.schema, MonthlyBrainSignalTableConnection.schema, UserTable.schema, UserTableConnection.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;

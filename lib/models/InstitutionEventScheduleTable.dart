@@ -21,23 +21,23 @@
 
 import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
+import 'package:collection/collection.dart';
 
 
-/** This is an auto generated class representing the InstitutionAnnouncementTable type in your schema. */
-class InstitutionAnnouncementTable {
-  final String? _ANNOUNCEMENT_ID;
+/** This is an auto generated class representing the InstitutionEventScheduleTable type in your schema. */
+class InstitutionEventScheduleTable {
   final String? _INSTITUTION_ID;
+  final String? _SCHEDULE_ID;
   final String? _CONTENT;
-  final String? _IMAGE;
-  final String? _INSTITUTION;
-  final String? _TITLE;
-  final String? _URL;
+  final List<String>? _TAG;
+  final String? _TIME;
+  final String? _DATE;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
-  String get ANNOUNCEMENT_ID {
+  String get INSTITUTION_ID {
     try {
-      return _ANNOUNCEMENT_ID!;
+      return _INSTITUTION_ID!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -48,9 +48,9 @@ class InstitutionAnnouncementTable {
     }
   }
   
-  String get INSTITUTION_ID {
+  String get SCHEDULE_ID {
     try {
-      return _INSTITUTION_ID!;
+      return _SCHEDULE_ID!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -65,20 +65,16 @@ class InstitutionAnnouncementTable {
     return _CONTENT;
   }
   
-  String? get IMAGE {
-    return _IMAGE;
+  List<String>? get TAG {
+    return _TAG;
   }
   
-  String? get INSTITUTION {
-    return _INSTITUTION;
+  String? get TIME {
+    return _TIME;
   }
   
-  String? get TITLE {
-    return _TITLE;
-  }
-  
-  String? get URL {
-    return _URL;
+  String? get DATE {
+    return _DATE;
   }
   
   amplify_core.TemporalDateTime? get createdAt {
@@ -89,17 +85,16 @@ class InstitutionAnnouncementTable {
     return _updatedAt;
   }
   
-  const InstitutionAnnouncementTable._internal({required ANNOUNCEMENT_ID, required INSTITUTION_ID, CONTENT, IMAGE, INSTITUTION, TITLE, URL, createdAt, updatedAt}): _ANNOUNCEMENT_ID = ANNOUNCEMENT_ID, _INSTITUTION_ID = INSTITUTION_ID, _CONTENT = CONTENT, _IMAGE = IMAGE, _INSTITUTION = INSTITUTION, _TITLE = TITLE, _URL = URL, _createdAt = createdAt, _updatedAt = updatedAt;
+  const InstitutionEventScheduleTable._internal({required INSTITUTION_ID, required SCHEDULE_ID, CONTENT, TAG, TIME, DATE, createdAt, updatedAt}): _INSTITUTION_ID = INSTITUTION_ID, _SCHEDULE_ID = SCHEDULE_ID, _CONTENT = CONTENT, _TAG = TAG, _TIME = TIME, _DATE = DATE, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory InstitutionAnnouncementTable({required String ANNOUNCEMENT_ID, required String INSTITUTION_ID, String? CONTENT, String? IMAGE, String? INSTITUTION, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return InstitutionAnnouncementTable._internal(
-      ANNOUNCEMENT_ID: ANNOUNCEMENT_ID,
+  factory InstitutionEventScheduleTable({required String INSTITUTION_ID, required String SCHEDULE_ID, String? CONTENT, List<String>? TAG, String? TIME, String? DATE, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return InstitutionEventScheduleTable._internal(
       INSTITUTION_ID: INSTITUTION_ID,
+      SCHEDULE_ID: SCHEDULE_ID,
       CONTENT: CONTENT,
-      IMAGE: IMAGE,
-      INSTITUTION: INSTITUTION,
-      TITLE: TITLE,
-      URL: URL,
+      TAG: TAG != null ? List<String>.unmodifiable(TAG) : TAG,
+      TIME: TIME,
+      DATE: DATE,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -111,14 +106,13 @@ class InstitutionAnnouncementTable {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is InstitutionAnnouncementTable &&
-      _ANNOUNCEMENT_ID == other._ANNOUNCEMENT_ID &&
+    return other is InstitutionEventScheduleTable &&
       _INSTITUTION_ID == other._INSTITUTION_ID &&
+      _SCHEDULE_ID == other._SCHEDULE_ID &&
       _CONTENT == other._CONTENT &&
-      _IMAGE == other._IMAGE &&
-      _INSTITUTION == other._INSTITUTION &&
-      _TITLE == other._TITLE &&
-      _URL == other._URL &&
+      DeepCollectionEquality().equals(_TAG, other._TAG) &&
+      _TIME == other._TIME &&
+      _DATE == other._DATE &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -130,14 +124,13 @@ class InstitutionAnnouncementTable {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("InstitutionAnnouncementTable {");
-    buffer.write("ANNOUNCEMENT_ID=" + "$_ANNOUNCEMENT_ID" + ", ");
+    buffer.write("InstitutionEventScheduleTable {");
     buffer.write("INSTITUTION_ID=" + "$_INSTITUTION_ID" + ", ");
+    buffer.write("SCHEDULE_ID=" + "$_SCHEDULE_ID" + ", ");
     buffer.write("CONTENT=" + "$_CONTENT" + ", ");
-    buffer.write("IMAGE=" + "$_IMAGE" + ", ");
-    buffer.write("INSTITUTION=" + "$_INSTITUTION" + ", ");
-    buffer.write("TITLE=" + "$_TITLE" + ", ");
-    buffer.write("URL=" + "$_URL" + ", ");
+    buffer.write("TAG=" + (_TAG != null ? _TAG!.toString() : "null") + ", ");
+    buffer.write("TIME=" + "$_TIME" + ", ");
+    buffer.write("DATE=" + "$_DATE" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -145,82 +138,77 @@ class InstitutionAnnouncementTable {
     return buffer.toString();
   }
   
-  InstitutionAnnouncementTable copyWith({String? ANNOUNCEMENT_ID, String? INSTITUTION_ID, String? CONTENT, String? IMAGE, String? INSTITUTION, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return InstitutionAnnouncementTable._internal(
-      ANNOUNCEMENT_ID: ANNOUNCEMENT_ID ?? this.ANNOUNCEMENT_ID,
+  InstitutionEventScheduleTable copyWith({String? INSTITUTION_ID, String? SCHEDULE_ID, String? CONTENT, List<String>? TAG, String? TIME, String? DATE, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return InstitutionEventScheduleTable._internal(
       INSTITUTION_ID: INSTITUTION_ID ?? this.INSTITUTION_ID,
+      SCHEDULE_ID: SCHEDULE_ID ?? this.SCHEDULE_ID,
       CONTENT: CONTENT ?? this.CONTENT,
-      IMAGE: IMAGE ?? this.IMAGE,
-      INSTITUTION: INSTITUTION ?? this.INSTITUTION,
-      TITLE: TITLE ?? this.TITLE,
-      URL: URL ?? this.URL,
+      TAG: TAG ?? this.TAG,
+      TIME: TIME ?? this.TIME,
+      DATE: DATE ?? this.DATE,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  InstitutionAnnouncementTable copyWithModelFieldValues({
-    ModelFieldValue<String>? ANNOUNCEMENT_ID,
+  InstitutionEventScheduleTable copyWithModelFieldValues({
     ModelFieldValue<String>? INSTITUTION_ID,
+    ModelFieldValue<String>? SCHEDULE_ID,
     ModelFieldValue<String?>? CONTENT,
-    ModelFieldValue<String?>? IMAGE,
-    ModelFieldValue<String?>? INSTITUTION,
-    ModelFieldValue<String?>? TITLE,
-    ModelFieldValue<String?>? URL,
+    ModelFieldValue<List<String>?>? TAG,
+    ModelFieldValue<String?>? TIME,
+    ModelFieldValue<String?>? DATE,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
-    return InstitutionAnnouncementTable._internal(
-      ANNOUNCEMENT_ID: ANNOUNCEMENT_ID == null ? this.ANNOUNCEMENT_ID : ANNOUNCEMENT_ID.value,
+    return InstitutionEventScheduleTable._internal(
       INSTITUTION_ID: INSTITUTION_ID == null ? this.INSTITUTION_ID : INSTITUTION_ID.value,
+      SCHEDULE_ID: SCHEDULE_ID == null ? this.SCHEDULE_ID : SCHEDULE_ID.value,
       CONTENT: CONTENT == null ? this.CONTENT : CONTENT.value,
-      IMAGE: IMAGE == null ? this.IMAGE : IMAGE.value,
-      INSTITUTION: INSTITUTION == null ? this.INSTITUTION : INSTITUTION.value,
-      TITLE: TITLE == null ? this.TITLE : TITLE.value,
-      URL: URL == null ? this.URL : URL.value,
+      TAG: TAG == null ? this.TAG : TAG.value,
+      TIME: TIME == null ? this.TIME : TIME.value,
+      DATE: DATE == null ? this.DATE : DATE.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
   }
   
-  InstitutionAnnouncementTable.fromJson(Map<String, dynamic> json)  
-    : _ANNOUNCEMENT_ID = json['ANNOUNCEMENT_ID'],
-      _INSTITUTION_ID = json['INSTITUTION_ID'],
+  InstitutionEventScheduleTable.fromJson(Map<String, dynamic> json)  
+    : _INSTITUTION_ID = json['INSTITUTION_ID'],
+      _SCHEDULE_ID = json['SCHEDULE_ID'],
       _CONTENT = json['CONTENT'],
-      _IMAGE = json['IMAGE'],
-      _INSTITUTION = json['INSTITUTION'],
-      _TITLE = json['TITLE'],
-      _URL = json['URL'],
+      _TAG = json['TAG']?.cast<String>(),
+      _TIME = json['TIME'],
+      _DATE = json['DATE'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'ANNOUNCEMENT_ID': _ANNOUNCEMENT_ID, 'INSTITUTION_ID': _INSTITUTION_ID, 'CONTENT': _CONTENT, 'IMAGE': _IMAGE, 'INSTITUTION': _INSTITUTION, 'TITLE': _TITLE, 'URL': _URL, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'INSTITUTION_ID': _INSTITUTION_ID, 'SCHEDULE_ID': _SCHEDULE_ID, 'CONTENT': _CONTENT, 'TAG': _TAG, 'TIME': _TIME, 'DATE': _DATE, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'ANNOUNCEMENT_ID': _ANNOUNCEMENT_ID,
     'INSTITUTION_ID': _INSTITUTION_ID,
+    'SCHEDULE_ID': _SCHEDULE_ID,
     'CONTENT': _CONTENT,
-    'IMAGE': _IMAGE,
-    'INSTITUTION': _INSTITUTION,
-    'TITLE': _TITLE,
-    'URL': _URL,
+    'TAG': _TAG,
+    'TIME': _TIME,
+    'DATE': _DATE,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "InstitutionAnnouncementTable";
-    modelSchemaDefinition.pluralName = "InstitutionAnnouncementTables";
+    modelSchemaDefinition.name = "InstitutionEventScheduleTable";
+    modelSchemaDefinition.pluralName = "InstitutionEventScheduleTables";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'ANNOUNCEMENT_ID',
+      fieldName: 'INSTITUTION_ID',
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'INSTITUTION_ID',
+      fieldName: 'SCHEDULE_ID',
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
@@ -232,25 +220,20 @@ class InstitutionAnnouncementTable {
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'IMAGE',
+      fieldName: 'TAG',
+      isRequired: false,
+      isArray: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.collection, ofModelName: amplify_core.ModelFieldTypeEnum.string.name)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'TIME',
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'INSTITUTION',
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'TITLE',
-      isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'URL',
+      fieldName: 'DATE',
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
