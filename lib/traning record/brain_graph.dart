@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../GraphQL_Method/graphql_controller.dart';
 import '../communication_service/instituition_info/convenience/Convenience.dart';
-import '../models/MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.dart';
+import '../models/MonthlyBrainSignalTable.dart';
 
 class BrainSignalPage extends StatefulWidget {
   BrainSignalPage({Key? key}) : super(key: key);
@@ -351,7 +351,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
 
 
   double numberOfFeatures = 3;
-  List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?> results = []; //넣어 둘 친구
+  List<MonthlyBrainSignalTable?> results = []; //넣어 둘 친구
   late final gql;
   int usercount = 0;
   int braincount = 0;
@@ -381,7 +381,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
       });
 
       // final data = await gql.queryListMonthlyDB();
-      final data =  await gql.queryListMonthlyDBItems(ID: '1');
+      final data =  await gql.queryListMonthlyDBItems(ID:'1');
       // final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
 
       print(data);
@@ -403,7 +403,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
       });
 
       for (int i = 0; i < data.length; i++) {
-        MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging? currentItem = data[i];
+        MonthlyBrainSignalTable? currentItem = data[i];
         if (currentItem != null) {
           // currentItem에 대한 작업 수행
           print(data[i]);
@@ -453,7 +453,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
       });
 
       for (int i = 0; i < data.length; i++) {
-        MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging? currentItem = data[i];
+        MonthlyBrainSignalTable? currentItem = data[i];
         if (currentItem != null) {
           // currentItem에 대한 작업 수행
           print(data[i]);
