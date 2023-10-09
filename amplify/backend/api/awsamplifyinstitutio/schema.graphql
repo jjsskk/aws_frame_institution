@@ -1,0 +1,1067 @@
+﻿input CreateInstitutionAnnouncementTableInput {
+	ANNOUNCEMENT_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionCommentBoardTableInput {
+	BOARD_ID: String!
+	USER_ID: String!
+	WRITER: String
+	CONTENT: String
+	TITLE: String
+	USERNAME: String
+	INSTITUTION_ID: String
+	NEW_CONVERSATION_PROTECTOR: Boolean
+	NEW_CONVERSATION_INST: Boolean
+	NEW_CONVERSATION_CREATEDAT: AWSDateTime
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionCommentConversationTableInput {
+	BOARD_ID: String!
+	CONVERSATION_ID: String!
+	EMAIL: String
+	CONTENT: String
+	WRITER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionEssentialCareTableInput {
+	INSTITUTION_ID: String!
+	USER_ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	MEDICATION: String
+	MEDICATION_WAY: String
+	NAME: String
+	IMAGE: String
+	PHONE_NUMBER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionEventScheduleTableInput {
+	INSTITUTION_ID: String!
+	SCHEDULE_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionFoodMenuTableInput {
+	DATE: String!
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionNewsTableInput {
+	INSTITUTION_ID: String!
+	NEWS_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionScheduleTableInput {
+	SCHEDULE_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateInstitutionShuttleTimeTableInput {
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateMonthlyBrainSignalTableInput {
+	id: String!
+	month: String!
+	total_time: Int
+	avg_att: Int
+	avg_med: Int
+	firsts_name: String
+	first_amt: Int
+	second_name: String
+	second_amt: Int
+	con_score: Int
+	spacetime_score: Int
+	exec_score: Int
+	mem_score: Int
+	ling_score: Int
+	cal_score: Int
+	reac_score: Int
+	orient_score: Int
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input CreateUserTableInput {
+	ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	INSTITUTION_ID: String
+	NAME: String
+	SEX: String
+	CREATEDAT: AWSDateTime
+	UPDATEDAT: AWSDateTime
+}
+
+input DeleteInstitutionAnnouncementTableInput {
+	ANNOUNCEMENT_ID: String!
+	INSTITUTION_ID: String!
+}
+
+input DeleteInstitutionCommentBoardTableInput {
+	BOARD_ID: String!
+	USER_ID: String!
+}
+
+input DeleteInstitutionCommentConversationTableInput {
+	BOARD_ID: String!
+	CONVERSATION_ID: String!
+}
+
+input DeleteInstitutionEssentialCareTableInput {
+	INSTITUTION_ID: String!
+	USER_ID: String!
+}
+
+input DeleteInstitutionEventScheduleTableInput {
+	INSTITUTION_ID: String!
+	SCHEDULE_ID: String!
+}
+
+input DeleteInstitutionFoodMenuTableInput {
+	INSTITUTION_ID: String!
+	DATE: String!
+}
+
+input DeleteInstitutionNewsTableInput {
+	INSTITUTION_ID: String!
+	NEWS_ID: String!
+}
+
+input DeleteInstitutionScheduleTableInput {
+	SCHEDULE_ID: String!
+	INSTITUTION_ID: String!
+}
+
+input DeleteInstitutionShuttleTimeTableInput {
+	INSTITUTION_ID: String!
+}
+
+input DeleteMonthlyBrainSignalTableInput {
+	id: String!
+	month: String!
+}
+
+input DeleteUserTableInput {
+	ID: String!
+}
+
+type InstitutionAnnouncementTable {
+	ANNOUNCEMENT_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionAnnouncementTableConnection {
+	items: [InstitutionAnnouncementTable]
+	nextToken: String
+}
+
+type InstitutionCommentBoardTable {
+	BOARD_ID: String!
+	USER_ID: String!
+	WRITER: String
+	CONTENT: String
+	TITLE: String
+	USERNAME: String
+	INSTITUTION_ID: String
+	NEW_CONVERSATION_PROTECTOR: Boolean
+	NEW_CONVERSATION_INST: Boolean
+	NEW_CONVERSATION_CREATEDAT: AWSDateTime
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionCommentBoardTableConnection {
+	items: [InstitutionCommentBoardTable]
+	nextToken: String
+}
+
+type InstitutionCommentConversationTable {
+	BOARD_ID: String!
+	CONVERSATION_ID: String!
+	EMAIL: String
+	CONTENT: String
+	WRITER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionCommentConversationTableConnection {
+	items: [InstitutionCommentConversationTable]
+	nextToken: String
+}
+
+type InstitutionEssentialCareTable {
+	INSTITUTION_ID: String!
+	USER_ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	MEDICATION: String
+	MEDICATION_WAY: String
+	NAME: String
+	IMAGE: String
+	PHONE_NUMBER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionEssentialCareTableConnection {
+	items: [InstitutionEssentialCareTable]
+	nextToken: String
+}
+
+type InstitutionEventScheduleTable {
+	INSTITUTION_ID: String!
+	SCHEDULE_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionEventScheduleTableConnection {
+	items: [InstitutionEventScheduleTable]
+	nextToken: String
+}
+
+type InstitutionFoodMenuTable {
+	DATE: String!
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionFoodMenuTableConnection {
+	items: [InstitutionFoodMenuTable]
+	nextToken: String
+}
+
+type InstitutionNewsTable {
+	INSTITUTION_ID: String!
+	NEWS_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionNewsTableConnection {
+	items: [InstitutionNewsTable]
+	nextToken: String
+}
+
+type InstitutionScheduleTable {
+	SCHEDULE_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionScheduleTableConnection {
+	items: [InstitutionScheduleTable]
+	nextToken: String
+}
+
+type InstitutionShuttleTimeTable {
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionShuttleTimeTableConnection {
+	items: [InstitutionShuttleTimeTable]
+	nextToken: String
+}
+
+type MonthlyBrainSignalTable {
+	id: String!
+	month: String!
+	total_time: Int
+	avg_att: Int
+	avg_med: Int
+	firsts_name: String
+	first_amt: Int
+	second_name: String
+	second_amt: Int
+	con_score: Int
+	spacetime_score: Int
+	exec_score: Int
+	mem_score: Int
+	ling_score: Int
+	cal_score: Int
+	reac_score: Int
+	orient_score: Int
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type MonthlyBrainSignalTableConnection {
+	items: [MonthlyBrainSignalTable]
+	nextToken: String
+}
+
+input TableBooleanFilterInput {
+	ne: Boolean
+	eq: Boolean
+}
+
+input TableFloatFilterInput {
+	ne: Float
+	eq: Float
+	le: Float
+	lt: Float
+	ge: Float
+	gt: Float
+	contains: Float
+	notContains: Float
+	between: [Float]
+}
+
+input TableIDFilterInput {
+	ne: ID
+	eq: ID
+	le: ID
+	lt: ID
+	ge: ID
+	gt: ID
+	contains: ID
+	notContains: ID
+	between: [ID]
+	beginsWith: ID
+}
+
+input TableInstitutionAnnouncementTableFilterInput {
+	ANNOUNCEMENT_ID: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	IMAGE: TableStringFilterInput
+	INSTITUTION: TableStringFilterInput
+	TITLE: TableStringFilterInput
+	URL: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionCommentBoardTableFilterInput {
+	BOARD_ID: TableStringFilterInput
+	USER_ID: TableStringFilterInput
+	WRITER: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	TITLE: TableStringFilterInput
+	USERNAME: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	NEW_CONVERSATION_PROTECTOR: TableBooleanFilterInput
+	NEW_CONVERSATION_INST: TableBooleanFilterInput
+	NEW_CONVERSATION_CREATEDAT: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionCommentConversationTableFilterInput {
+	BOARD_ID: TableStringFilterInput
+	CONVERSATION_ID: TableStringFilterInput
+	EMAIL: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	WRITER: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionEssentialCareTableFilterInput {
+	INSTITUTION_ID: TableStringFilterInput
+	USER_ID: TableStringFilterInput
+	BIRTH: TableStringFilterInput
+	INSTITUTION: TableStringFilterInput
+	MEDICATION: TableStringFilterInput
+	MEDICATION_WAY: TableStringFilterInput
+	NAME: TableStringFilterInput
+	IMAGE: TableStringFilterInput
+	PHONE_NUMBER: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionEventScheduleTableFilterInput {
+	INSTITUTION_ID: TableStringFilterInput
+	SCHEDULE_ID: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	TAG: TableStringFilterInput
+	TIME: TableStringFilterInput
+	DATE: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionFoodMenuTableFilterInput {
+	DATE: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	IMAGE_URL: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionNewsTableFilterInput {
+	INSTITUTION_ID: TableStringFilterInput
+	NEWS_ID: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	IMAGE: TableStringFilterInput
+	INSTITUTION: TableStringFilterInput
+	TITLE: TableStringFilterInput
+	URL: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionScheduleTableFilterInput {
+	SCHEDULE_ID: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	CONTENT: TableStringFilterInput
+	TAG: TableStringFilterInput
+	TIME: TableStringFilterInput
+	DATE: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableInstitutionShuttleTimeTableFilterInput {
+	INSTITUTION_ID: TableStringFilterInput
+	IMAGE_URL: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableIntFilterInput {
+	ne: Int
+	eq: Int
+	le: Int
+	lt: Int
+	ge: Int
+	gt: Int
+	contains: Int
+	notContains: Int
+	between: [Int]
+}
+
+input TableMonthlyBrainSignalTableFilterInput {
+	id: TableStringFilterInput
+	month: TableStringFilterInput
+	total_time: TableIntFilterInput
+	avg_att: TableIntFilterInput
+	avg_med: TableIntFilterInput
+	firsts_name: TableStringFilterInput
+	first_amt: TableIntFilterInput
+	second_name: TableStringFilterInput
+	second_amt: TableIntFilterInput
+	con_score: TableIntFilterInput
+	spacetime_score: TableIntFilterInput
+	exec_score: TableIntFilterInput
+	mem_score: TableIntFilterInput
+	ling_score: TableIntFilterInput
+	cal_score: TableIntFilterInput
+	reac_score: TableIntFilterInput
+	orient_score: TableIntFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
+input TableStringFilterInput {
+	ne: String
+	eq: String
+	le: String
+	lt: String
+	ge: String
+	gt: String
+	contains: String
+	notContains: String
+	between: [String]
+	beginsWith: String
+}
+
+input TableUserTableFilterInput {
+	ID: TableStringFilterInput
+	BIRTH: TableStringFilterInput
+	INSTITUTION: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	NAME: TableStringFilterInput
+	SEX: TableStringFilterInput
+	CREATEDAT: TableStringFilterInput
+	UPDATEDAT: TableStringFilterInput
+}
+
+input UpdateInstitutionAnnouncementTableInput {
+	ANNOUNCEMENT_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionCommentBoardTableInput {
+	BOARD_ID: String!
+	USER_ID: String!
+	WRITER: String
+	CONTENT: String
+	TITLE: String
+	USERNAME: String
+	INSTITUTION_ID: String
+	NEW_CONVERSATION_PROTECTOR: Boolean
+	NEW_CONVERSATION_INST: Boolean
+	NEW_CONVERSATION_CREATEDAT: AWSDateTime
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionCommentConversationTableInput {
+	BOARD_ID: String!
+	CONVERSATION_ID: String!
+	EMAIL: String
+	CONTENT: String
+	WRITER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionEssentialCareTableInput {
+	INSTITUTION_ID: String!
+	USER_ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	MEDICATION: String
+	MEDICATION_WAY: String
+	NAME: String
+	IMAGE: String
+	PHONE_NUMBER: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionEventScheduleTableInput {
+	INSTITUTION_ID: String!
+	SCHEDULE_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionFoodMenuTableInput {
+	DATE: String
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionNewsTableInput {
+	INSTITUTION_ID: String!
+	NEWS_ID: String!
+	CONTENT: String
+	IMAGE: String
+	INSTITUTION: String
+	TITLE: String
+	URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionScheduleTableInput {
+	SCHEDULE_ID: String!
+	INSTITUTION_ID: String!
+	CONTENT: String
+	TAG: [String]
+	TIME: String
+	DATE: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateInstitutionShuttleTimeTableInput {
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateMonthlyBrainSignalTableInput {
+	id: String!
+	month: String!
+	total_time: Int
+	avg_att: Int
+	avg_med: Int
+	firsts_name: String
+	first_amt: Int
+	second_name: String
+	second_amt: Int
+	con_score: Int
+	spacetime_score: Int
+	exec_score: Int
+	mem_score: Int
+	ling_score: Int
+	cal_score: Int
+	reac_score: Int
+	orient_score: Int
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+input UpdateUserTableInput {
+	ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	INSTITUTION_ID: String
+	NAME: String
+	SEX: String
+	CREATEDAT: AWSDateTime
+	UPDATEDAT: AWSDateTime
+}
+
+type UserTable {
+	ID: String!
+	BIRTH: String
+	INSTITUTION: String
+	INSTITUTION_ID: String
+	NAME: String
+	SEX: String
+	CREATEDAT: AWSDateTime
+	UPDATEDAT: AWSDateTime
+}
+
+type UserTableConnection {
+	items: [UserTable]
+	nextToken: String
+}
+
+type Mutation {
+	createInstitutionFoodMenuTable(input: CreateInstitutionFoodMenuTableInput!): InstitutionFoodMenuTable
+	updateInstitutionFoodMenuTable(input: UpdateInstitutionFoodMenuTableInput!): InstitutionFoodMenuTable
+	deleteInstitutionFoodMenuTable(input: DeleteInstitutionFoodMenuTableInput!): InstitutionFoodMenuTable
+	createInstitutionAnnouncementTable(input: CreateInstitutionAnnouncementTableInput!): InstitutionAnnouncementTable
+	updateInstitutionAnnouncementTable(input: UpdateInstitutionAnnouncementTableInput!): InstitutionAnnouncementTable
+	deleteInstitutionAnnouncementTable(input: DeleteInstitutionAnnouncementTableInput!): InstitutionAnnouncementTable
+	createInstitutionNewsTable(input: CreateInstitutionNewsTableInput!): InstitutionNewsTable
+	updateInstitutionNewsTable(input: UpdateInstitutionNewsTableInput!): InstitutionNewsTable
+	deleteInstitutionNewsTable(input: DeleteInstitutionNewsTableInput!): InstitutionNewsTable
+	createInstitutionEssentialCareTable(input: CreateInstitutionEssentialCareTableInput!): InstitutionEssentialCareTable
+	updateInstitutionEssentialCareTable(input: UpdateInstitutionEssentialCareTableInput!): InstitutionEssentialCareTable
+	deleteInstitutionEssentialCareTable(input: DeleteInstitutionEssentialCareTableInput!): InstitutionEssentialCareTable
+	createInstitutionShuttleTimeTable(input: CreateInstitutionShuttleTimeTableInput!): InstitutionShuttleTimeTable
+	updateInstitutionShuttleTimeTable(input: UpdateInstitutionShuttleTimeTableInput!): InstitutionShuttleTimeTable
+	deleteInstitutionShuttleTimeTable(input: DeleteInstitutionShuttleTimeTableInput!): InstitutionShuttleTimeTable
+	createUserTable(input: CreateUserTableInput!): UserTable
+	updateUserTable(input: UpdateUserTableInput!): UserTable
+	deleteUserTable(input: DeleteUserTableInput!): UserTable
+	createInstitutionScheduleTable(input: CreateInstitutionScheduleTableInput!): InstitutionScheduleTable
+	updateInstitutionScheduleTable(input: UpdateInstitutionScheduleTableInput!): InstitutionScheduleTable
+	deleteInstitutionScheduleTable(input: DeleteInstitutionScheduleTableInput!): InstitutionScheduleTable
+	createInstitutionCommentBoardTable(input: CreateInstitutionCommentBoardTableInput!): InstitutionCommentBoardTable
+	updateInstitutionCommentBoardTable(input: UpdateInstitutionCommentBoardTableInput!): InstitutionCommentBoardTable
+	deleteInstitutionCommentBoardTable(input: DeleteInstitutionCommentBoardTableInput!): InstitutionCommentBoardTable
+	createInstitutionCommentConversationTable(input: CreateInstitutionCommentConversationTableInput!): InstitutionCommentConversationTable
+	updateInstitutionCommentConversationTable(input: UpdateInstitutionCommentConversationTableInput!): InstitutionCommentConversationTable
+	deleteInstitutionCommentConversationTable(input: DeleteInstitutionCommentConversationTableInput!): InstitutionCommentConversationTable
+	createMonthlyBrainSignalTable(input: CreateMonthlyBrainSignalTableInput!): MonthlyBrainSignalTable
+	updateMonthlyBrainSignalTable(input: UpdateMonthlyBrainSignalTableInput!): MonthlyBrainSignalTable
+	deleteMonthlyBrainSignalTable(input: DeleteMonthlyBrainSignalTableInput!): MonthlyBrainSignalTable
+	createInstitutionEventScheduleTable(input: CreateInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
+	updateInstitutionEventScheduleTable(input: UpdateInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
+	deleteInstitutionEventScheduleTable(input: DeleteInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
+}
+
+type Query {
+	getInstitutionFoodMenuTable(INSTITUTION_ID: String!): InstitutionFoodMenuTable
+	listInstitutionFoodMenuTables(filter: TableInstitutionFoodMenuTableFilterInput, limit: Int, nextToken: String): InstitutionFoodMenuTableConnection
+	getInstitutionAnnouncementTable(INSTITUTION_ID: String!, ANNOUNCEMENT_ID: String!): InstitutionAnnouncementTable
+	listInstitutionAnnouncementTables(filter: TableInstitutionAnnouncementTableFilterInput, limit: Int, nextToken: String): InstitutionAnnouncementTableConnection
+	getInstitutionNewsTable(INSTITUTION_ID: String!, NEWS_ID: String!): InstitutionNewsTable
+	listInstitutionNewsTables(filter: TableInstitutionNewsTableFilterInput, limit: Int, nextToken: String): InstitutionNewsTableConnection
+	getInstitutionEssentialCareTable(INSTITUTION_ID: String!, USER_ID: String!): InstitutionEssentialCareTable
+	listInstitutionEssentialCareTables(filter: TableInstitutionEssentialCareTableFilterInput, limit: Int, nextToken: String): InstitutionEssentialCareTableConnection
+	getInstitutionShuttleTimeTable(INSTITUTION_ID: String!): InstitutionShuttleTimeTable
+	listInstitutionShuttleTimeTables(filter: TableInstitutionShuttleTimeTableFilterInput, limit: Int, nextToken: String): InstitutionShuttleTimeTableConnection
+	getUserTable(ID: String!): UserTable
+	listUserTables(filter: TableUserTableFilterInput, limit: Int, nextToken: String): UserTableConnection
+	getInstitutionScheduleTable(INSTITUTION_ID: String!, SCHEDULE_ID: String!): InstitutionScheduleTable
+	listInstitutionScheduleTables(filter: TableInstitutionScheduleTableFilterInput, limit: Int, nextToken: String): InstitutionScheduleTableConnection
+	getInstitutionCommentBoardTable(USER_ID: String!, BOARD_ID: String!): InstitutionCommentBoardTable
+	listInstitutionCommentBoardTables(filter: TableInstitutionCommentBoardTableFilterInput, limit: Int, nextToken: String): InstitutionCommentBoardTableConnection
+	getInstitutionCommentConversationTable(BOARD_ID: String!, CONVERSATION_ID: String!): InstitutionCommentConversationTable
+	listInstitutionCommentConversationTables(filter: TableInstitutionCommentConversationTableFilterInput, limit: Int, nextToken: String): InstitutionCommentConversationTableConnection
+	getMonthlyBrainSignalTable(id: String!, month: String!): MonthlyBrainSignalTable
+	listMonthlyBrainSignalTables(filter: TableMonthlyBrainSignalTableFilterInput, limit: Int, nextToken: String): MonthlyBrainSignalTableConnection
+	getInstitutionEventScheduleTable(INSTITUTION_ID: String!, SCHEDULE_ID: String!): InstitutionEventScheduleTable
+	listInstitutionEventScheduleTables(filter: TableInstitutionEventScheduleTableFilterInput, limit: Int, nextToken: String): InstitutionEventScheduleTableConnection
+}
+
+type Subscription {
+	onCreateInstitutionFoodMenuTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodMenuTable
+		@aws_subscribe(mutations: ["createInstitutionFoodMenuTable"])
+	onUpdateInstitutionFoodMenuTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodMenuTable
+		@aws_subscribe(mutations: ["updateInstitutionFoodMenuTable"])
+	onDeleteInstitutionFoodMenuTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodMenuTable
+		@aws_subscribe(mutations: ["deleteInstitutionFoodMenuTable"])
+	onCreateInstitutionAnnouncementTable(
+		ANNOUNCEMENT_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionAnnouncementTable
+		@aws_subscribe(mutations: ["createInstitutionAnnouncementTable"])
+	onUpdateInstitutionAnnouncementTable(
+		ANNOUNCEMENT_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionAnnouncementTable
+		@aws_subscribe(mutations: ["updateInstitutionAnnouncementTable"])
+	onDeleteInstitutionAnnouncementTable(
+		ANNOUNCEMENT_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionAnnouncementTable
+		@aws_subscribe(mutations: ["deleteInstitutionAnnouncementTable"])
+	onCreateInstitutionNewsTable(
+		INSTITUTION_ID: String,
+		NEWS_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionNewsTable
+		@aws_subscribe(mutations: ["createInstitutionNewsTable"])
+	onUpdateInstitutionNewsTable(
+		INSTITUTION_ID: String,
+		NEWS_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionNewsTable
+		@aws_subscribe(mutations: ["updateInstitutionNewsTable"])
+	onDeleteInstitutionNewsTable(
+		INSTITUTION_ID: String,
+		NEWS_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionNewsTable
+		@aws_subscribe(mutations: ["deleteInstitutionNewsTable"])
+	onCreateInstitutionEssentialCareTable(
+		INSTITUTION_ID: String,
+		USER_ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		MEDICATION: String
+	): InstitutionEssentialCareTable
+		@aws_subscribe(mutations: ["createInstitutionEssentialCareTable"])
+	onUpdateInstitutionEssentialCareTable(
+		INSTITUTION_ID: String,
+		USER_ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		MEDICATION: String
+	): InstitutionEssentialCareTable
+		@aws_subscribe(mutations: ["updateInstitutionEssentialCareTable"])
+	onDeleteInstitutionEssentialCareTable(
+		INSTITUTION_ID: String,
+		USER_ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		MEDICATION: String
+	): InstitutionEssentialCareTable
+		@aws_subscribe(mutations: ["deleteInstitutionEssentialCareTable"])
+	onCreateInstitutionShuttleTimeTable(
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionShuttleTimeTable
+		@aws_subscribe(mutations: ["createInstitutionShuttleTimeTable"])
+	onUpdateInstitutionShuttleTimeTable(
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionShuttleTimeTable
+		@aws_subscribe(mutations: ["updateInstitutionShuttleTimeTable"])
+	onDeleteInstitutionShuttleTimeTable(
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionShuttleTimeTable
+		@aws_subscribe(mutations: ["deleteInstitutionShuttleTimeTable"])
+	onCreateUserTable(
+		ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		INSTITUTION_ID: String,
+		NAME: String
+	): UserTable
+		@aws_subscribe(mutations: ["createUserTable"])
+	onUpdateUserTable(
+		ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		INSTITUTION_ID: String,
+		NAME: String
+	): UserTable
+		@aws_subscribe(mutations: ["updateUserTable"])
+	onDeleteUserTable(
+		ID: String,
+		BIRTH: String,
+		INSTITUTION: String,
+		INSTITUTION_ID: String,
+		NAME: String
+	): UserTable
+		@aws_subscribe(mutations: ["deleteUserTable"])
+	onCreateInstitutionScheduleTable(
+		SCHEDULE_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionScheduleTable
+		@aws_subscribe(mutations: ["createInstitutionScheduleTable"])
+	onUpdateInstitutionScheduleTable(
+		SCHEDULE_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionScheduleTable
+		@aws_subscribe(mutations: ["updateInstitutionScheduleTable"])
+	onDeleteInstitutionScheduleTable(
+		SCHEDULE_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionScheduleTable
+		@aws_subscribe(mutations: ["deleteInstitutionScheduleTable"])
+	onCreateInstitutionCommentBoardTable(
+		BOARD_ID: String,
+		USER_ID: String,
+		WRITER: String,
+		CONTENT: String,
+		TITLE: String
+	): InstitutionCommentBoardTable
+		@aws_subscribe(mutations: ["createInstitutionCommentBoardTable"])
+	onUpdateInstitutionCommentBoardTable(
+		BOARD_ID: String,
+		USER_ID: String,
+		WRITER: String,
+		CONTENT: String,
+		TITLE: String
+	): InstitutionCommentBoardTable
+		@aws_subscribe(mutations: ["updateInstitutionCommentBoardTable"])
+	onDeleteInstitutionCommentBoardTable(
+		BOARD_ID: String,
+		USER_ID: String,
+		WRITER: String,
+		CONTENT: String,
+		TITLE: String
+	): InstitutionCommentBoardTable
+		@aws_subscribe(mutations: ["deleteInstitutionCommentBoardTable"])
+	onCreateInstitutionCommentConversationTable(
+		BOARD_ID: String,
+		CONVERSATION_ID: String,
+		EMAIL: String,
+		CONTENT: String,
+		WRITER: String
+	): InstitutionCommentConversationTable
+		@aws_subscribe(mutations: ["createInstitutionCommentConversationTable"])
+	onUpdateInstitutionCommentConversationTable(
+		BOARD_ID: String,
+		CONVERSATION_ID: String,
+		EMAIL: String,
+		CONTENT: String,
+		WRITER: String
+	): InstitutionCommentConversationTable
+		@aws_subscribe(mutations: ["updateInstitutionCommentConversationTable"])
+	onDeleteInstitutionCommentConversationTable(
+		BOARD_ID: String,
+		CONVERSATION_ID: String,
+		EMAIL: String,
+		CONTENT: String,
+		WRITER: String
+	): InstitutionCommentConversationTable
+		@aws_subscribe(mutations: ["deleteInstitutionCommentConversationTable"])
+	onCreateMonthlyBrainSignalTable(
+		id: String,
+		month: String,
+		total_time: Int,
+		avg_att: Int,
+		avg_med: Int
+	): MonthlyBrainSignalTable
+		@aws_subscribe(mutations: ["createMonthlyBrainSignalTable"])
+	onUpdateMonthlyBrainSignalTable(
+		id: String,
+		month: String,
+		total_time: Int,
+		avg_att: Int,
+		avg_med: Int
+	): MonthlyBrainSignalTable
+		@aws_subscribe(mutations: ["updateMonthlyBrainSignalTable"])
+	onDeleteMonthlyBrainSignalTable(
+		id: String,
+		month: String,
+		total_time: Int,
+		avg_att: Int,
+		avg_med: Int
+	): MonthlyBrainSignalTable
+		@aws_subscribe(mutations: ["deleteMonthlyBrainSignalTable"])
+	onsubscribeInstitutionCommentBoardTable(
+		BOARD_ID: String,
+		USER_ID: String,
+		WRITER: String,
+		CONTENT: String,
+		TITLE: String
+	): InstitutionCommentBoardTable
+		@aws_subscribe(mutations: ["createInstitutionCommentBoardTable","updateInstitutionCommentBoardTable","deleteInstitutionCommentBoardTable"])
+	onsubscribeInstitutionCommentConversationTable(
+		BOARD_ID: String,
+		CONVERSATION_ID: String,
+		EMAIL: String,
+		CONTENT: String,
+		WRITER: String
+	): InstitutionCommentConversationTable
+		@aws_subscribe(mutations: ["createInstitutionCommentConversationTable","updateInstitutionCommentConversationTable","deleteInstitutionCommentConversationTable"])
+	onsubscribeInstitutionAnnouncementTable(
+		ANNOUNCEMENT_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION_ID: String,
+		TITLE: String
+	): InstitutionAnnouncementTable
+		@aws_subscribe(mutations: ["createInstitutionAnnouncementTable","updateInstitutionAnnouncementTable","deleteInstitutionAnnouncementTable"])
+	onsubscribeInstitutionNewsTable(
+		INSTITUTION_ID: String,
+		NEWS_ID: String,
+		CONTENT: String,
+		IMAGE: String,
+		INSTITUTION: String
+	): InstitutionNewsTable
+		@aws_subscribe(mutations: ["createInstitutionNewsTable","updateInstitutionNewsTable","deleteInstitutionNewsTable"])
+	onsubscribeInstitutionScheduleTable(
+		SCHEDULE_ID: String,
+		INSTITUTION_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionScheduleTable
+		@aws_subscribe(mutations: ["createInstitutionScheduleTable","updateInstitutionScheduleTable","deleteInstitutionScheduleTable"])
+	onCreateInstitutionEventScheduleTable(
+		INSTITUTION_ID: String,
+		SCHEDULE_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionEventScheduleTable
+		@aws_subscribe(mutations: ["createInstitutionEventScheduleTable"])
+	onUpdateInstitutionEventScheduleTable(
+		INSTITUTION_ID: String,
+		SCHEDULE_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionEventScheduleTable
+		@aws_subscribe(mutations: ["updateInstitutionEventScheduleTable"])
+	onDeleteInstitutionEventScheduleTable(
+		INSTITUTION_ID: String,
+		SCHEDULE_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionEventScheduleTable
+		@aws_subscribe(mutations: ["deleteInstitutionEventScheduleTable"])
+	onsubscribeInstitutionEventScheduleTable(
+		INSTITUTION_ID: String,
+		SCHEDULE_ID: String,
+		CONTENT: String,
+		TAG: [String],
+		TIME: String
+	): InstitutionEventScheduleTable
+		@aws_subscribe(mutations: ["createInstitutionEventScheduleTable","updateInstitutionEventScheduleTable","deleteInstitutionEventScheduleTable"])
+}

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:aws_frame_institution/communication_service/essential_care_information/add_essential_care_information.dart';
+import 'package:aws_frame_institution/communication_service/essential_care_information/update_essential_care_information.dart';
 import 'package:aws_frame_institution/models/InstitutionEssentialCareTable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,6 +35,11 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   String userid = "";
   List<String> nameList = [];
   String name = '';
+  String essentialName = '';
+  String birth = '';
+  String phoneNumber = '';
+  String medication= '';
+  String medicationWay = '';
   File? _image;
   String institutionId = "";
   String institution = '';
@@ -67,7 +73,6 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
 
           name = nameList[index]; // 가장 첫 이름으로 함
-          print(nameList);
 
           if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
             String convertToE164(String phoneNumber, String countryCode) {
@@ -79,22 +84,22 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               return countryCode + phoneNumber;
             }
 
-            _essentialCare[index].MEDICATION != null
-                ? _nameController.text = _essentialCare[index].NAME!
+            _essentialCare[index].NAME != null
+                ? essentialName = _essentialCare[index].NAME!
                 : "";
             _essentialCare[index].BIRTH != null
-                ? _birthController.text = _essentialCare[index].BIRTH!
+                ? birth = _essentialCare[index].BIRTH!
                 : "";
             _essentialCare[index].PHONE_NUMBER != null
-                ? _phoneNumberController.text =
+                ? phoneNumber =
                     convertToE164(_essentialCare[index].PHONE_NUMBER!, "0")
                 : "";
 
             _essentialCare[index].MEDICATION != null
-                ? _medicationController.text = _essentialCare[index].MEDICATION!
+                ? medication = _essentialCare[index].MEDICATION!
                 : "";
             _essentialCare[index].MEDICATION_WAY != null
-                ? _medicationWayController.text =
+                ? medicationWay =
                     _essentialCare[index].MEDICATION_WAY!
                 : "";
             // phoneNumber = convertToE164(_essentialCare[index].PHONE_NUMBER!, "+82");
@@ -289,6 +294,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             style: TextStyle(color: Colors.black),
             decoration: InputDecoration(labelText: '이름'),
           ),
+          Text(essentialName),
           SizedBox(height: 16),
           Form(
             key: _formKey,
@@ -305,6 +311,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                     return null;
                   },
                 ),
+                Text(birth),
                 SizedBox(height: 16),
                 TextFormField(
                   controller: _phoneNumberController,
@@ -319,6 +326,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                     return null;
                   },
                 ),
+                Text(phoneNumber),
               ],
             ),
           ),
@@ -330,6 +338,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             minLines: 1,
             maxLines: 4,
           ),
+          Text(medication),
           SizedBox(height: 16),
           TextField(
             controller: _medicationWayController,
@@ -338,57 +347,71 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             minLines: 1,
             maxLines: 4,
           ),
+          Text(medicationWay),
           SizedBox(height: 16),
           Row(
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isImageSelected == true) {
-                      imageUrl = await uploadImageToS3(_image);
-                    }
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UpdateEssentialCareInfoPage(essentialCareTable: _essentialCare[index])),
+                  );
 
-                    await gql.updateEssentialCare(
-                        _birthController.text,
-                        _nameController.text,
-                        imageUrl,
-                        _phoneNumberController.text,
-                        institution,
-                        institutionId,
-                        _medicationController.text,
-                        _medicationWayController.text,
-                        userid);
-
+                  // 만약 필요한 업데이트가 있다면 setState() 호출
+                  if (result == true) {
                     setState(() {
-                      nameList = [];
+                      index = 0; //맨 처음 dropdown
                       getEssentialCare();
-                      print(nameList);
                       isImageSelected = false;
                     });
                   }
+
+                  // if (_formKey.currentState!.validate()) {
+                  //   if (isImageSelected == true) {
+                  //     imageUrl = await uploadImageToS3(_image);
+                  //   }
+                  //
+                  //   await gql.updateEssentialCare(
+                  //       _birthController.text,
+                  //       _nameController.text,
+                  //       imageUrl,
+                  //       _phoneNumberController.text,
+                  //       institution,
+                  //       institutionId,
+                  //       _medicationController.text,
+                  //       _medicationWayController.text,
+                  //       userid);
+                  //
+                  //   setState(() {
+                  //     nameList = [];
+                  //     getEssentialCare();
+                  //     print(nameList);
+                  //     isImageSelected = false;
+                  //   });
+                  // }
                 },
-                child: Text('완료'),
+                child: Text('수정'),
               ),
               TextButton(
                   onPressed: () async {
-                    gql.deleteEssentialCare(userid , institutionId);
+                    gql.deleteEssentialCare(userid, institutionId);
                     // 만약 필요한 업데이트가 있다면 setState() 호출
 
-                      setState(() {
-                        index = 0; //맨 처음 dropdown
-                        getEssentialCare();
-                        isImageSelected = false;
-                      });
-
+                    setState(() {
+                      index = 0; //맨 처음 dropdown
+                      getEssentialCare();
+                      isImageSelected = false;
+                    });
                   },
-                  child: Text("삭제 -")
-              ),
-
+                  child: Text("삭제 -")),
               TextButton(
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddEssentialCareInfoPage()),
+                      MaterialPageRoute(
+                          builder: (context) => AddEssentialCareInfoPage()),
                     );
 
                     // 만약 필요한 업데이트가 있다면 setState() 호출
@@ -400,8 +423,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                       });
                     }
                   },
-                  child: Text("추가 +")
-              )
+                  child: Text("추가 +"))
             ],
           ),
         ],
