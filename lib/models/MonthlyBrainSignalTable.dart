@@ -23,8 +23,8 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging type in your schema. */
-class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
+/** This is an auto generated class representing the MonthlyBrainSignalTable type in your schema. */
+class MonthlyBrainSignalTable {
   final String id;
   final String? _month;
   final int? _total_time;
@@ -126,10 +126,10 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
     return _updatedAt;
   }
   
-  const MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging._internal({required this.id, required month, total_time, avg_att, avg_med, firsts_name, first_amt, second_name, second_amt, con_score, spacetime_score, exec_score, mem_score, ling_score, cal_score, reac_score, orient_score, createdAt, updatedAt}): _month = month, _total_time = total_time, _avg_att = avg_att, _avg_med = avg_med, _firsts_name = firsts_name, _first_amt = first_amt, _second_name = second_name, _second_amt = second_amt, _con_score = con_score, _spacetime_score = spacetime_score, _exec_score = exec_score, _mem_score = mem_score, _ling_score = ling_score, _cal_score = cal_score, _reac_score = reac_score, _orient_score = orient_score, _createdAt = createdAt, _updatedAt = updatedAt;
+  const MonthlyBrainSignalTable._internal({required this.id, required month, total_time, avg_att, avg_med, firsts_name, first_amt, second_name, second_amt, con_score, spacetime_score, exec_score, mem_score, ling_score, cal_score, reac_score, orient_score, createdAt, updatedAt}): _month = month, _total_time = total_time, _avg_att = avg_att, _avg_med = avg_med, _firsts_name = firsts_name, _first_amt = first_amt, _second_name = second_name, _second_amt = second_amt, _con_score = con_score, _spacetime_score = spacetime_score, _exec_score = exec_score, _mem_score = mem_score, _ling_score = ling_score, _cal_score = cal_score, _reac_score = reac_score, _orient_score = orient_score, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging({String? id, required String month, int? total_time, int? avg_att, int? avg_med, String? firsts_name, int? first_amt, String? second_name, int? second_amt, int? con_score, int? spacetime_score, int? exec_score, int? mem_score, int? ling_score, int? cal_score, int? reac_score, int? orient_score, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging._internal(
+  factory MonthlyBrainSignalTable({String? id, required String month, int? total_time, int? avg_att, int? avg_med, String? firsts_name, int? first_amt, String? second_name, int? second_amt, int? con_score, int? spacetime_score, int? exec_score, int? mem_score, int? ling_score, int? cal_score, int? reac_score, int? orient_score, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return MonthlyBrainSignalTable._internal(
       id: id == null ? amplify_core.UUID.getUUID() : id,
       month: month,
       total_time: total_time,
@@ -158,7 +158,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging &&
+    return other is MonthlyBrainSignalTable &&
       id == other.id &&
       _month == other._month &&
       _total_time == other._total_time &&
@@ -187,7 +187,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {");
+    buffer.write("MonthlyBrainSignalTable {");
     buffer.write("id=" + "$id" + ", ");
     buffer.write("month=" + "$_month" + ", ");
     buffer.write("total_time=" + (_total_time != null ? _total_time!.toString() : "null") + ", ");
@@ -212,8 +212,8 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
     return buffer.toString();
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging copyWith({String? id, String? month, int? total_time, int? avg_att, int? avg_med, String? firsts_name, int? first_amt, String? second_name, int? second_amt, int? con_score, int? spacetime_score, int? exec_score, int? mem_score, int? ling_score, int? cal_score, int? reac_score, int? orient_score, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging._internal(
+  MonthlyBrainSignalTable copyWith({String? id, String? month, int? total_time, int? avg_att, int? avg_med, String? firsts_name, int? first_amt, String? second_name, int? second_amt, int? con_score, int? spacetime_score, int? exec_score, int? mem_score, int? ling_score, int? cal_score, int? reac_score, int? orient_score, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return MonthlyBrainSignalTable._internal(
       id: id ?? this.id,
       month: month ?? this.month,
       total_time: total_time ?? this.total_time,
@@ -235,7 +235,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging copyWithModelFieldValues({
+  MonthlyBrainSignalTable copyWithModelFieldValues({
     ModelFieldValue<String>? id,
     ModelFieldValue<String>? month,
     ModelFieldValue<int?>? total_time,
@@ -256,7 +256,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging._internal(
+    return MonthlyBrainSignalTable._internal(
       id: id == null ? this.id : id.value,
       month: month == null ? this.month : month.value,
       total_time: total_time == null ? this.total_time : total_time.value,
@@ -279,7 +279,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
     );
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.fromJson(Map<String, dynamic> json)  
+  MonthlyBrainSignalTable.fromJson(Map<String, dynamic> json)  
     : id = json['id'],
       _month = json['month'],
       _total_time = (json['total_time'] as num?)?.toInt(),
@@ -327,8 +327,8 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging {
   };
 
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging";
-    modelSchemaDefinition.pluralName = "MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings";
+    modelSchemaDefinition.name = "MonthlyBrainSignalTable";
+    modelSchemaDefinition.pluralName = "MonthlyBrainSignalTables";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'id',

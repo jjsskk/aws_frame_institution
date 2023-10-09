@@ -371,7 +371,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               ),
               TextButton(
                   onPressed: () async {
-                    gql.deleteEssentialCare(userid , institution);
+                    gql.deleteEssentialCare(userid , institutionId);
                     // 만약 필요한 업데이트가 있다면 setState() 호출
 
                       setState(() {

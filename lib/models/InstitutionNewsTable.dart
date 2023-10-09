@@ -25,28 +25,16 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 /** This is an auto generated class representing the InstitutionNewsTable type in your schema. */
 class InstitutionNewsTable {
+  final String? _INSTITUTION_ID;
+  final String? _NEWS_ID;
   final String? _CONTENT;
   final String? _IMAGE;
   final String? _INSTITUTION;
-  final String? _INSTITUTION_ID;
-  final String? _NEWS_ID;
   final String? _TITLE;
   final String? _URL;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
-  String? get CONTENT {
-    return _CONTENT;
-  }
-  
-  String? get IMAGE {
-    return _IMAGE;
-  }
-  
-  String? get INSTITUTION {
-    return _INSTITUTION;
-  }
-  
   String get INSTITUTION_ID {
     try {
       return _INSTITUTION_ID!;
@@ -73,6 +61,18 @@ class InstitutionNewsTable {
     }
   }
   
+  String? get CONTENT {
+    return _CONTENT;
+  }
+  
+  String? get IMAGE {
+    return _IMAGE;
+  }
+  
+  String? get INSTITUTION {
+    return _INSTITUTION;
+  }
+  
   String? get TITLE {
     return _TITLE;
   }
@@ -89,15 +89,15 @@ class InstitutionNewsTable {
     return _updatedAt;
   }
   
-  const InstitutionNewsTable._internal({CONTENT, IMAGE, INSTITUTION, required INSTITUTION_ID, required NEWS_ID, TITLE, URL, createdAt, updatedAt}): _CONTENT = CONTENT, _IMAGE = IMAGE, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _NEWS_ID = NEWS_ID, _TITLE = TITLE, _URL = URL, _createdAt = createdAt, _updatedAt = updatedAt;
+  const InstitutionNewsTable._internal({required INSTITUTION_ID, required NEWS_ID, CONTENT, IMAGE, INSTITUTION, TITLE, URL, createdAt, updatedAt}): _INSTITUTION_ID = INSTITUTION_ID, _NEWS_ID = NEWS_ID, _CONTENT = CONTENT, _IMAGE = IMAGE, _INSTITUTION = INSTITUTION, _TITLE = TITLE, _URL = URL, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory InstitutionNewsTable({String? CONTENT, String? IMAGE, String? INSTITUTION, required String INSTITUTION_ID, required String NEWS_ID, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  factory InstitutionNewsTable({required String INSTITUTION_ID, required String NEWS_ID, String? CONTENT, String? IMAGE, String? INSTITUTION, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionNewsTable._internal(
+      INSTITUTION_ID: INSTITUTION_ID,
+      NEWS_ID: NEWS_ID,
       CONTENT: CONTENT,
       IMAGE: IMAGE,
       INSTITUTION: INSTITUTION,
-      INSTITUTION_ID: INSTITUTION_ID,
-      NEWS_ID: NEWS_ID,
       TITLE: TITLE,
       URL: URL,
       createdAt: createdAt,
@@ -112,11 +112,11 @@ class InstitutionNewsTable {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is InstitutionNewsTable &&
+      _INSTITUTION_ID == other._INSTITUTION_ID &&
+      _NEWS_ID == other._NEWS_ID &&
       _CONTENT == other._CONTENT &&
       _IMAGE == other._IMAGE &&
       _INSTITUTION == other._INSTITUTION &&
-      _INSTITUTION_ID == other._INSTITUTION_ID &&
-      _NEWS_ID == other._NEWS_ID &&
       _TITLE == other._TITLE &&
       _URL == other._URL &&
       _createdAt == other._createdAt &&
@@ -131,11 +131,11 @@ class InstitutionNewsTable {
     var buffer = new StringBuffer();
     
     buffer.write("InstitutionNewsTable {");
+    buffer.write("INSTITUTION_ID=" + "$_INSTITUTION_ID" + ", ");
+    buffer.write("NEWS_ID=" + "$_NEWS_ID" + ", ");
     buffer.write("CONTENT=" + "$_CONTENT" + ", ");
     buffer.write("IMAGE=" + "$_IMAGE" + ", ");
     buffer.write("INSTITUTION=" + "$_INSTITUTION" + ", ");
-    buffer.write("INSTITUTION_ID=" + "$_INSTITUTION_ID" + ", ");
-    buffer.write("NEWS_ID=" + "$_NEWS_ID" + ", ");
     buffer.write("TITLE=" + "$_TITLE" + ", ");
     buffer.write("URL=" + "$_URL" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
@@ -145,13 +145,13 @@ class InstitutionNewsTable {
     return buffer.toString();
   }
   
-  InstitutionNewsTable copyWith({String? CONTENT, String? IMAGE, String? INSTITUTION, String? INSTITUTION_ID, String? NEWS_ID, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+  InstitutionNewsTable copyWith({String? INSTITUTION_ID, String? NEWS_ID, String? CONTENT, String? IMAGE, String? INSTITUTION, String? TITLE, String? URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
     return InstitutionNewsTable._internal(
+      INSTITUTION_ID: INSTITUTION_ID ?? this.INSTITUTION_ID,
+      NEWS_ID: NEWS_ID ?? this.NEWS_ID,
       CONTENT: CONTENT ?? this.CONTENT,
       IMAGE: IMAGE ?? this.IMAGE,
       INSTITUTION: INSTITUTION ?? this.INSTITUTION,
-      INSTITUTION_ID: INSTITUTION_ID ?? this.INSTITUTION_ID,
-      NEWS_ID: NEWS_ID ?? this.NEWS_ID,
       TITLE: TITLE ?? this.TITLE,
       URL: URL ?? this.URL,
       createdAt: createdAt ?? this.createdAt,
@@ -159,22 +159,22 @@ class InstitutionNewsTable {
   }
   
   InstitutionNewsTable copyWithModelFieldValues({
+    ModelFieldValue<String>? INSTITUTION_ID,
+    ModelFieldValue<String>? NEWS_ID,
     ModelFieldValue<String?>? CONTENT,
     ModelFieldValue<String?>? IMAGE,
     ModelFieldValue<String?>? INSTITUTION,
-    ModelFieldValue<String>? INSTITUTION_ID,
-    ModelFieldValue<String>? NEWS_ID,
     ModelFieldValue<String?>? TITLE,
     ModelFieldValue<String?>? URL,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
     return InstitutionNewsTable._internal(
+      INSTITUTION_ID: INSTITUTION_ID == null ? this.INSTITUTION_ID : INSTITUTION_ID.value,
+      NEWS_ID: NEWS_ID == null ? this.NEWS_ID : NEWS_ID.value,
       CONTENT: CONTENT == null ? this.CONTENT : CONTENT.value,
       IMAGE: IMAGE == null ? this.IMAGE : IMAGE.value,
       INSTITUTION: INSTITUTION == null ? this.INSTITUTION : INSTITUTION.value,
-      INSTITUTION_ID: INSTITUTION_ID == null ? this.INSTITUTION_ID : INSTITUTION_ID.value,
-      NEWS_ID: NEWS_ID == null ? this.NEWS_ID : NEWS_ID.value,
       TITLE: TITLE == null ? this.TITLE : TITLE.value,
       URL: URL == null ? this.URL : URL.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
@@ -183,26 +183,26 @@ class InstitutionNewsTable {
   }
   
   InstitutionNewsTable.fromJson(Map<String, dynamic> json)  
-    : _CONTENT = json['CONTENT'],
+    : _INSTITUTION_ID = json['INSTITUTION_ID'],
+      _NEWS_ID = json['NEWS_ID'],
+      _CONTENT = json['CONTENT'],
       _IMAGE = json['IMAGE'],
       _INSTITUTION = json['INSTITUTION'],
-      _INSTITUTION_ID = json['INSTITUTION_ID'],
-      _NEWS_ID = json['NEWS_ID'],
       _TITLE = json['TITLE'],
       _URL = json['URL'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'CONTENT': _CONTENT, 'IMAGE': _IMAGE, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'NEWS_ID': _NEWS_ID, 'TITLE': _TITLE, 'URL': _URL, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'INSTITUTION_ID': _INSTITUTION_ID, 'NEWS_ID': _NEWS_ID, 'CONTENT': _CONTENT, 'IMAGE': _IMAGE, 'INSTITUTION': _INSTITUTION, 'TITLE': _TITLE, 'URL': _URL, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
+    'INSTITUTION_ID': _INSTITUTION_ID,
+    'NEWS_ID': _NEWS_ID,
     'CONTENT': _CONTENT,
     'IMAGE': _IMAGE,
     'INSTITUTION': _INSTITUTION,
-    'INSTITUTION_ID': _INSTITUTION_ID,
-    'NEWS_ID': _NEWS_ID,
     'TITLE': _TITLE,
     'URL': _URL,
     'createdAt': _createdAt,
@@ -212,6 +212,18 @@ class InstitutionNewsTable {
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
     modelSchemaDefinition.name = "InstitutionNewsTable";
     modelSchemaDefinition.pluralName = "InstitutionNewsTables";
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'INSTITUTION_ID',
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'NEWS_ID',
+      isRequired: true,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'CONTENT',
@@ -228,18 +240,6 @@ class InstitutionNewsTable {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'INSTITUTION',
       isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'INSTITUTION_ID',
-      isRequired: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'NEWS_ID',
-      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     

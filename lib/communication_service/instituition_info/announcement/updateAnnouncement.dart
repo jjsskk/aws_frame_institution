@@ -60,8 +60,12 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
     // TODO: implement initState
     super.initState();
     _titleController.text = widget.announcement.TITLE!;
-    _contentController.text = widget.announcement.CONTENT!;
-    _urlController.text = widget.announcement.URL!;
+    widget.announcement.CONTENT != null
+        ? _contentController.text = widget.announcement.CONTENT!
+        : _contentController.text = "";
+    widget.announcement.URL != null
+        ? _contentController.text = widget.announcement.URL!
+        : _contentController.text = "";
   }
 
   @override
@@ -104,22 +108,24 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Image.file(_image!),
                 )
-              : widget.announcement.IMAGE!.isNotEmpty
-                  ? FutureBuilder<String>(
-                      future: _storageService
-                          .getImageUrlFromS3(widget.announcement.IMAGE!),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.hasData) {
-                          String imageUrl = snapshot.data!;
-                          return Image.network(imageUrl);
-                        } else if (snapshot.hasError) {
-                          return Text('이미지를 불러올 수 없습니다.');
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    )
+              : widget.announcement.IMAGE != null
+                  ? widget.announcement.IMAGE!.isNotEmpty
+                      ? FutureBuilder<String>(
+                          future: _storageService
+                              .getImageUrlFromS3(widget.announcement.IMAGE!),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData) {
+                              String imageUrl = snapshot.data!;
+                              return Image.network(imageUrl);
+                            } else if (snapshot.hasError) {
+                              return Text('이미지를 불러올 수 없습니다.');
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        )
+                      : Container()
                   : Container(),
           ElevatedButton(
             onPressed: () async {

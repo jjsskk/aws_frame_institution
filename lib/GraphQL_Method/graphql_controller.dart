@@ -534,10 +534,14 @@ class GraphQLController {
     }
   }
   Future<void> deleteFoodMenu({required String dateTime, required String institutionId}) async {
+
+    // dateTime = "202203";
+
     final row = {
       'DATE': dateTime,
-      'INSTITUTION_ID': institutionId,
+      'INSTITUTION_ID': institutionId
     };
+
     print("del");
     print(dateTime);
     print(institutionId);
@@ -635,6 +639,11 @@ class GraphQLController {
           safePrint('errors: ${response.errors}');
           return;
         }
+        if (updateData == null || jsonDecode(updateData!)['updateInstitutionFoodMenuTable'] ==
+            null) {
+          safePrint('errors: ${response.errors}');
+          return ;
+        }
         safePrint('Mutation result: ${updateData.toString()}');
       }
     } on ApiException catch (e) {
@@ -642,21 +651,20 @@ class GraphQLController {
     }
   }
 
-  Future<void> createShuttleTime(String dateTime, String imageUrl, String institutionId) async {
+  Future<void> createShuttleTime(String imageUrl, String institutionId) async {
     final row = {
-      'DATE': dateTime,
       'IMAGE_URL': imageUrl,
       'INSTITUTION_ID': institutionId,
       'createdAt' : '${TemporalDateTime.now()}',
       'updatedAt' : '${TemporalDateTime.now()}'
     };
+
     try {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation createInstitutionShuttleTImeTable(\$input: CreateInstitutionShuttleTImeTableInput!) {
-                  createInstitutionShuttleTImeTable(input: \$input) {
-                    DATE
+            mutation createInstitutionShuttleTimeTable(\$input: CreateInstitutionShuttleTimeTableInput!) {
+                  createInstitutionShuttleTimeTable(input: \$input) {
                     IMAGE_URL
                     INSTITUTION_ID
                     createdAt
@@ -675,8 +683,8 @@ class GraphQLController {
           safePrint('errors: ${response.errors}');
 
         }
-        if (createdData.toString() == "{\"createInstitutionShuttleTImeTable\":null}"){
-          return updateShuttleTime(dateTime, imageUrl, institutionId);
+        if (createdData.toString() == "{\"createInstitutionShuttleTimeTable\":null}"){
+          return updateShuttleTime(imageUrl, institutionId);
         }
         safePrint('Mutation result: ${createdData.toString()}');
       }
@@ -686,24 +694,21 @@ class GraphQLController {
   }
 
 
-  Future<void> deleteShuttleTime({required String dateTime, required String institutionId}) async {
+  Future<void> deleteShuttleTime({ required String institutionId}) async {
     final row = {
-      'DATE': dateTime,
       'INSTITUTION_ID': institutionId,
     };
 
     print("del");
-    print(dateTime);
     print(institutionId);
 
     try {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation deleteInstitutionShuttleTImeTable(\$input: DeleteInstitutionShuttleTImeTableInput!) {
-                  deleteInstitutionShuttleTImeTable(input: \$input) {
+            mutation deleteInstitutionShuttleTimeTable(\$input: DeleteInstitutionShuttleTimeTableInput!) {
+                  deleteInstitutionShuttleTimeTable(input: \$input) {
                     INSTITUTION_ID
-                    DATE
                }  
               }
             ''',
@@ -727,10 +732,9 @@ class GraphQLController {
   }
 
 
-  Future<void> updateShuttleTime(String dateTime, String imageUrl, String institutionId) async {
+  Future<void> updateShuttleTime(String imageUrl, String institutionId) async {
     //todo update날짜만 바꾸면 될 거 같은뎅..
     final row = {
-      'DATE': dateTime,
       'IMAGE_URL': imageUrl,
       'INSTITUTION_ID': institutionId,
       'createdAt' : '${TemporalDateTime.now()}',
@@ -740,9 +744,8 @@ class GraphQLController {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation updateInstitutionShuttleTImeTable(\$input: UpdateInstitutionShuttleTImeTableInput!) {
-                  updateInstitutionShuttleTImeTable(input: \$input) {
-                    DATE
+            mutation updateInstitutionShuttleTimeTable(\$input: UpdateInstitutionShuttleTimeTableInput!) {
+                  updateInstitutionShuttleTimeTable(input: \$input) {
                     IMAGE_URL
                     INSTITUTION_ID
                     createdAt
@@ -928,7 +931,8 @@ class GraphQLController {
       'USER_ID': userId,
       'INSTITUTION_ID': institutionId,
     };
-
+    print(userId);
+    print(institutionId);
     try {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
@@ -1054,17 +1058,15 @@ class GraphQLController {
     }
   }
 
-  Future<InstitutionShuttleTImeTable?> queryShuttleTimeByInstitutionId(String institutionId, String date) async {
+  Future<InstitutionShuttleTimeTable?> queryShuttleTimeByInstitutionId(String institutionId) async {
     print(institutionId);
-    print(date);
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
           document: """
-          query ListInstitutionShuttleTImeTables(\$INSTITUTION_ID: String, \$DATE: String) {
-            listInstitutionShuttleTImeTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}, DATE: {eq: \$DATE}}) {
+          query ListInstitutionShuttleTimeTables(\$INSTITUTION_ID: String) {
+            listInstitutionShuttleTimeTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}) {
               items {
-                DATE
                 INSTITUTION_ID
                 IMAGE_URL
                 createdAt
@@ -1075,16 +1077,15 @@ class GraphQLController {
         """,
           variables: {
             "INSTITUTION_ID": institutionId,
-            "DATE": date
           },
         ),
       );
       var response = await operation.response;
       print(response.data);
       var responseData = jsonDecode(response.data);
-      List<dynamic> items = responseData['listInstitutionShuttleTImeTables']['items'];
+      List<dynamic> items = responseData['listInstitutionShuttleTimeTables']['items'];
 
-      InstitutionShuttleTImeTable shuttleTime = InstitutionShuttleTImeTable.fromJson(items[0]);
+      InstitutionShuttleTimeTable shuttleTime = InstitutionShuttleTimeTable.fromJson(items[0]);
 
 
       if (shuttleTime == null) {
@@ -1101,7 +1102,7 @@ class GraphQLController {
   }
 
   //todo 봉인!!!
-  Future<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?> queryMonthlyDBItem() async {
+  Future<MonthlyBrainSignalTable?> queryMonthlyDBItem() async {
     try {
       var ID = '2';
 
@@ -1147,9 +1148,9 @@ class GraphQLController {
       print(response.data);
 
       Map<String, dynamic> json = jsonDecode(response.data);
-      MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging monthlyDBTest =
+      MonthlyBrainSignalTable monthlyDBTest =
           (json['listMonthlyDBTests']['items'] as List)
-              .map((item) => MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.fromJson(item))
+              .map((item) => MonthlyBrainSignalTable.fromJson(item))
               .toList()
               .first;
 
@@ -1169,8 +1170,8 @@ class GraphQLController {
   Future<void> createMonthlyData() async {
 
     final row = {
-      'id': "2",
-      'month': "20231101",
+      'id': "4",
+      'month': "20231201",
       'avg_att': Random().nextInt(100) + 1,
       'avg_med': Random().nextInt(100) + 1,
       'con_score': Random().nextInt(100) + 1,
@@ -1189,8 +1190,8 @@ class GraphQLController {
       final response = await Amplify.API.mutate(
         request: GraphQLRequest<String>(
           document: '''
-            mutation CreateMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging(\$input: CreateMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingInput!) {
-                  createMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging(input: \$input) {
+            mutation createMonthlyBrainSignalTable(\$input: CreateMonthlyBrainSignalTableInput!) {
+                  createMonthlyBrainSignalTable(input: \$input) {
                     id
                     month
                     avg_att
@@ -1632,15 +1633,16 @@ class GraphQLController {
   // //   }
   // // }
   //
-  Future<List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging?>> queryListMonthlyDBItems({required String ID}) async {
+  Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItems({required String ID}) async {
     try {
-      print("id");
+
       print(ID);
+
       var operation = Amplify.API.query(
         request: GraphQLRequest(
           document: """
-          query ListMonthlyDBTests(\$id: String) {
-            listMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings(
+          query listMonthlyBrainSignalTables(\$id: String) {
+            listMonthlyBrainSignalTables(
             filter: {id: {eq: \$id}}
             ) {
               items {
@@ -1678,12 +1680,12 @@ class GraphQLController {
 
       // Map<String, dynamic> json = jsonDecode(response.data);
       // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
-      List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging> monthlyDBTests =
-          (jsonDecode(response.data)['listMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings']['items'] as List)
-              .map((item) => MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.fromJson(item))
+      List<MonthlyBrainSignalTable> monthlyDBTests =
+          (jsonDecode(response.data)['listMonthlyBrainSignalTables']['items'] as List)
+              .map((item) => MonthlyBrainSignalTable.fromJson(item))
               .toList();
 
-      if (monthlyDBTests == null || jsonDecode(response.data)['listMonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagings']['items'] == null) {
+      if (monthlyDBTests == null || jsonDecode(response.data)['listMonthlyBrainSignalTables']['items'] == null) {
         safePrint('errors: ${response.errors}');
         return const [];
       }

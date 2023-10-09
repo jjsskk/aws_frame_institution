@@ -24,12 +24,12 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 import 'package:collection/collection.dart';
 
 
-/** This is an auto generated class representing the MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection type in your schema. */
-class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
-  final List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>? _items;
+/** This is an auto generated class representing the InstitutionCommentBoardTableConnection type in your schema. */
+class InstitutionCommentBoardTableConnection {
+  final List<InstitutionCommentBoardTable>? _items;
   final String? _nextToken;
 
-  List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>? get items {
+  List<InstitutionCommentBoardTable>? get items {
     return _items;
   }
   
@@ -37,11 +37,11 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
     return _nextToken;
   }
   
-  const MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection._internal({items, nextToken}): _items = items, _nextToken = nextToken;
+  const InstitutionCommentBoardTableConnection._internal({items, nextToken}): _items = items, _nextToken = nextToken;
   
-  factory MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection({List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>? items, String? nextToken}) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection._internal(
-      items: items != null ? List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>.unmodifiable(items) : items,
+  factory InstitutionCommentBoardTableConnection({List<InstitutionCommentBoardTable>? items, String? nextToken}) {
+    return InstitutionCommentBoardTableConnection._internal(
+      items: items != null ? List<InstitutionCommentBoardTable>.unmodifiable(items) : items,
       nextToken: nextToken);
   }
   
@@ -52,7 +52,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection &&
+    return other is InstitutionCommentBoardTableConnection &&
       DeepCollectionEquality().equals(_items, other._items) &&
       _nextToken == other._nextToken;
   }
@@ -64,7 +64,7 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {");
+    buffer.write("InstitutionCommentBoardTableConnection {");
     buffer.write("items=" + (_items != null ? _items!.toString() : "null") + ", ");
     buffer.write("nextToken=" + "$_nextToken");
     buffer.write("}");
@@ -72,33 +72,33 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
     return buffer.toString();
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection copyWith({List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>? items, String? nextToken}) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection._internal(
+  InstitutionCommentBoardTableConnection copyWith({List<InstitutionCommentBoardTable>? items, String? nextToken}) {
+    return InstitutionCommentBoardTableConnection._internal(
       items: items ?? this.items,
       nextToken: nextToken ?? this.nextToken);
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection copyWithModelFieldValues({
-    ModelFieldValue<List<MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging>?>? items,
+  InstitutionCommentBoardTableConnection copyWithModelFieldValues({
+    ModelFieldValue<List<InstitutionCommentBoardTable>?>? items,
     ModelFieldValue<String?>? nextToken
   }) {
-    return MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection._internal(
+    return InstitutionCommentBoardTableConnection._internal(
       items: items == null ? this.items : items.value,
       nextToken: nextToken == null ? this.nextToken : nextToken.value
     );
   }
   
-  MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection.fromJson(Map<String, dynamic> json)  
+  InstitutionCommentBoardTableConnection.fromJson(Map<String, dynamic> json)  
     : _items = json['items'] is List
         ? (json['items'] as List)
           .where((e) => e != null)
-          .map((e) => MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
+          .map((e) => InstitutionCommentBoardTable.fromJson(new Map<String, dynamic>.from(e['serializedData'])))
           .toList()
         : null,
       _nextToken = json['nextToken'];
   
   Map<String, dynamic> toJson() => {
-    'items': _items?.map((MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging? e) => e?.toJson()).toList(), 'nextToken': _nextToken
+    'items': _items?.map((InstitutionCommentBoardTable? e) => e?.toJson()).toList(), 'nextToken': _nextToken
   };
   
   Map<String, Object?> toMap() => {
@@ -107,14 +107,14 @@ class MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection {
   };
 
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnection";
-    modelSchemaDefinition.pluralName = "MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStagingConnections";
+    modelSchemaDefinition.name = "InstitutionCommentBoardTableConnection";
+    modelSchemaDefinition.pluralName = "InstitutionCommentBoardTableConnections";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.embedded(
       fieldName: 'items',
       isRequired: false,
       isArray: true,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.embeddedCollection, ofCustomTypeName: 'MonthlyDBTestMsoytcsvrreplapznkyt6lt6saStaging')
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.embeddedCollection, ofCustomTypeName: 'InstitutionCommentBoardTable')
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(

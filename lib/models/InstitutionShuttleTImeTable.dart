@@ -23,17 +23,16 @@ import 'ModelProvider.dart';
 import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 
-/** This is an auto generated class representing the InstitutionShuttleTImeTable type in your schema. */
-class InstitutionShuttleTImeTable {
-  final String? _DATE;
-  final String? _IMAGE_URL;
+/** This is an auto generated class representing the InstitutionShuttleTimeTable type in your schema. */
+class InstitutionShuttleTimeTable {
   final String? _INSTITUTION_ID;
+  final String? _IMAGE_URL;
   final amplify_core.TemporalDateTime? _createdAt;
   final amplify_core.TemporalDateTime? _updatedAt;
 
-  String get DATE {
+  String get INSTITUTION_ID {
     try {
-      return _DATE!;
+      return _INSTITUTION_ID!;
     } catch(e) {
       throw amplify_core.AmplifyCodeGenModelException(
           amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
@@ -48,19 +47,6 @@ class InstitutionShuttleTImeTable {
     return _IMAGE_URL;
   }
   
-  String get INSTITUTION_ID {
-    try {
-      return _INSTITUTION_ID!;
-    } catch(e) {
-      throw amplify_core.AmplifyCodeGenModelException(
-          amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastExceptionMessage,
-          recoverySuggestion:
-            amplify_core.AmplifyExceptionMessages.codeGenRequiredFieldForceCastRecoverySuggestion,
-          underlyingException: e.toString()
-          );
-    }
-  }
-  
   amplify_core.TemporalDateTime? get createdAt {
     return _createdAt;
   }
@@ -69,13 +55,12 @@ class InstitutionShuttleTImeTable {
     return _updatedAt;
   }
   
-  const InstitutionShuttleTImeTable._internal({required DATE, IMAGE_URL, required INSTITUTION_ID, createdAt, updatedAt}): _DATE = DATE, _IMAGE_URL = IMAGE_URL, _INSTITUTION_ID = INSTITUTION_ID, _createdAt = createdAt, _updatedAt = updatedAt;
+  const InstitutionShuttleTimeTable._internal({required INSTITUTION_ID, IMAGE_URL, createdAt, updatedAt}): _INSTITUTION_ID = INSTITUTION_ID, _IMAGE_URL = IMAGE_URL, _createdAt = createdAt, _updatedAt = updatedAt;
   
-  factory InstitutionShuttleTImeTable({required String DATE, String? IMAGE_URL, required String INSTITUTION_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return InstitutionShuttleTImeTable._internal(
-      DATE: DATE,
-      IMAGE_URL: IMAGE_URL,
+  factory InstitutionShuttleTimeTable({required String INSTITUTION_ID, String? IMAGE_URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return InstitutionShuttleTimeTable._internal(
       INSTITUTION_ID: INSTITUTION_ID,
+      IMAGE_URL: IMAGE_URL,
       createdAt: createdAt,
       updatedAt: updatedAt);
   }
@@ -87,10 +72,9 @@ class InstitutionShuttleTImeTable {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is InstitutionShuttleTImeTable &&
-      _DATE == other._DATE &&
-      _IMAGE_URL == other._IMAGE_URL &&
+    return other is InstitutionShuttleTimeTable &&
       _INSTITUTION_ID == other._INSTITUTION_ID &&
+      _IMAGE_URL == other._IMAGE_URL &&
       _createdAt == other._createdAt &&
       _updatedAt == other._updatedAt;
   }
@@ -102,10 +86,9 @@ class InstitutionShuttleTImeTable {
   String toString() {
     var buffer = new StringBuffer();
     
-    buffer.write("InstitutionShuttleTImeTable {");
-    buffer.write("DATE=" + "$_DATE" + ", ");
-    buffer.write("IMAGE_URL=" + "$_IMAGE_URL" + ", ");
+    buffer.write("InstitutionShuttleTimeTable {");
     buffer.write("INSTITUTION_ID=" + "$_INSTITUTION_ID" + ", ");
+    buffer.write("IMAGE_URL=" + "$_IMAGE_URL" + ", ");
     buffer.write("createdAt=" + (_createdAt != null ? _createdAt!.format() : "null") + ", ");
     buffer.write("updatedAt=" + (_updatedAt != null ? _updatedAt!.format() : "null"));
     buffer.write("}");
@@ -113,56 +96,51 @@ class InstitutionShuttleTImeTable {
     return buffer.toString();
   }
   
-  InstitutionShuttleTImeTable copyWith({String? DATE, String? IMAGE_URL, String? INSTITUTION_ID, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
-    return InstitutionShuttleTImeTable._internal(
-      DATE: DATE ?? this.DATE,
-      IMAGE_URL: IMAGE_URL ?? this.IMAGE_URL,
+  InstitutionShuttleTimeTable copyWith({String? INSTITUTION_ID, String? IMAGE_URL, amplify_core.TemporalDateTime? createdAt, amplify_core.TemporalDateTime? updatedAt}) {
+    return InstitutionShuttleTimeTable._internal(
       INSTITUTION_ID: INSTITUTION_ID ?? this.INSTITUTION_ID,
+      IMAGE_URL: IMAGE_URL ?? this.IMAGE_URL,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt);
   }
   
-  InstitutionShuttleTImeTable copyWithModelFieldValues({
-    ModelFieldValue<String>? DATE,
-    ModelFieldValue<String?>? IMAGE_URL,
+  InstitutionShuttleTimeTable copyWithModelFieldValues({
     ModelFieldValue<String>? INSTITUTION_ID,
+    ModelFieldValue<String?>? IMAGE_URL,
     ModelFieldValue<amplify_core.TemporalDateTime?>? createdAt,
     ModelFieldValue<amplify_core.TemporalDateTime?>? updatedAt
   }) {
-    return InstitutionShuttleTImeTable._internal(
-      DATE: DATE == null ? this.DATE : DATE.value,
-      IMAGE_URL: IMAGE_URL == null ? this.IMAGE_URL : IMAGE_URL.value,
+    return InstitutionShuttleTimeTable._internal(
       INSTITUTION_ID: INSTITUTION_ID == null ? this.INSTITUTION_ID : INSTITUTION_ID.value,
+      IMAGE_URL: IMAGE_URL == null ? this.IMAGE_URL : IMAGE_URL.value,
       createdAt: createdAt == null ? this.createdAt : createdAt.value,
       updatedAt: updatedAt == null ? this.updatedAt : updatedAt.value
     );
   }
   
-  InstitutionShuttleTImeTable.fromJson(Map<String, dynamic> json)  
-    : _DATE = json['DATE'],
+  InstitutionShuttleTimeTable.fromJson(Map<String, dynamic> json)  
+    : _INSTITUTION_ID = json['INSTITUTION_ID'],
       _IMAGE_URL = json['IMAGE_URL'],
-      _INSTITUTION_ID = json['INSTITUTION_ID'],
       _createdAt = json['createdAt'] != null ? amplify_core.TemporalDateTime.fromString(json['createdAt']) : null,
       _updatedAt = json['updatedAt'] != null ? amplify_core.TemporalDateTime.fromString(json['updatedAt']) : null;
   
   Map<String, dynamic> toJson() => {
-    'DATE': _DATE, 'IMAGE_URL': _IMAGE_URL, 'INSTITUTION_ID': _INSTITUTION_ID, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
+    'INSTITUTION_ID': _INSTITUTION_ID, 'IMAGE_URL': _IMAGE_URL, 'createdAt': _createdAt?.format(), 'updatedAt': _updatedAt?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'DATE': _DATE,
-    'IMAGE_URL': _IMAGE_URL,
     'INSTITUTION_ID': _INSTITUTION_ID,
+    'IMAGE_URL': _IMAGE_URL,
     'createdAt': _createdAt,
     'updatedAt': _updatedAt
   };
 
   static var schema = amplify_core.Model.defineSchema(define: (amplify_core.ModelSchemaDefinition modelSchemaDefinition) {
-    modelSchemaDefinition.name = "InstitutionShuttleTImeTable";
-    modelSchemaDefinition.pluralName = "InstitutionShuttleTImeTables";
+    modelSchemaDefinition.name = "InstitutionShuttleTimeTable";
+    modelSchemaDefinition.pluralName = "InstitutionShuttleTimeTables";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'DATE',
+      fieldName: 'INSTITUTION_ID',
       isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
@@ -170,12 +148,6 @@ class InstitutionShuttleTImeTable {
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
       fieldName: 'IMAGE_URL',
       isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'INSTITUTION_ID',
-      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     

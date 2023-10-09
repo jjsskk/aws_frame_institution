@@ -82,7 +82,6 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
               String imageUrl = await uploadImageToS3(_image);
 
               await gql.createShuttleTime(
-                "20200303",
                 imageUrl,
                 "INST_ID_123",
               );

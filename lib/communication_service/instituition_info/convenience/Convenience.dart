@@ -24,7 +24,6 @@ class _ConveniencePageState extends State<ConveniencePage> {
   String FOOD_DATETIME = '';
   String SHUTTLE_IMAGE_URL = '';
   String SHUTTLE_INSTITUTION_ID = '';
-  String SHUTTLE_DATETIME = '';
 
   void getFoodMenu() {
     gql.queryFoodMenuByInstitutionIdAndDate("INST_ID_123", date).then((value) {
@@ -49,12 +48,12 @@ class _ConveniencePageState extends State<ConveniencePage> {
   }
 
   void getShuttleTime() {
-    gql.queryShuttleTimeByInstitutionId("INST_ID_123", "20200303").then((value) {
+    gql.queryShuttleTimeByInstitutionId("INST_ID_123").then((value) {
       if (value != null) {
         setState(() {
           SHUTTLE_IMAGE_URL = value.IMAGE_URL;
           SHUTTLE_INSTITUTION_ID = value.INSTITUTION_ID;
-          SHUTTLE_DATETIME = value.DATE;
+
         });
       } else {
         setState(() {
@@ -149,7 +148,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               },
                             ),
                             IconButton(onPressed: (){
-                              gql.deleteFoodMenu(dateTime: FOOD_INSTITUTION_ID,institutionId: FOOD_DATETIME);
+                              gql.deleteFoodMenu(dateTime: FOOD_DATETIME ,institutionId: FOOD_INSTITUTION_ID);
 
                             }, icon: Icon(Icons.delete),
                               color: appBarColor,),
@@ -234,7 +233,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                   }, // 기능 구현
                                 ),
                                 IconButton(onPressed: () async {
-                                  await gql.deleteShuttleTime(dateTime: SHUTTLE_INSTITUTION_ID,institutionId: SHUTTLE_DATETIME);
+                                  await gql.deleteShuttleTime(institutionId: SHUTTLE_INSTITUTION_ID);
                                   setState(() {
                                     getShuttleTime();
                                   });

@@ -25,23 +25,15 @@ import 'package:amplify_core/amplify_core.dart' as amplify_core;
 
 /** This is an auto generated class representing the UserTable type in your schema. */
 class UserTable {
-  final String? _BIRTH;
-  final amplify_core.TemporalDateTime? _CREATEDAT;
   final String? _ID;
+  final String? _BIRTH;
   final String? _INSTITUTION;
   final String? _INSTITUTION_ID;
   final String? _NAME;
   final String? _SEX;
+  final amplify_core.TemporalDateTime? _CREATEDAT;
   final amplify_core.TemporalDateTime? _UPDATEDAT;
 
-  String? get BIRTH {
-    return _BIRTH;
-  }
-  
-  amplify_core.TemporalDateTime? get CREATEDAT {
-    return _CREATEDAT;
-  }
-  
   String get ID {
     try {
       return _ID!;
@@ -53,6 +45,10 @@ class UserTable {
           underlyingException: e.toString()
           );
     }
+  }
+  
+  String? get BIRTH {
+    return _BIRTH;
   }
   
   String? get INSTITUTION {
@@ -71,21 +67,25 @@ class UserTable {
     return _SEX;
   }
   
+  amplify_core.TemporalDateTime? get CREATEDAT {
+    return _CREATEDAT;
+  }
+  
   amplify_core.TemporalDateTime? get UPDATEDAT {
     return _UPDATEDAT;
   }
   
-  const UserTable._internal({BIRTH, CREATEDAT, required ID, INSTITUTION, INSTITUTION_ID, NAME, SEX, UPDATEDAT}): _BIRTH = BIRTH, _CREATEDAT = CREATEDAT, _ID = ID, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _NAME = NAME, _SEX = SEX, _UPDATEDAT = UPDATEDAT;
+  const UserTable._internal({required ID, BIRTH, INSTITUTION, INSTITUTION_ID, NAME, SEX, CREATEDAT, UPDATEDAT}): _ID = ID, _BIRTH = BIRTH, _INSTITUTION = INSTITUTION, _INSTITUTION_ID = INSTITUTION_ID, _NAME = NAME, _SEX = SEX, _CREATEDAT = CREATEDAT, _UPDATEDAT = UPDATEDAT;
   
-  factory UserTable({String? BIRTH, amplify_core.TemporalDateTime? CREATEDAT, required String ID, String? INSTITUTION, String? INSTITUTION_ID, String? NAME, String? SEX, amplify_core.TemporalDateTime? UPDATEDAT}) {
+  factory UserTable({required String ID, String? BIRTH, String? INSTITUTION, String? INSTITUTION_ID, String? NAME, String? SEX, amplify_core.TemporalDateTime? CREATEDAT, amplify_core.TemporalDateTime? UPDATEDAT}) {
     return UserTable._internal(
-      BIRTH: BIRTH,
-      CREATEDAT: CREATEDAT,
       ID: ID,
+      BIRTH: BIRTH,
       INSTITUTION: INSTITUTION,
       INSTITUTION_ID: INSTITUTION_ID,
       NAME: NAME,
       SEX: SEX,
+      CREATEDAT: CREATEDAT,
       UPDATEDAT: UPDATEDAT);
   }
   
@@ -97,13 +97,13 @@ class UserTable {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is UserTable &&
-      _BIRTH == other._BIRTH &&
-      _CREATEDAT == other._CREATEDAT &&
       _ID == other._ID &&
+      _BIRTH == other._BIRTH &&
       _INSTITUTION == other._INSTITUTION &&
       _INSTITUTION_ID == other._INSTITUTION_ID &&
       _NAME == other._NAME &&
       _SEX == other._SEX &&
+      _CREATEDAT == other._CREATEDAT &&
       _UPDATEDAT == other._UPDATEDAT;
   }
   
@@ -115,75 +115,75 @@ class UserTable {
     var buffer = new StringBuffer();
     
     buffer.write("UserTable {");
-    buffer.write("BIRTH=" + "$_BIRTH" + ", ");
-    buffer.write("CREATEDAT=" + (_CREATEDAT != null ? _CREATEDAT!.format() : "null") + ", ");
     buffer.write("ID=" + "$_ID" + ", ");
+    buffer.write("BIRTH=" + "$_BIRTH" + ", ");
     buffer.write("INSTITUTION=" + "$_INSTITUTION" + ", ");
     buffer.write("INSTITUTION_ID=" + "$_INSTITUTION_ID" + ", ");
     buffer.write("NAME=" + "$_NAME" + ", ");
     buffer.write("SEX=" + "$_SEX" + ", ");
+    buffer.write("CREATEDAT=" + (_CREATEDAT != null ? _CREATEDAT!.format() : "null") + ", ");
     buffer.write("UPDATEDAT=" + (_UPDATEDAT != null ? _UPDATEDAT!.format() : "null"));
     buffer.write("}");
     
     return buffer.toString();
   }
   
-  UserTable copyWith({String? BIRTH, amplify_core.TemporalDateTime? CREATEDAT, String? ID, String? INSTITUTION, String? INSTITUTION_ID, String? NAME, String? SEX, amplify_core.TemporalDateTime? UPDATEDAT}) {
+  UserTable copyWith({String? ID, String? BIRTH, String? INSTITUTION, String? INSTITUTION_ID, String? NAME, String? SEX, amplify_core.TemporalDateTime? CREATEDAT, amplify_core.TemporalDateTime? UPDATEDAT}) {
     return UserTable._internal(
-      BIRTH: BIRTH ?? this.BIRTH,
-      CREATEDAT: CREATEDAT ?? this.CREATEDAT,
       ID: ID ?? this.ID,
+      BIRTH: BIRTH ?? this.BIRTH,
       INSTITUTION: INSTITUTION ?? this.INSTITUTION,
       INSTITUTION_ID: INSTITUTION_ID ?? this.INSTITUTION_ID,
       NAME: NAME ?? this.NAME,
       SEX: SEX ?? this.SEX,
+      CREATEDAT: CREATEDAT ?? this.CREATEDAT,
       UPDATEDAT: UPDATEDAT ?? this.UPDATEDAT);
   }
   
   UserTable copyWithModelFieldValues({
-    ModelFieldValue<String?>? BIRTH,
-    ModelFieldValue<amplify_core.TemporalDateTime?>? CREATEDAT,
     ModelFieldValue<String>? ID,
+    ModelFieldValue<String?>? BIRTH,
     ModelFieldValue<String?>? INSTITUTION,
     ModelFieldValue<String?>? INSTITUTION_ID,
     ModelFieldValue<String?>? NAME,
     ModelFieldValue<String?>? SEX,
+    ModelFieldValue<amplify_core.TemporalDateTime?>? CREATEDAT,
     ModelFieldValue<amplify_core.TemporalDateTime?>? UPDATEDAT
   }) {
     return UserTable._internal(
-      BIRTH: BIRTH == null ? this.BIRTH : BIRTH.value,
-      CREATEDAT: CREATEDAT == null ? this.CREATEDAT : CREATEDAT.value,
       ID: ID == null ? this.ID : ID.value,
+      BIRTH: BIRTH == null ? this.BIRTH : BIRTH.value,
       INSTITUTION: INSTITUTION == null ? this.INSTITUTION : INSTITUTION.value,
       INSTITUTION_ID: INSTITUTION_ID == null ? this.INSTITUTION_ID : INSTITUTION_ID.value,
       NAME: NAME == null ? this.NAME : NAME.value,
       SEX: SEX == null ? this.SEX : SEX.value,
+      CREATEDAT: CREATEDAT == null ? this.CREATEDAT : CREATEDAT.value,
       UPDATEDAT: UPDATEDAT == null ? this.UPDATEDAT : UPDATEDAT.value
     );
   }
   
   UserTable.fromJson(Map<String, dynamic> json)  
-    : _BIRTH = json['BIRTH'],
-      _CREATEDAT = json['CREATEDAT'] != null ? amplify_core.TemporalDateTime.fromString(json['CREATEDAT']) : null,
-      _ID = json['ID'],
+    : _ID = json['ID'],
+      _BIRTH = json['BIRTH'],
       _INSTITUTION = json['INSTITUTION'],
       _INSTITUTION_ID = json['INSTITUTION_ID'],
       _NAME = json['NAME'],
       _SEX = json['SEX'],
+      _CREATEDAT = json['CREATEDAT'] != null ? amplify_core.TemporalDateTime.fromString(json['CREATEDAT']) : null,
       _UPDATEDAT = json['UPDATEDAT'] != null ? amplify_core.TemporalDateTime.fromString(json['UPDATEDAT']) : null;
   
   Map<String, dynamic> toJson() => {
-    'BIRTH': _BIRTH, 'CREATEDAT': _CREATEDAT?.format(), 'ID': _ID, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'NAME': _NAME, 'SEX': _SEX, 'UPDATEDAT': _UPDATEDAT?.format()
+    'ID': _ID, 'BIRTH': _BIRTH, 'INSTITUTION': _INSTITUTION, 'INSTITUTION_ID': _INSTITUTION_ID, 'NAME': _NAME, 'SEX': _SEX, 'CREATEDAT': _CREATEDAT?.format(), 'UPDATEDAT': _UPDATEDAT?.format()
   };
   
   Map<String, Object?> toMap() => {
-    'BIRTH': _BIRTH,
-    'CREATEDAT': _CREATEDAT,
     'ID': _ID,
+    'BIRTH': _BIRTH,
     'INSTITUTION': _INSTITUTION,
     'INSTITUTION_ID': _INSTITUTION_ID,
     'NAME': _NAME,
     'SEX': _SEX,
+    'CREATEDAT': _CREATEDAT,
     'UPDATEDAT': _UPDATEDAT
   };
 
@@ -192,20 +192,14 @@ class UserTable {
     modelSchemaDefinition.pluralName = "UserTables";
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'BIRTH',
-      isRequired: false,
+      fieldName: 'ID',
+      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'CREATEDAT',
+      fieldName: 'BIRTH',
       isRequired: false,
-      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
-    ));
-    
-    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
-      fieldName: 'ID',
-      isRequired: true,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
     ));
     
@@ -231,6 +225,12 @@ class UserTable {
       fieldName: 'SEX',
       isRequired: false,
       ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.string)
+    ));
+    
+    modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(
+      fieldName: 'CREATEDAT',
+      isRequired: false,
+      ofType: amplify_core.ModelFieldType(amplify_core.ModelFieldTypeEnum.dateTime)
     ));
     
     modelSchemaDefinition.addField(amplify_core.ModelFieldDefinition.customTypeField(

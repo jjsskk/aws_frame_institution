@@ -51,6 +51,7 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
                     ),
                     subtitle: Text(getYearMonthDay(news.createdAt.toString())),
                     onTap: () {
+
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -111,10 +112,11 @@ class InstitutionNewsDetailPage extends StatelessWidget {
               SizedBox(height: 16),
               Text('작성일: ' + getYearMonthDay(news.createdAt.toString())),
               SizedBox(height: 16),
-              Text(news.CONTENT!),
+              news.CONTENT != null ? Text(news.CONTENT!) : Text(""),
               SizedBox(height: 16),
-              Text(news.URL!),
+              news.URL != null ? Text(news.CONTENT!) : Text(""),
               SizedBox(height: 16),
+              if(news.IMAGE !=null)
               if (news.IMAGE!.isNotEmpty)
                 FutureBuilder<String>(
                   future: storageService.getImageUrlFromS3(news.IMAGE!),

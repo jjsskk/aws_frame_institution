@@ -111,10 +111,11 @@ class AnnouncementDetailPage extends StatelessWidget {
               SizedBox(height: 16),
               Text('작성일: ' + getYearMonthDay(announcement.createdAt.toString())),
               SizedBox(height: 16),
-              Text(announcement.CONTENT!),
+              announcement.CONTENT != null ? Text(announcement.CONTENT!) : Text(""),
               SizedBox(height: 16),
-              Text(announcement.URL!),
+              announcement.URL != null ? Text(announcement.CONTENT!) : Text(""),
               SizedBox(height: 16),
+              if(announcement.IMAGE !=null)
               if (announcement.IMAGE!.isNotEmpty)
                 FutureBuilder<String>(
                   future: storageService.getImageUrlFromS3(announcement.IMAGE!),

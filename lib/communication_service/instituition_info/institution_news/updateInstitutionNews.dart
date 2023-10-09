@@ -10,10 +10,14 @@ import '../institution_information.dart';
 class updateInstitutionNewsPage extends StatefulWidget {
   final InstitutionNewsTable news;
   final StorageService storageService;
-  const updateInstitutionNewsPage({Key? key, required this.news, required this.storageService}) : super(key: key);
+
+  const updateInstitutionNewsPage(
+      {Key? key, required this.news, required this.storageService})
+      : super(key: key);
 
   @override
-  _updateInstitutionNewsPageState createState() => _updateInstitutionNewsPageState();
+  _updateInstitutionNewsPageState createState() =>
+      _updateInstitutionNewsPageState();
 }
 
 class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
@@ -44,18 +48,21 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
     }
     String imagePath = image.path;
 
-
-    String imageUrl = await _storageService.uploadImageAtPathUrlProtected(imagePath);
+    String imageUrl =
+        await _storageService.uploadImageAtPathUrlProtected(imagePath);
     return imageUrl;
-
   }
 
   void initState() {
     // TODO: implement initState
     super.initState();
     _titleController.text = widget.news.TITLE!;
-    _contentController.text = widget.news.CONTENT!;
-    _urlController.text = widget.news.URL!;
+    widget.news.CONTENT != null
+        ? _contentController.text = widget.news.CONTENT!
+        : _contentController.text = "";
+    widget.news.URL != null
+        ? _contentController.text = widget.news.URL!
+        : _contentController.text = "";
   }
 
   @override
@@ -95,26 +102,28 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
           ),
           _image != null
               ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Image.file(_image!),
-          )
-              : widget.news.IMAGE!.isNotEmpty
-              ? FutureBuilder<String>(
-            future: _storageService
-                .getImageUrlFromS3(widget.news.IMAGE!),
-            builder: (BuildContext context,
-                AsyncSnapshot<String> snapshot) {
-              if (snapshot.hasData) {
-                String imageUrl = snapshot.data!;
-                return Image.network(imageUrl);
-              } else if (snapshot.hasError) {
-                return Text('이미지를 불러올 수 없습니다.');
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
-          )
-              : Container(),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: Image.file(_image!),
+                )
+              : widget.news.IMAGE != null
+                  ? widget.news.IMAGE!.isNotEmpty
+                      ? FutureBuilder<String>(
+                          future: _storageService
+                              .getImageUrlFromS3(widget.news.IMAGE!),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData) {
+                              String imageUrl = snapshot.data!;
+                              return Image.network(imageUrl);
+                            } else if (snapshot.hasError) {
+                              return Text('이미지를 불러올 수 없습니다.');
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        )
+                      : Container()
+                  : Container(),
           ElevatedButton(
             onPressed: () async {
               // TODO: AWS S3에 이미지 업로드
@@ -134,7 +143,6 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 url: _urlController.text,
               );
 
-
               Navigator.pop(context);
             },
             child: Text('완료'),
@@ -143,5 +151,4 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
       ),
     );
   }
-
 }
