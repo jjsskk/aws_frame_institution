@@ -28,8 +28,12 @@ import 'InstitutionCommentConversationTable.dart';
 import 'InstitutionCommentConversationTableConnection.dart';
 import 'InstitutionEssentialCareTable.dart';
 import 'InstitutionEssentialCareTableConnection.dart';
+import 'InstitutionEventScheduleTable.dart';
+import 'InstitutionEventScheduleTableConnection.dart';
 import 'InstitutionFoodMenuTable.dart';
 import 'InstitutionFoodMenuTableConnection.dart';
+import 'InstitutionFoodTable.dart';
+import 'InstitutionFoodTableConnection.dart';
 import 'InstitutionNewsTable.dart';
 import 'InstitutionNewsTableConnection.dart';
 import 'InstitutionScheduleTable.dart';
@@ -49,8 +53,12 @@ export 'InstitutionCommentConversationTable.dart';
 export 'InstitutionCommentConversationTableConnection.dart';
 export 'InstitutionEssentialCareTable.dart';
 export 'InstitutionEssentialCareTableConnection.dart';
+export 'InstitutionEventScheduleTable.dart';
+export 'InstitutionEventScheduleTableConnection.dart';
 export 'InstitutionFoodMenuTable.dart';
 export 'InstitutionFoodMenuTableConnection.dart';
+export 'InstitutionFoodTable.dart';
+export 'InstitutionFoodTableConnection.dart';
 export 'InstitutionNewsTable.dart';
 export 'InstitutionNewsTableConnection.dart';
 export 'InstitutionScheduleTable.dart';
@@ -64,11 +72,11 @@ export 'UserTableConnection.dart';
 
 class ModelProvider implements amplify_core.ModelProviderInterface {
   @override
-  String version = "78255b038971d5d8fe63745f5e1370d6";
+  String version = "cc46cd30fd16005e0a143b0792efb98f";
   @override
   List<amplify_core.ModelSchema> modelSchemas = [];
   @override
-  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionCommentBoardTable.schema, InstitutionCommentBoardTableConnection.schema, InstitutionCommentConversationTable.schema, InstitutionCommentConversationTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTimeTable.schema, InstitutionShuttleTimeTableConnection.schema, MonthlyBrainSignalTable.schema, MonthlyBrainSignalTableConnection.schema, UserTable.schema, UserTableConnection.schema];
+  List<amplify_core.ModelSchema> customTypeSchemas = [InstitutionAnnouncementTable.schema, InstitutionAnnouncementTableConnection.schema, InstitutionCommentBoardTable.schema, InstitutionCommentBoardTableConnection.schema, InstitutionCommentConversationTable.schema, InstitutionCommentConversationTableConnection.schema, InstitutionEssentialCareTable.schema, InstitutionEssentialCareTableConnection.schema, InstitutionEventScheduleTable.schema, InstitutionEventScheduleTableConnection.schema, InstitutionFoodMenuTable.schema, InstitutionFoodMenuTableConnection.schema, InstitutionFoodTable.schema, InstitutionFoodTableConnection.schema, InstitutionNewsTable.schema, InstitutionNewsTableConnection.schema, InstitutionScheduleTable.schema, InstitutionScheduleTableConnection.schema, InstitutionShuttleTimeTable.schema, InstitutionShuttleTimeTableConnection.schema, MonthlyBrainSignalTable.schema, MonthlyBrainSignalTableConnection.schema, UserTable.schema, UserTableConnection.schema];
   static final ModelProvider _instance = ModelProvider();
 
   static ModelProvider get instance => _instance;

@@ -101,7 +101,7 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = await uploadImageToS3(_image);
 
-              await gql.createFoodMenu(
+              var result = await gql.createFood(
                   date,
                   imageUrl,
                   "INST_ID_123",
@@ -110,7 +110,7 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
               print(imageUrl);
 
 
-              Navigator.pop(context);
+              Navigator.pop(context, result);
             },
             child: Text('완료'),
           ),

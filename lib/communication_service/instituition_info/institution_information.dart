@@ -2,6 +2,8 @@ import 'package:aws_frame_institution/communication_service/instituition_info/sc
 import 'package:aws_frame_institution/communication_service/instituition_info/schedule/schedule.dart';
 import 'package:flutter/material.dart';
 
+import '../../GraphQL_Method/graphql_controller.dart';
+import '../../models/InstitutionAnnouncementTable.dart';
 import 'announcement/AddAnnouncement.dart';
 import 'institution_news/AddInstitutionNews.dart';
 import 'convenience/Convenience.dart';
@@ -19,6 +21,7 @@ class InstitutionInfoPage extends StatefulWidget {
 class _InstitutionInfoPageState extends State<InstitutionInfoPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final gql = GraphQLController.Obj;
 
   @override
   void initState() {
@@ -41,20 +44,18 @@ class _InstitutionInfoPageState extends State<InstitutionInfoPage>
 
   void _onCreateIconPressed(BuildContext context) {
     if (_tabController.index == 0) {
-
       Navigator.push<bool>(
         context,
         MaterialPageRoute(builder: (context) => AddAnnouncementPage()),
       ).then((value) {
         if (value == true) {
-          // 공지사항이 성공적으로 추가되었다면 상태 업데이트
           setState(() {
+            // 공지사항이 성공적으로 추가되었다면 상태 업데이트(다시 데이터 로딩)
             AnnouncementPage();
             print("oooo");
           });
         }
       });
-
     } else if (_tabController.index == 1) {
       Navigator.push(
         context,

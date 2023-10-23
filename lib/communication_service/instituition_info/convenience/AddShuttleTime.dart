@@ -81,15 +81,13 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = await uploadImageToS3(_image);
 
-              await gql.createShuttleTime(
+              var result = await gql.createShuttleTime(
                 imageUrl,
                 "INST_ID_123",
               );
 
-              print(imageUrl);
 
-
-              Navigator.pop(context);
+              Navigator.pop(context, result);
             },
             child: Text('완료'),
           ),

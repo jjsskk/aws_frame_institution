@@ -11,11 +11,15 @@ import 'package:amplify_analytics_pinpoint/amplify_analytics_pinpoint.dart';
 import 'package:aws_frame_institution/amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:aws_frame_institution/home/home_page.dart';
+import 'package:provider/provider.dart';
+import '../models/InstitutionAnnouncementTable.dart';
 
 class LoginState extends ChangeNotifier {
   // final _authService = AuthService();
   // final _amplify = Amplify;
   late var _authService;
+
+
 
   set authService(value) {
     _authService = value;
@@ -23,7 +27,7 @@ class LoginState extends ChangeNotifier {
 
   get authService => _authService;
 
-  // protector's attribute info
+  // institution's attribute info
   String _managerEmail = '';
   String _managerName = '';
   String _managerPhonenumber = '';
@@ -68,6 +72,25 @@ class LoginState extends ChangeNotifier {
     _institutionNumber = value;
   }
 
+  //announcement
+  bool _isannounceUpdated = false;
+
+  bool get isannounceUpdated => _isannounceUpdated;
+
+  void announceUpdate() {
+    _isannounceUpdated = !_isannounceUpdated;
+    notifyListeners(); // 프로바이더 변경 사항을 감지하는 리스너들에게 알립니다.
+  }
+
+  //mews
+  bool _isnewsUpdated = false;
+
+  bool get isNewsUpdated => _isnewsUpdated;
+
+  void newsUpdate() {
+    _isnewsUpdated = !isNewsUpdated;
+    notifyListeners(); // 프로바이더 변경 사항을 감지하는 리스너들에게 알립니다.
+  }
 
 
 

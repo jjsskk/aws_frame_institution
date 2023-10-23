@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
+import '../../../provider/login_state.dart';
 import '../../../storage/storage_service.dart';
 import '../institution_information.dart';
+import 'package:provider/provider.dart';
 
 class updateInstitutionNewsPage extends StatefulWidget {
   final InstitutionNewsTable news;
@@ -133,7 +135,7 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                   ? imageUrl = await uploadImageToS3(_image)
                   : imageUrl = widget.news.IMAGE!;
 
-              await gql.updateInstitutionNews(
+              var result = await gql.updateInstitutionNews(
                 newsId: widget.news.NEWS_ID,
                 content: _contentController.text,
                 image: imageUrl,
@@ -142,6 +144,12 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 title: _titleController.text,
                 url: _urlController.text,
               );
+
+              if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                // Provider에 새 공지사항 추가
+                Provider.of<LoginState>(context, listen: false).newsUpdate();
+              }
 
               Navigator.pop(context);
             },

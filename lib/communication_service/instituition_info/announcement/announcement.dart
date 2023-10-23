@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../models/InstitutionAnnouncementTable.dart';
+import '../../../provider/login_state.dart';
 import '../../../storage/storage_service.dart';
+import 'package:provider/provider.dart';
 
 class AnnouncementPage extends StatefulWidget {
   const AnnouncementPage({Key? key}) : super(key: key);
@@ -16,11 +18,42 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   late Future<List<InstitutionAnnouncementTable>> _announcements;
   final gql = GraphQLController.Obj;
   final storageService = StorageService();
+  late LoginState announcementProvider;
+
+  Future<List<InstitutionAnnouncementTable>> getAnnouncements(
+      String institutionId) {
+    return gql.queryInstitutionAnnouncementsByInstitutionId(
+        institutionId: institutionId);
+  }
+
+  void refresh() {
+    if (mounted) {
+      // 해당 State 객체가 현재 트리에 마운트되어 있는지 확인
+      setState(() {
+        _announcements = getAnnouncements("INST_ID_123");
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Remove the listener when the widget is disposed.
+    announcementProvider.removeListener(refresh);
+  }
 
   @override
   void initState() {
     super.initState();
-    _announcements = gql.queryInstitutionAnnouncementsByInstitutionId("INST_ID_123");
+
+    // 초기 데이터 로딩
+    _announcements = getAnnouncements("INST_ID_123");
+
+    // Provider 구독 설정
+    announcementProvider = Provider.of<LoginState>(context, listen: false);
+
+    // isUpdated 값 변경 감지 -> 데이터 새로 불러오기
+    announcementProvider.addListener(refresh);
   }
 
   String getYearMonthDay(String dateString) {
@@ -30,7 +63,6 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: FutureBuilder<List<InstitutionAnnouncementTable>>(
         future: _announcements,
         builder: (context, snapshot) {
@@ -45,15 +77,19 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
                 final announcement = snapshot.data![index];
                 return Card(
                   child: ListTile(
-                    title: Text(announcement.TITLE!,
+                    title: Text(
+                      announcement.TITLE!,
                       style: TextStyle(color: Colors.black),
                     ),
-                    subtitle: Text(getYearMonthDay(announcement.createdAt.toString())),
+                    subtitle: Text(
+                        getYearMonthDay(announcement.createdAt.toString())),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AnnouncementDetailPage(announcement: announcement, storageService: storageService),
+                          builder: (context) => AnnouncementDetailPage(
+                              announcement: announcement,
+                              storageService: storageService),
                         ),
                       );
                     },
@@ -74,10 +110,17 @@ class AnnouncementDetailPage extends StatelessWidget {
   final InstitutionAnnouncementTable announcement;
   final StorageService storageService;
   final gql = GraphQLController.Obj;
+
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
   }
-  AnnouncementDetailPage({Key? key, required this.announcement, required this.storageService}) : super(key: key);
+
+  late var result;
+
+  AnnouncementDetailPage(
+      {Key? key, required this.announcement, required this.storageService})
+      : super(key: key);
+  bool isUpdated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,20 +128,60 @@ class AnnouncementDetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('공지사항 세부 정보'),
         actions: [
-          IconButton(onPressed: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => updateAnnouncementPage(announcement: announcement, storageService: storageService),
-              ),
-            );
-          }, icon: Icon(Icons.create)),
-          IconButton(onPressed: (){
-            print(announcement.INSTITUTION_ID!);
-            print(announcement.ANNOUNCEMENT_ID!);
-            gql.deleteAnnouncement(institution_id: announcement.INSTITUTION_ID! ,announcementId: announcement.ANNOUNCEMENT_ID!);
-            Navigator.pop(context);
-          }, icon: Icon(Icons.delete))
+          IconButton(
+              onPressed: () {
+                var result = Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => updateAnnouncementPage(
+                        announcement: announcement,
+                        storageService: storageService),
+                  ),
+                );
+                if (result != null) isUpdated = true;
+              },
+              icon: Icon(Icons.create)),
+          IconButton(
+              onPressed: () async {
+                // showDialog 함수를 사용하여 다이얼로그 표시
+                bool? shouldDelete = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: Text('삭제 확인'),
+                      content: Text('정말로 삭제하시겠습니까?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('예'),
+                          onPressed: () => Navigator.of(context).pop(true),  // '예' 버튼을 누르면 true 반환
+                        ),
+                        TextButton(
+                          child: Text('아니오'),
+                          onPressed: () => Navigator.of(context).pop(false),  // '아니오' 버튼을 누르면 false 반환
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+                if (shouldDelete == true) {  // '예' 버튼을 눌렀다면...
+                  var result = gql.deleteAnnouncement(institution_id: announcement.INSTITUTION_ID!, announcementId:
+                  announcement.ANNOUNCEMENT_ID!);
+
+                  if (result != null) {
+                    Provider.of<LoginState>(context, listen:false).announceUpdate();
+
+                    ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                      SnackBar(content: Text('공지사항이 삭제되었습니다.')),
+                    );
+
+                    Navigator.pop(context);
+                  }
+                }
+              },
+              icon: Icon(Icons.delete)
+          )
+
         ],
       ),
       body: SingleChildScrollView(
@@ -107,29 +190,40 @@ class AnnouncementDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(announcement.TITLE!, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              isUpdated
+                  ? Text(result.TITLE!,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+                  : Text(announcement.TITLE!,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               SizedBox(height: 16),
-              Text('작성일: ' + getYearMonthDay(announcement.createdAt.toString())),
+              Text(
+                  '작성일: ' + getYearMonthDay(announcement.createdAt.toString())),
               SizedBox(height: 16),
-              announcement.CONTENT != null ? Text(announcement.CONTENT!) : Text(""),
+              announcement.CONTENT != null
+                  ? Text(announcement.CONTENT!)
+                  : Text(""),
               SizedBox(height: 16),
               announcement.URL != null ? Text(announcement.CONTENT!) : Text(""),
               SizedBox(height: 16),
-              if(announcement.IMAGE !=null)
-              if (announcement.IMAGE!.isNotEmpty)
-                FutureBuilder<String>(
-                  future: storageService.getImageUrlFromS3(announcement.IMAGE!),
-                  builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    if (snapshot.hasData) {
-                      String imageUrl = snapshot.data!;
-                      return Image.network(imageUrl);
-                    } else if (snapshot.hasError) {
-                      return Text('이미지를 불러올 수 없습니다.');
-                    } else {
-                      return CircularProgressIndicator();
-                    }
-                  },
-                ),
+              if (announcement.IMAGE != null)
+                if (announcement.IMAGE!.isNotEmpty)
+                  FutureBuilder<String>(
+                    future:
+                        storageService.getImageUrlFromS3(announcement.IMAGE!),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (snapshot.hasData) {
+                        String imageUrl = snapshot.data!;
+                        return Image.network(imageUrl);
+                      } else if (snapshot.hasError) {
+                        return Text('이미지를 불러올 수 없습니다.');
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
             ],
           ),
         ),

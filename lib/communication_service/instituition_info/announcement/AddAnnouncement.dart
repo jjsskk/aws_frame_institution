@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
+import '../../../provider/login_state.dart';
 import '../../../storage/storage_service.dart';
+import 'package:provider/provider.dart';
 import 'announcement.dart';
 
 class AddAnnouncementPage extends StatefulWidget {
+  // final VoidCallback refresh;
+
   const AddAnnouncementPage({Key? key}) : super(key: key);
 
   @override
@@ -96,7 +100,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = await uploadImageToS3(_image);
 
-              await gql.createAnnouncement(
+              var result = await gql.createAnnouncement(
                 _contentController.text,
                 imageUrl,
                 "INSTITUTION_NAME",
@@ -106,12 +110,14 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
                 "${dt}"
               );
 
-              print(_contentController.text);
-              print(imageUrl);
-              print(_titleController.text);
-              print(_urlController.text);
+              if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                // Provider에 새 공지사항 추가
+                Provider.of<LoginState>(context, listen: false).announceUpdate();
+              }
 
               Navigator.pop(context, true);
+
             },
             child: Text('완료'),
           ),

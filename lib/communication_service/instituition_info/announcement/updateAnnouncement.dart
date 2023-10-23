@@ -5,8 +5,10 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../models/InstitutionAnnouncementTable.dart';
+import '../../../provider/login_state.dart';
 import '../../../storage/storage_service.dart';
 import 'announcement.dart';
+import 'package:provider/provider.dart';
 
 class updateAnnouncementPage extends StatefulWidget {
   final InstitutionAnnouncementTable announcement;
@@ -136,7 +138,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                   ? imageUrl = await uploadImageToS3(_image)
                   : imageUrl = widget.announcement.IMAGE!;
 
-              await gql.updateAnnouncement(
+              var result = await gql.updateAnnouncement(
                 announcementId: widget.announcement.ANNOUNCEMENT_ID,
                 content: _contentController.text,
                 image: imageUrl,
@@ -146,7 +148,14 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                 url: _urlController.text,
               );
 
-              Navigator.pop(context, true);
+              if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                // Provider에 새 공지사항 추가
+                Provider.of<LoginState>(context, listen: false).announceUpdate();
+
+              }
+
+              Navigator.pop(context, result);
             },
             child: Text('완료'),
           ),

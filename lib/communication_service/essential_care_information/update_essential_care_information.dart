@@ -259,7 +259,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                     imageUrl = await uploadImageToS3(_image);
                   }
 
-                  await gql.updateEssentialCare(
+                  if(await gql.updateEssentialCare(
                       _birthController.text,
                       _nameController.text,
                       imageUrl,
@@ -268,7 +268,12 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                       institutionId,
                       _medicationController.text,
                       _medicationWayController.text,
-                      userid);
+                      userid)){
+                    final snackBar = await SnackBar(
+                      content: const Text('필수 돌봄정보가 수정되었습니다'),
+
+                    );
+                  }
                 }
 
                 print(_phoneNumberController.text);

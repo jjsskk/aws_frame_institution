@@ -9,7 +9,6 @@ import '../GraphQL_Method/graphql_controller.dart';
 import '../communication_service/instituition_info/convenience/Convenience.dart';
 import '../models/MonthlyBrainSignalTable.dart';
 
-
 class BrainSignalPage extends StatefulWidget {
   BrainSignalPage({Key? key}) : super(key: key);
 
@@ -382,7 +381,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
       });
 
       // final data = await gql.queryListMonthlyDB();
-      final data =  await gql.queryListMonthlyDBItems(ID: '1');
+      final data =  await gql.queryListMonthlyDBItems(ID:'1');
       // final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
 
       print(data);
@@ -478,6 +477,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
     super.initState();
     index = 0;
     fetchData();
+
   }
   var brainbutton = '뇌파 데이터 추가';
 
