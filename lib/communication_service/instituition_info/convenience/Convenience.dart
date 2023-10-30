@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
+import '../../../models/InstitutionFoodTable.dart';
 import '../../../storage/storage_service.dart';
 import 'AddFoodMenu.dart';
 
@@ -16,7 +17,7 @@ class ConveniencePage extends StatefulWidget {
 }
 
 class _ConveniencePageState extends State<ConveniencePage> {
-  late Future<InstitutionFoodMenuTable?> foodMenu;
+  late Future<InstitutionFoodTable?> food;
   late final gql;
   final StorageService storageService = StorageService();
   String FOOD_IMAGE_URL = '';
@@ -24,16 +25,14 @@ class _ConveniencePageState extends State<ConveniencePage> {
   String FOOD_DATETIME = '';
   String SHUTTLE_IMAGE_URL = '';
   String SHUTTLE_INSTITUTION_ID = '';
-  String SHUTTLE_DATETIME = '';
 
-  void getFoodMenu() {
-    gql.queryFoodMenuByInstitutionIdAndDate("INST_ID_123", date).then((value) {
+  void getFood() {
+    gql.queryFoodByInstitutionIdAndDate("INST_ID_123", date).then((value) {
       if (value != null) {
         setState(() {
           FOOD_IMAGE_URL = value.IMAGE_URL;
           FOOD_INSTITUTION_ID = value.INSTITUTION_ID;
           FOOD_DATETIME = value.DATE;
-
         });
       } else {
         setState(() {
@@ -49,12 +48,11 @@ class _ConveniencePageState extends State<ConveniencePage> {
   }
 
   void getShuttleTime() {
-    gql.queryShuttleTimeByInstitutionId("INST_ID_123", "20200303").then((value) {
+    gql.queryShuttleTimeByInstitutionId("INST_ID_123").then((value) {
       if (value != null) {
         setState(() {
           SHUTTLE_IMAGE_URL = value.IMAGE_URL;
           SHUTTLE_INSTITUTION_ID = value.INSTITUTION_ID;
-          SHUTTLE_DATETIME = value.DATE;
         });
       } else {
         setState(() {
@@ -68,7 +66,6 @@ class _ConveniencePageState extends State<ConveniencePage> {
       print("Error fetching data: $error");
     });
   }
-
 
   List<String> _generateDateItems() {
     final now = DateTime.now();
@@ -91,9 +88,8 @@ class _ConveniencePageState extends State<ConveniencePage> {
     gql = GraphQLController.Obj;
     date = _generateDateItems()[6];
     getShuttleTime();
-    getFoodMenu();
+    getFood();
     gql.createMonthlyData();
-
 
     // foodMenu = gql.queryFoodMenuByInstitutionId("INST_ID_123", date);
   }
@@ -101,7 +97,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
   void _onDateSelected(String selectedDate) {
     setState(() {
       date = selectedDate;
-      getFoodMenu();
+      getFood();
       // foodMenu = gql.queryFoodMenuByInstitutionId("INST_ID_123", date);
     });
   }
@@ -136,7 +132,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                             IconButton(
                               icon: const Icon(Icons.create),
                               color: appBarColor,
-                              onPressed: () {
+                              onPressed: () async {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -146,13 +142,69 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                     ),
                                   ),
                                 );
+                                var result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddFoodMenuPage(
+                                      month: _generateDateItems(),
+                                      date: date,
+                                    ),
+                                  ),
+                                );
+
+                                if (result != null) {
+                                  setState(() {
+
+                                    getFood();
+                                  });
+                                }
                               },
                             ),
-                            IconButton(onPressed: (){
-                              gql.deleteFoodMenu(dateTime: FOOD_INSTITUTION_ID,institutionId: FOOD_DATETIME);
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              color: appBarColor,
+                              onPressed: () async {
+                                // Show confirmation dialog
+                                final confirmed = await showDialog<bool>(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('삭제 확인'),
+                                      content:
+                                          const Text('정말로 이 항목을 삭제하시겠습니까?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('예'),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                        ),
+                                        TextButton(
+                                          child: const Text('아니오'),
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
 
-                            }, icon: Icon(Icons.delete),
-                              color: appBarColor,),
+                                if (confirmed ?? false) {
+                                  await gql.deleteFood(
+                                      dateTime: FOOD_DATETIME,
+                                      institutionId: FOOD_INSTITUTION_ID);
+
+                                  // Show snackbar after deletion
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              '$FOOD_DATETIME 항목이 성공적으로 삭제되었습니다.')));
+
+                                  setState(() {
+                                    getFood();
+                                  });
+                                }
+                              },
+                            )
                           ],
                         )
                       ],
@@ -172,33 +224,24 @@ class _ConveniencePageState extends State<ConveniencePage> {
                       ],
                     ),
                   ),
-                  // FutureBuilder<InstitutionFoodMenuTable?>(
-                  // future: foodMenu,
-                  // builder: (context, snapshot) {
-                  //   if (snapshot.connectionState ==
-                  //       ConnectionState.waiting) {
-                  //     return Center(child: CircularProgressIndicator());
-                  //   }
-                  //   if (snapshot.hasData) {
-                  //     print(foodMenu);
-                  //     if (snapshot.data!.IMAGE_URL!.isNotEmpty)
 
-                  FOOD_IMAGE_URL != '' ? FutureBuilder<String>(
-                      future: storageService.getImageUrlFromS3(FOOD_IMAGE_URL),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.hasData) {
-                          String foodImageUrl = snapshot.data!;
-                          return Image.network(
-                            foodImageUrl,
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('이미지를 불러올 수 없습니다.');
-                        }
-                          return CircularProgressIndicator();
-
-
-                      }): Text('데이터가 없습니다'),
+                  FOOD_IMAGE_URL != ''
+                      ? FutureBuilder<String>(
+                          future:
+                              storageService.getImageUrlFromS3(FOOD_IMAGE_URL),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData) {
+                              String foodImageUrl = snapshot.data!;
+                              return Image.network(
+                                foodImageUrl,
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text('이미지를 불러올 수 없습니다.');
+                            }
+                            return CircularProgressIndicator();
+                          })
+                      : Text('데이터가 없습니다'),
 
                   //   }
                   //   print("aasdasdas");
@@ -224,41 +267,91 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                 IconButton(
                                   icon: const Icon(Icons.create),
                                   color: appBarColor,
-                                  onPressed: () {
-                                    Navigator.push(
+                                  onPressed: () async {
+                                    var result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AddShuttleTimePage(),
+                                        builder: (context) =>
+                                            AddShuttleTimePage(),
                                       ),
                                     );
+
+                                    if (result != null) {
+                                      setState(() {
+                                        print("qwer");
+                                        getShuttleTime();
+                                      });
+                                    }
                                   }, // 기능 구현
                                 ),
-                                IconButton(onPressed: () async {
-                                  await gql.deleteShuttleTime(dateTime: SHUTTLE_INSTITUTION_ID,institutionId: SHUTTLE_DATETIME);
-                                  setState(() {
-                                    getShuttleTime();
-                                  });
-                                }, icon: Icon(Icons.delete),
-                                  color: appBarColor,),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  color: appBarColor,
+                                  onPressed: () async {
+                                    // Show confirmation dialog
+                                    final confirmed = await showDialog<bool>(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('삭제 확인'),
+                                          content:
+                                              const Text('정말로 이 항목을 삭제하시겠습니까?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('예'),
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                            ),
+                                            TextButton(
+                                              child: const Text('아니오'),
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+
+                                    if (confirmed ?? false) {
+                                      await gql.deleteShuttleTime(
+                                          institutionId:
+                                              SHUTTLE_INSTITUTION_ID);
+
+                                      // Show snackbar after deletion
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  '$SHUTTLE_INSTITUTION_ID 항목이 성공적으로 삭제되었습니다.')));
+
+                                      setState(() {
+                                        getShuttleTime();
+                                      });
+                                    }
+                                  },
+                                )
                               ],
                             ),
                           ],
                         ),
-
-                        SHUTTLE_IMAGE_URL != '' ? FutureBuilder<String>(
-                            future: storageService.getImageUrlFromS3(SHUTTLE_IMAGE_URL),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<String> snapshot) {
-                              if (snapshot.hasData) {
-                                String imageUrl = snapshot.data!;
-                                return Image.network(
-                                  imageUrl,
-                                );
-                              } else if (snapshot.hasError) {
-                                return Text('이미지를 불러올 수 없습니다.');
-                              }
-                              return CircularProgressIndicator();
-                            }): Text('데이터가 없습니다'),
+                        SHUTTLE_IMAGE_URL != ''
+                            ? FutureBuilder<String>(
+                                future: storageService
+                                    .getImageUrlFromS3(SHUTTLE_IMAGE_URL),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  if (snapshot.hasData) {
+                                    String imageUrl = snapshot.data!;
+                                    return Image.network(
+                                      imageUrl,
+                                    );
+                                  } else if (snapshot.hasError) {
+                                    return Text('이미지를 불러올 수 없습니다.');
+                                  }
+                                  return CircularProgressIndicator();
+                                })
+                            : Text('데이터가 없습니다'),
                       ],
                     ),
                   ),

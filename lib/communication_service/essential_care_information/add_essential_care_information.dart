@@ -166,7 +166,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                   imageUrl = await uploadImageToS3(_image);
                 }
 
-                await gql.createEssentialCare(
+                if(await gql.createEssentialCare(
                     _birthController.text,
                     _nameController.text,
                     imageUrl,
@@ -177,7 +177,11 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                     _medicationController.text,
                     _medicationWayController.text,
                     "${dt}"
-                );
+                )){
+                  final snackBar = SnackBar(
+                    content: const Text('공지사항이 생성되었습니다'),
+                  );
+                }
 
                 print(_phoneNumberController.text);
 

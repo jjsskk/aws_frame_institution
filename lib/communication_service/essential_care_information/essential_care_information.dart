@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:aws_frame_institution/communication_service/essential_care_information/add_essential_care_information.dart';
+import 'package:aws_frame_institution/communication_service/essential_care_information/update_essential_care_information.dart';
 import 'package:aws_frame_institution/models/InstitutionEssentialCareTable.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,14 +15,15 @@ class EssentialCareInfoPage extends StatefulWidget {
   @override
   State<EssentialCareInfoPage> createState() => _EssentialCareInfoPageState();
 }
-
+//todo: 유저 테이블에서 가져올 수 있게
+//todo: 질문 사항: 유저 테이블에서 연동
 class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   final _formKey = GlobalKey<FormState>(); // validator을 위한 글로벌키
   List<InstitutionEssentialCareTable> _essentialCare = [];
   final StorageService storageService = StorageService();
   late final gql;
   int index = 0;
-  bool isImageSelected = false;
+
   String imageUrl = '';
   late CustomDropDown customDropDown;
   final StorageService _storageService = StorageService();
@@ -34,6 +36,11 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   String userid = "";
   List<String> nameList = [];
   String name = '';
+  String essentialName = '';
+  String birth = '';
+  String phoneNumber = '';
+  String medication = '';
+  String medicationWay = '';
   File? _image;
   String institutionId = "";
   String institution = '';
@@ -48,9 +55,10 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     return countryCode + phoneNumber;
   }
 
-  void getEssentialCare() {
-    gql
-        .queryEssentialCareInformationByInstitutionId("INST_ID_123")
+  Future<void> getEssentialCare() async {
+    await gql
+        .queryEssentialCareInformationByInstitutionId(
+            institutionId: "INST_ID_123")
         .then((value) {
       if (value != null) {
         List<String> tempNameList = [];
@@ -67,7 +75,6 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
 
           name = nameList[index]; // 가장 첫 이름으로 함
-          print(nameList);
 
           if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
             String convertToE164(String phoneNumber, String countryCode) {
@@ -79,23 +86,22 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               return countryCode + phoneNumber;
             }
 
-            _essentialCare[index].MEDICATION != null
-                ? _nameController.text = _essentialCare[index].NAME!
+            _essentialCare[index].NAME != null
+                ? essentialName = _essentialCare[index].NAME!
                 : "";
             _essentialCare[index].BIRTH != null
-                ? _birthController.text = _essentialCare[index].BIRTH!
+                ? birth = _essentialCare[index].BIRTH!
                 : "";
             _essentialCare[index].PHONE_NUMBER != null
-                ? _phoneNumberController.text =
+                ? phoneNumber =
                     convertToE164(_essentialCare[index].PHONE_NUMBER!, "0")
                 : "";
 
             _essentialCare[index].MEDICATION != null
-                ? _medicationController.text = _essentialCare[index].MEDICATION!
+                ? medication = _essentialCare[index].MEDICATION!
                 : "";
             _essentialCare[index].MEDICATION_WAY != null
-                ? _medicationWayController.text =
-                    _essentialCare[index].MEDICATION_WAY!
+                ? medicationWay = _essentialCare[index].MEDICATION_WAY!
                 : "";
             // phoneNumber = convertToE164(_essentialCare[index].PHONE_NUMBER!, "+82");
             imageUrl = _essentialCare[index].IMAGE != null
@@ -130,12 +136,13 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     gql = GraphQLController.Obj;
     index = 0; //맨 처음 dropdown
     getEssentialCare();
-    isImageSelected = false;
+
   }
 
   void _NameSelected(String selectedName) {
     setState(() {
-      isImageSelected = false;
+
+
       print(nameList);
       name = selectedName;
       index = nameList.indexOf(selectedName);
@@ -174,18 +181,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        isImageSelected = true;
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
 
   Future<String> uploadImageToS3(File? image) async {
     if (image == null) {
@@ -215,180 +211,180 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                   onChanged: _NameSelected,
                 )
               : Container(),
-          isImageSelected == false
-              ? imageUrl != ""
-                  ? FutureBuilder<String>(
-                      future: storageService.getImageUrlFromS3(imageUrl),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.hasData) {
-                          String careImageUrl = snapshot.data!;
-                          return ElevatedButton(
-                            onPressed: _pickImage,
-                            child: ClipOval(
-                              child: SizedBox(
-                                width: 150,
-                                height: 150,
-                                child: Image.network(
-                                  careImageUrl,
-                                ),
-                              ),
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(150, 150),
-                              maximumSize: Size(150, 150),
-                              shape: CircleBorder(),
-                              padding: EdgeInsets.all(0),
-                            ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('이미지를 불러올 수 없습니다.');
-                        }
-                        return CircularProgressIndicator();
-                      })
-                  : ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text('이미지 선택'),
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        minimumSize: Size(150, 150),
-                        maximumSize: Size(150, 150),
-                      ),
-                    )
-              : _image != null
-                  ? ElevatedButton(
-                      onPressed: _pickImage,
-                      child: ClipOval(
-                        child: SizedBox(
-                          width: 150,
-                          height: 150,
-                          child: Image.file(
-                            _image!,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(150, 150),
-                        maximumSize: Size(150, 150),
-                        shape: CircleBorder(),
-                        padding: EdgeInsets.all(0),
-                      ),
-                    )
-                  : ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text('이미지 선택'),
-                      style: ElevatedButton.styleFrom(
-                        shape: CircleBorder(),
-                        minimumSize: Size(150, 150),
-                        maximumSize: Size(150, 150),
+          SizedBox(height:30),
+          imageUrl != ""
+              ? FutureBuilder<String>(
+              future: storageService.getImageUrlFromS3(imageUrl),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.hasData) {
+                  String careImageUrl = snapshot.data!;
+                  return Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(careImageUrl),
                       ),
                     ),
-          TextField(
-            controller: _nameController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(labelText: '이름'),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('이미지를 불러올 수 없습니다.');
+                }
+                return CircularProgressIndicator();
+              })
+              : Container(
+            width: 150,
+            height: 150,
+            decoration:
+            BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
+          ),
+
+
+
+
+
+          SizedBox(height:30),
+          Row(
+            children: [
+              Text("이름: "),
+              Text(essentialName),
+            ],
           ),
           SizedBox(height: 16),
-          Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _birthController,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(labelText: '생년월일(8자리)'),
-                  validator: (value) {
-                    if (value == null || value.length != 8) {
-                      return '생년월일을 8글자로 입력해주세요';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
-                TextFormField(
-                  controller: _phoneNumberController,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(labelText: '전화번호'),
-                  validator: (value) {
-                    if (value == null || !value.startsWith('010')) {
-                      return '전화번호 형식을 올바르게 입력해주세요';
-                    } else if (value.length != 11) {
-                      return '전화번호를 올바르게 입력해주세요';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              Text("생년월일: "),
+              Text(birth),
+            ],
           ),
           SizedBox(height: 16),
-          TextField(
-            controller: _medicationController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(labelText: '복용약'),
-            minLines: 1,
-            maxLines: 4,
+          Row(
+            children: [
+              Text("전화번호: "),
+              Text(phoneNumber),
+            ],
           ),
           SizedBox(height: 16),
-          TextField(
-            controller: _medicationWayController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(labelText: '복용법'),
-            minLines: 1,
-            maxLines: 4,
-          ),
+          medication != ""
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("복용약: "),
+                    Text(medication),
+                  ],
+                )
+              : Text(""),
+          SizedBox(height: 16),
+          medicationWay != ""
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("복용법: "),
+                    Text(medicationWay),
+                  ],
+                )
+              : Text(""),
           SizedBox(height: 16),
           Row(
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    if (isImageSelected == true) {
-                      imageUrl = await uploadImageToS3(_image);
-                    }
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UpdateEssentialCareInfoPage(
+                            essentialCareTable: _essentialCare[index])),
+                  );
 
-                    await gql.updateEssentialCare(
-                        _birthController.text,
-                        _nameController.text,
-                        imageUrl,
-                        _phoneNumberController.text,
-                        institution,
-                        institutionId,
-                        _medicationController.text,
-                        _medicationWayController.text,
-                        userid);
-
+                  // 만약 필요한 업데이트가 있다면 setState() 호출
+                  if (result == true) {
                     setState(() {
-                      nameList = [];
+                      index = 0; //맨 처음 dropdown
                       getEssentialCare();
-                      print(nameList);
-                      isImageSelected = false;
+
                     });
                   }
+
+                  // if (_formKey.currentState!.validate()) {
+                  //   if (isImageSelected == true) {
+                  //     imageUrl = await uploadImageToS3(_image);
+                  //   }
+                  //
+                  //   await gql.updateEssentialCare(
+                  //       _birthController.text,
+                  //       _nameController.text,
+                  //       imageUrl,
+                  //       _phoneNumberController.text,
+                  //       institution,
+                  //       institutionId,
+                  //       _medicationController.text,
+                  //       _medicationWayController.text,
+                  //       userid);
+                  //
+                  //   setState(() {
+                  //     nameList = [];
+                  //     getEssentialCare();
+                  //     print(nameList);
+                  //     isImageSelected = false;
+                  //   });
+                  // }
                 },
-                child: Text('완료'),
+                child: Text('수정'),
               ),
               TextButton(
-                  onPressed: () async {
-                    gql.deleteEssentialCare(userid , institution);
-                    // 만약 필요한 업데이트가 있다면 setState() 호출
+                onPressed: () async {
+                  // Show confirmation dialog
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('삭제 확인'),
+                        content: const Text('정말로 이 항목을 삭제하시겠습니까?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('예'),
+                            onPressed: () => Navigator.of(context).pop(true),
+                          ),
+                          TextButton(
+                            child: const Text('아니오'),
+                            onPressed: () => Navigator.of(context).pop(false),
+                          ),
+                        ],
+                      );
+                    },
+                  );
 
-                      setState(() {
-                        index = 0; //맨 처음 dropdown
-                        getEssentialCare();
-                        isImageSelected = false;
-                      });
+                  if (confirmed ?? false) {
+                    await gql.deleteEssentialCare(userid, institutionId);
 
-                  },
-                  child: Text("삭제 -")
+                    // Show snackbar after deletion
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text('$essentialName 항목이 성공적으로 삭제되었습니다.')),
+                    );
+
+                    setState(() {
+                      if (index >= 0 && index < nameList.length) {
+                        nameList.removeAt(index);
+                      }
+                      index = 0;
+                      // nameList[index].
+                      // getEssentialCare();
+
+                    });
+                    index = 0; // Reset dropdown to first item
+                  }
+                },
+                child: Text("삭제 -"),
               ),
-
               TextButton(
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddEssentialCareInfoPage()),
+                      MaterialPageRoute(
+                          builder: (context) => AddEssentialCareInfoPage()),
                     );
 
                     // 만약 필요한 업데이트가 있다면 setState() 호출
@@ -396,12 +392,10 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                       setState(() {
                         index = 0; //맨 처음 dropdown
                         getEssentialCare();
-                        isImageSelected = false;
                       });
                     }
                   },
-                  child: Text("추가 +")
-              )
+                  child: Text("추가 +"))
             ],
           ),
         ],

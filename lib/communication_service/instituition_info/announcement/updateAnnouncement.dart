@@ -5,8 +5,10 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../models/InstitutionAnnouncementTable.dart';
+import '../../../provider/login_state.dart';
 import '../../../storage/storage_service.dart';
 import 'announcement.dart';
+import 'package:provider/provider.dart';
 
 class updateAnnouncementPage extends StatefulWidget {
   final InstitutionAnnouncementTable announcement;
@@ -60,8 +62,12 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
     // TODO: implement initState
     super.initState();
     _titleController.text = widget.announcement.TITLE!;
-    _contentController.text = widget.announcement.CONTENT!;
-    _urlController.text = widget.announcement.URL!;
+    widget.announcement.CONTENT != null
+        ? _contentController.text = widget.announcement.CONTENT!
+        : _contentController.text = "";
+    widget.announcement.URL != null
+        ? _contentController.text = widget.announcement.URL!
+        : _contentController.text = "";
   }
 
   @override
@@ -104,22 +110,24 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Image.file(_image!),
                 )
-              : widget.announcement.IMAGE!.isNotEmpty
-                  ? FutureBuilder<String>(
-                      future: _storageService
-                          .getImageUrlFromS3(widget.announcement.IMAGE!),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.hasData) {
-                          String imageUrl = snapshot.data!;
-                          return Image.network(imageUrl);
-                        } else if (snapshot.hasError) {
-                          return Text('이미지를 불러올 수 없습니다.');
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    )
+              : widget.announcement.IMAGE != null
+                  ? widget.announcement.IMAGE!.isNotEmpty
+                      ? FutureBuilder<String>(
+                          future: _storageService
+                              .getImageUrlFromS3(widget.announcement.IMAGE!),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.hasData) {
+                              String imageUrl = snapshot.data!;
+                              return Image.network(imageUrl);
+                            } else if (snapshot.hasError) {
+                              return Text('이미지를 불러올 수 없습니다.');
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        )
+                      : Container()
                   : Container(),
           ElevatedButton(
             onPressed: () async {
@@ -130,7 +138,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                   ? imageUrl = await uploadImageToS3(_image)
                   : imageUrl = widget.announcement.IMAGE!;
 
-              await gql.updateAnnouncement(
+              var result = await gql.updateAnnouncement(
                 announcementId: widget.announcement.ANNOUNCEMENT_ID,
                 content: _contentController.text,
                 image: imageUrl,
@@ -140,7 +148,14 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                 url: _urlController.text,
               );
 
-              Navigator.pop(context, true);
+              if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                // Provider에 새 공지사항 추가
+                Provider.of<LoginState>(context, listen: false).announceUpdate();
+
+              }
+
+              Navigator.pop(context, result);
             },
             child: Text('완료'),
           ),

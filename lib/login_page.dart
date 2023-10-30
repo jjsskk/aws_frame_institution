@@ -13,10 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 class LoginPage extends StatefulWidget {
+
+
   final VoidCallback shouldShowSignUp;
   final VoidCallback shouldShowsresetpassword;
   final Future<void> Function(LoginCredentials value, BuildContext context)
       didProvideCredentials;
+  //todo 이 친구처럼 function을 보낼 수 있음 이걸 활용할 것
 
   // final ValueChanged<LoginCredentials> didProvideCredentials;
 
