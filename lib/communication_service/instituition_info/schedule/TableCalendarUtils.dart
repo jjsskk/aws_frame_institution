@@ -5,11 +5,12 @@ import 'package:table_calendar/table_calendar.dart';
 
 /// Example event class.
 class Event {
-  final String title;
-  final String time;
-  final String sche_id;
+  String title;
+  String time;
+  String sche_id;
+  List<String> tags;
 
-  const Event(this.title,this.time,this.sche_id);
+  Event(this.title,this.time,this.sche_id,this.tags);
 
   @override
   String toString() => title;
@@ -58,6 +59,3 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
   );
 }
 
-final kToday = DateTime.now();
-final kFirstDay = DateTime(kToday.year, kToday.month - 12, kToday.day);
-final kLastDay = DateTime(kToday.year, kToday.month + 12, kToday.day);

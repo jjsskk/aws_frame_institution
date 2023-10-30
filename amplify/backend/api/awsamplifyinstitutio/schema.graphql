@@ -68,6 +68,14 @@ input CreateInstitutionFoodMenuTableInput {
 	updatedAt: AWSDateTime
 }
 
+input CreateInstitutionFoodTableInput {
+	DATE: String!
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
 input CreateInstitutionNewsTableInput {
 	INSTITUTION_ID: String!
 	NEWS_ID: String!
@@ -159,6 +167,11 @@ input DeleteInstitutionEventScheduleTableInput {
 input DeleteInstitutionFoodMenuTableInput {
 	INSTITUTION_ID: String!
 	DATE: String!
+}
+
+input DeleteInstitutionFoodTableInput {
+	DATE: String!
+	INSTITUTION_ID: String!
 }
 
 input DeleteInstitutionNewsTableInput {
@@ -281,6 +294,19 @@ type InstitutionFoodMenuTable {
 
 type InstitutionFoodMenuTableConnection {
 	items: [InstitutionFoodMenuTable]
+	nextToken: String
+}
+
+type InstitutionFoodTable {
+	DATE: String!
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
+type InstitutionFoodTableConnection {
+	items: [InstitutionFoodTable]
 	nextToken: String
 }
 
@@ -456,6 +482,14 @@ input TableInstitutionFoodMenuTableFilterInput {
 	updatedAt: TableStringFilterInput
 }
 
+input TableInstitutionFoodTableFilterInput {
+	DATE: TableStringFilterInput
+	INSTITUTION_ID: TableStringFilterInput
+	IMAGE_URL: TableStringFilterInput
+	createdAt: TableStringFilterInput
+	updatedAt: TableStringFilterInput
+}
+
 input TableInstitutionNewsTableFilterInput {
 	INSTITUTION_ID: TableStringFilterInput
 	NEWS_ID: TableStringFilterInput
@@ -614,6 +648,14 @@ input UpdateInstitutionFoodMenuTableInput {
 	updatedAt: AWSDateTime
 }
 
+input UpdateInstitutionFoodTableInput {
+	DATE: String!
+	INSTITUTION_ID: String!
+	IMAGE_URL: String
+	createdAt: AWSDateTime
+	updatedAt: AWSDateTime
+}
+
 input UpdateInstitutionNewsTableInput {
 	INSTITUTION_ID: String!
 	NEWS_ID: String!
@@ -727,6 +769,9 @@ type Mutation {
 	createInstitutionEventScheduleTable(input: CreateInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
 	updateInstitutionEventScheduleTable(input: UpdateInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
 	deleteInstitutionEventScheduleTable(input: DeleteInstitutionEventScheduleTableInput!): InstitutionEventScheduleTable
+	createInstitutionFoodTable(input: CreateInstitutionFoodTableInput!): InstitutionFoodTable
+	updateInstitutionFoodTable(input: UpdateInstitutionFoodTableInput!): InstitutionFoodTable
+	deleteInstitutionFoodTable(input: DeleteInstitutionFoodTableInput!): InstitutionFoodTable
 }
 
 type Query {
@@ -752,6 +797,8 @@ type Query {
 	listMonthlyBrainSignalTables(filter: TableMonthlyBrainSignalTableFilterInput, limit: Int, nextToken: String): MonthlyBrainSignalTableConnection
 	getInstitutionEventScheduleTable(INSTITUTION_ID: String!, SCHEDULE_ID: String!): InstitutionEventScheduleTable
 	listInstitutionEventScheduleTables(filter: TableInstitutionEventScheduleTableFilterInput, limit: Int, nextToken: String): InstitutionEventScheduleTableConnection
+	getInstitutionFoodTable(INSTITUTION_ID: String!, DATE: String!): InstitutionFoodTable
+	listInstitutionFoodTables(filter: TableInstitutionFoodTableFilterInput, limit: Int, nextToken: String): InstitutionFoodTableConnection
 }
 
 type Subscription {
@@ -1064,4 +1111,28 @@ type Subscription {
 		TIME: String
 	): InstitutionEventScheduleTable
 		@aws_subscribe(mutations: ["createInstitutionEventScheduleTable","updateInstitutionEventScheduleTable","deleteInstitutionEventScheduleTable"])
+	onCreateInstitutionFoodTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodTable
+		@aws_subscribe(mutations: ["createInstitutionFoodTable"])
+	onUpdateInstitutionFoodTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodTable
+		@aws_subscribe(mutations: ["updateInstitutionFoodTable"])
+	onDeleteInstitutionFoodTable(
+		DATE: String,
+		INSTITUTION_ID: String,
+		IMAGE_URL: String,
+		createdAt: AWSDateTime,
+		updatedAt: AWSDateTime
+	): InstitutionFoodTable
+		@aws_subscribe(mutations: ["deleteInstitutionFoodTable"])
 }

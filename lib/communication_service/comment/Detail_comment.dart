@@ -134,15 +134,16 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
         return aa.compareTo(bb);
       });
 
-      stream = gql.subscribeInstitutionCommentConversation();
-      print(stream);
-      subscribeConversationChange();
       if (mounted) {
         setState(() {
           loading_conversation = false;
         });
       }
     });
+
+    stream = gql.subscribeInstitutionCommentConversation();
+    print(stream);
+    subscribeConversationChange();
   }
 
   @override

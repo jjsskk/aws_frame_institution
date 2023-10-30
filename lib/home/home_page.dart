@@ -2,6 +2,7 @@ import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/backey/backKey_dialog.dart';
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
 import 'package:aws_frame_institution/camera_gallary/graph_page.dart';
+import 'package:aws_frame_institution/communication_service/comment/Detail_comment.dart';
 import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
 import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
@@ -12,7 +13,7 @@ import 'package:aws_frame_institution/home/hompage_linechart.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:aws_frame_institution/login_session.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
-import 'package:aws_frame_institution/traning%20record/individual_analysis_report.dart';
+import 'package:aws_frame_institution/traning%20record/individual_analysis_report_old.dart';
 import 'package:aws_frame_institution/traning%20record/institution_summary_report.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ import 'package:flutter/services.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 import '../traning record/analyzing_report.dart';
-import '../traning record/brain_graph.dart';
+import '../traning record/individual_analysis_report.dart';
 
 class HomePage extends StatefulWidget {
   HomePage(
@@ -51,8 +52,37 @@ class _HomePageState extends State<HomePage> {
   final gql = GraphQLController.Obj;
 
   bool loading_Manager = true;
+  bool loading_comment = true;
 
   bool checkAttribute = false; //  to call getProtectorAttributes() once
+  int year = 0;
+  int month = 0;
+  List<Map<String, dynamic>> _comments = [];
+
+  void storeAndSort(var result) {
+    _comments = [];
+    result.forEach((value) {
+      // print(value.createdAt.toString().substring(0,10));
+      _comments.add({
+        'date': value.createdAt.toString().substring(0, 10) ?? '',
+        'title': value.TITLE ?? '',
+        'username': value.USERNAME ?? '',
+        'user_id': value.USER_ID ?? '',
+        'board_id': value.BOARD_ID ?? '',
+        'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
+        'new_conversation_createdat':
+            value.NEW_CONVERSATION_CREATEDAT.toString()
+      });
+    });
+    _comments.sort((a, b) {
+      String aa = a['new_conversation_createdat'];
+
+      String bb = b['new_conversation_createdat'];
+      return bb.compareTo(aa);
+    });
+    // 상위 5개의 항목만 저장
+    _comments = _comments.length > 5 ? _comments.sublist(0, 5) : _comments;
+  }
 
   @override
   void initState() {
@@ -61,6 +91,24 @@ class _HomePageState extends State<HomePage> {
         context: context); // for back key
     keyObj = KeyForBottomAppbar();
     bottomappbar = GlobalBottomAppBar(keyObj: keyObj);
+    year = DateTime.now().year;
+    month = DateTime.now().month;
+    gql
+        .listInstitutionCommentBoard('INSTITUTION_ID', '1234', '$year',
+            month < 10 ? '0${month}' : '$month',
+            nextToken: null) //institution_id
+        .then((result) {
+      print(result);
+      if (result.isNotEmpty) {
+        storeAndSort(result);
+      }
+
+      if (mounted) {
+        setState(() {
+          loading_comment = false;
+        });
+      }
+    });
   }
 
   @override
@@ -132,8 +180,7 @@ class _HomePageState extends State<HomePage> {
     appState = context.watch<LoginState>();
 
     if (!checkAttribute) getInstitutionAttributes();
-
-    return (loading_Manager)
+    return (loading_Manager || loading_comment)
         ? LoadingPage()
         : Scaffold(
             drawer: GlobalDrawer.getDrawer(context, appState),
@@ -165,18 +212,24 @@ class _HomePageState extends State<HomePage> {
                     ),
                     // GraphPage(),
                     Text('기관정보'),
-                    TextButton(onPressed: (){
-                      gql.createUserData();
-                    }, child: Text('유저 추가')),
-                    TextButton(onPressed: (){
-                      gql.createAnnounceData();
-                    }, child: Text('공지 추가')),
+                    TextButton(
+                        onPressed: () {
+                          gql.createUserData();
+                        },
+                        child: Text('유저 추가')),
+                    TextButton(
+                        onPressed: () {
+                          gql.createAnnounceData();
+                        },
+                        child: Text('공지 추가')),
 
-                    TextButton(onPressed: (){
-                      gql.queryAnnounceItem().then((value){
-                        print(value);
-                      });
-                    }, child: Text('값 부르기')),
+                    TextButton(
+                        onPressed: () {
+                          gql.queryAnnounceItem().then((value) {
+                            print(value);
+                          });
+                        },
+                        child: Text('값 부르기')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -271,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            BrainSignalPage()),
+                                            AnalyzingReportPage()),
                                   );
                                 },
                                 icon: Icon(Icons.accessibility_new_rounded),
@@ -285,7 +338,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            AnalyzingReportPage()),
+                                            IndividualAnalysisPage()),
                                   );
                                 },
                                 icon: Icon(Icons.account_box),
@@ -297,13 +350,21 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    TextButton(onPressed: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CommentViewPage()),
-                      );
-                    }, child: Text('보호자 코멘트')),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CommentViewPage()),
+                          );
+                        },
+                        child: Text('보호자 코멘트')),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: _buildListCards(context),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -320,5 +381,123 @@ class _HomePageState extends State<HomePage> {
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
             bottomNavigationBar: bottomappbar);
+  }
+
+  List<StatelessWidget> _buildListCards(BuildContext context) {
+    if (_comments.isEmpty) {
+      return const <Card>[];
+    }
+    final ThemeData theme = Theme.of(context);
+
+    var temp = _comments.map((comment) {
+      return InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CommentViewPage()),
+          );
+        },
+        child: Stack(
+          children: [
+            Card(
+              child: ListTile(
+                title: Text(
+                  comment['title'],
+                  style: TextStyle(color: Colors.black),
+                ),
+                subtitle: Text(comment['username'] + ' 훈련자님'),
+                trailing: Text(comment['date']),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DetailCommentPage(
+                              user_id: comment['user_id'],
+                              board_id: comment['board_id'],
+                            )),
+                  );
+                },
+              ),
+            ),
+            // Card(
+            //   clipBehavior: Clip.antiAlias,
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: Row(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: <Widget>[
+            //         Expanded(
+            //           flex: 1,
+            //           child: Card(
+            //             child: AspectRatio(
+            //               aspectRatio: 1 / 1,
+            //               child: CircleAvatar(
+            //                 child: Image.asset(
+            //                   'image/frame.png',
+            //                 ),
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //         SizedBox(
+            //           width: 8,
+            //         ),
+            //         Expanded(
+            //           flex: 2,
+            //           child: Column(
+            //             crossAxisAlignment: CrossAxisAlignment.start,
+            //             children: <Widget>[
+            //               Text(comment['date']),
+            //               SizedBox(
+            //                 height: 5,
+            //               ),
+            //               Text(
+            //                 comment['username'] + ' 훈련자님',
+            //                 style: TextStyle(
+            //                     fontSize: 15, fontWeight: FontWeight.bold),
+            //               ),
+            //               SizedBox(
+            //                 height: 5,
+            //               ),
+            //               Text(
+            //                 comment['title'],
+            //                 style: TextStyle(
+            //                     fontSize: 15, fontWeight: FontWeight.bold),
+            //               ),
+            //               const SizedBox(height: 4.0),
+            //             ],
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            comment['new_conversation'] == true
+                ? Container(
+                    alignment: Alignment.topRight,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage('image/new_message.png'),
+                    ),
+                  )
+                : const SizedBox()
+            // Container(
+            //   alignment: Alignment.topLeft,
+            //   margin: EdgeInsets.all(20),
+            //   padding: EdgeInsets.all(10),
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(100),
+            //       border: Border.all(width: 2, color: Colors.white)),
+            //   child: Icon(
+            //     Icons.add_comment,
+            //     color: Colors.white,
+            //   ),
+            // ),
+          ],
+        ),
+      );
+    }).toList();
+
+    return temp;
   }
 }
