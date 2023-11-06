@@ -1697,13 +1697,13 @@ class GraphQLController {
 /*  ----------- jinsu method ------------------        */
 
   Future<bool?> createScheduledata(String inst_id, String schedule_id,
-      String content, String tag, String classtime, String date) async {
+      String content, List<String> tag, String classtime, String date) async {
     var time = '${TemporalDateTime.now()}';
     var row = {
       'SCHEDULE_ID': time,
       'INSTITUTION_ID': inst_id,
       'CONTENT': content,
-      'TAG': ['d'],
+      'TAG': tag,
       'TIME': classtime,
       'DATE': date,
       'createdAt': time,
@@ -1712,9 +1712,9 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          document: '''
             mutation createInstitutionEventScheduleTable(\$input: CreateInstitutionEventScheduleTableInput!) {
                   createInstitutionEventScheduleTable(input: \$input) {
                     INSTITUTION_ID
@@ -1728,11 +1728,11 @@ class GraphQLController {
                }  
               }
             ''',
-              variables: {
-                'input': row,
-              },
-            ),
-          )
+          variables: {
+            'input': row,
+          },
+        ),
+      )
           .response;
       {
         final createdData = response.data;
@@ -1753,10 +1753,9 @@ class GraphQLController {
     }
   }
 
-  //todo between
   Future<List<InstitutionEventScheduleTable?>>
-      queryInstitutionScheduleByInstitutionId(String institutionId, String date,
-          {String? nextToken}) async {
+  queryInstitutionScheduleByInstitutionId(String institutionId, String date,
+      {String? nextToken}) async {
     String inst_id = 'aaa';
     int dateNext = int.parse(date);
     dateNext += 40;
@@ -1811,7 +1810,7 @@ class GraphQLController {
             .map((item) => InstitutionEventScheduleTable.fromJson(item))
             .toList();
         var newNextToken =
-            data['listInstitutionEventScheduleTables']['nextToken'];
+        data['listInstitutionEventScheduleTables']['nextToken'];
 
         if (newNextToken != null) {
           // recursive call for next page's data
@@ -1854,7 +1853,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-        (Object error) {
+            (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -1867,12 +1866,12 @@ class GraphQLController {
   }
 
   Future<bool?> updateScheduledata(String inst_id, String sche_id,
-      String content, String tag, String time, String date) async {
+      String content, List<String> tag, String time, String date) async {
     final row = {
       'SCHEDULE_ID': sche_id,
       'INSTITUTION_ID': inst_id,
       'CONTENT': content,
-      'TAG': [],
+      'TAG': tag,
       'TIME': time,
       'DATE': date,
       'updatedAt': '${TemporalDateTime.now()}'
@@ -1884,9 +1883,9 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          document: '''
           mutation updateInstitutionEventScheduleTable(\$input: UpdateInstitutionEventScheduleTableInput!) {
             updateInstitutionEventScheduleTable(input: \$input) {
               SCHEDULE_ID
@@ -1899,9 +1898,9 @@ class GraphQLController {
             }  
           }
         ''',
-              variables: {'input': row},
-            ),
-          )
+          variables: {'input': row},
+        ),
+      )
           .response;
       {
         final updatedData = response.data;
@@ -1922,16 +1921,16 @@ class GraphQLController {
   }
 
   Future<bool?> deleteScheduledata(
-    String inst_id,
-    String schedule_id,
-  ) async {
+      String inst_id,
+      String schedule_id,
+      ) async {
     final row = {'INSTITUTION_ID': inst_id, 'SCHEDULE_ID': schedule_id};
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          document: '''
             mutation deleteInstitutionEventScheduleTable(\$input: DeleteInstitutionEventScheduleTableInput!) {
                   deleteInstitutionEventScheduleTable(input: \$input) {
                     INSTITUTION_ID
@@ -1939,11 +1938,11 @@ class GraphQLController {
                }  
               }
             ''',
-              variables: {
-                'input': row,
-              },
-            ),
-          )
+          variables: {
+            'input': row,
+          },
+        ),
+      )
           .response;
       {
         final deletedData = response.data;
@@ -2008,7 +2007,7 @@ class GraphQLController {
         }
 
         List<UserTable?> Users =
-            (items as List).map((item) => UserTable.fromJson(item)).toList();
+        (items as List).map((item) => UserTable.fromJson(item)).toList();
         var newNextToken = data['listUserTables']['nextToken'];
 
         if (newNextToken != null) {
@@ -2046,12 +2045,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation createInstitutionCommentBoardTable(\$input: CreateInstitutionCommentBoardTableInput!) {
                   createInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2069,8 +2068,8 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final createdData = response.data;
@@ -2120,7 +2119,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-        (Object error) {
+            (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -2133,8 +2132,13 @@ class GraphQLController {
   }
 
   Future<List<InstitutionCommentBoardTable?>> listInstitutionCommentBoard(
-      String institutionId,
+      String filterName, String Id, String year, String month,
       {String? nextToken}) async {
+    final time = '${TemporalDateTime.now()}';
+    var remain = time.substring(12);
+    var start = '$year-$month-00$remain';
+    var end = '$year-$month-40$remain';
+
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2165,7 +2169,10 @@ class GraphQLController {
         """,
           variables: {
             "filter": {
-              "INSTITUTION_ID": {"eq": institutionId},
+              filterName: {"eq": Id},
+              "NEW_CONVERSATION_CREATEDAT": {
+                "between": [start, end]
+              },
             },
             "limit": 1000,
             "nextToken": nextToken,
@@ -2185,11 +2192,12 @@ class GraphQLController {
             .map((item) => InstitutionCommentBoardTable.fromJson(item))
             .toList();
         var newNextToken =
-            data['listInstitutionCommentBoardTables']['nextToken'];
+        data['listInstitutionCommentBoardTables']['nextToken'];
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var nextComments = await listInstitutionCommentBoard(institutionId,
+          var nextComments = await listInstitutionCommentBoard(
+              filterName, Id, year, month,
               nextToken: newNextToken);
           comments.addAll(nextComments!);
         }
@@ -2243,8 +2251,8 @@ class GraphQLController {
           return null;
         }
         InstitutionCommentBoardTable comment =
-            InstitutionCommentBoardTable.fromJson(
-                jsonDecode(response.data)['getInstitutionCommentBoardTable']);
+        InstitutionCommentBoardTable.fromJson(
+            jsonDecode(response.data)['getInstitutionCommentBoardTable']);
         if (comment == null) {
           print('errors: ${response.errors}');
           return null;
@@ -2270,24 +2278,25 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
 	                  USER_ID
 	                  CONTENT
+	                  INSTITUTION_ID
 	                  TITLE
 	                  updatedAt
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final updatedData = response.data;
@@ -2308,9 +2317,9 @@ class GraphQLController {
   }
 
   Future<bool?> deleteCommentBoarddata(
-    String user_id,
-    String board_id,
-  ) async {
+      String user_id,
+      String board_id,
+      ) async {
     final row = {
       'USER_ID': user_id,
       'BOARD_ID': board_id,
@@ -2318,21 +2327,22 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          document: '''
             mutation deleteInstitutionCommentBoardTable(\$input: DeleteInstitutionCommentBoardTableInput!) {
                   deleteInstitutionCommentBoardTable(input: \$input) {
                     USER_ID
                     BOARD_ID
+                    INSTITUTION_ID
                }  
               }
             ''',
-              variables: {
-                'input': row,
-              },
-            ),
-          )
+          variables: {
+            'input': row,
+          },
+        ),
+      )
           .response;
       {
         final deletedData = response.data;
@@ -2368,12 +2378,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation createInstitutionCommentConversationTable(\$input: CreateInstitutionCommentConversationTableInput!) {
                   createInstitutionCommentConversationTable(input: \$input) {
 	                  BOARD_ID
@@ -2386,14 +2396,14 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final createdData = response.data;
         if (createdData == null ||
             jsonDecode(createdData!)[
-                    'createInstitutionCommentConversationTable'] ==
+            'createInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2409,8 +2419,8 @@ class GraphQLController {
   }
 
   Future<List<InstitutionCommentConversationTable?>>
-      listInstitutionCommentConversation(String boardId,
-          {String? nextToken}) async {
+  listInstitutionCommentConversation(String boardId,
+      {String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2455,11 +2465,11 @@ class GraphQLController {
           return const [];
         }
         List<InstitutionCommentConversationTable?> conversations = (items
-                as List)
+        as List)
             .map((item) => InstitutionCommentConversationTable.fromJson(item))
             .toList();
         var newNextToken =
-            data['listInstitutionCommentConversationTables']['nextToken'];
+        data['listInstitutionCommentConversationTables']['nextToken'];
         // print('nullcheck : $newNextToken');
         if (newNextToken != null) {
           // recursive call for next page's data
@@ -2500,7 +2510,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-        (Object error) {
+            (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -2513,10 +2523,10 @@ class GraphQLController {
   }
 
   Future<bool?> updateCommentConversationdata(
-    String board_id,
-    String conversation_id,
-    String content,
-  ) async {
+      String board_id,
+      String conversation_id,
+      String content,
+      ) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'BOARD_ID': board_id,
@@ -2527,12 +2537,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation updateInstitutionCommentConversationTable(\$input: UpdateInstitutionCommentConversationTableInput!) {
                   updateInstitutionCommentConversationTable(input: \$input) {
 	            	    BOARD_ID
@@ -2545,14 +2555,14 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final updatedData = response.data;
         if (updatedData == null ||
             jsonDecode(updatedData!)[
-                    'updateInstitutionCommentConversationTable'] ==
+            'updateInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2568,9 +2578,9 @@ class GraphQLController {
   }
 
   Future<bool?> deleteCommentConversationdata(
-    String board_id,
-    String conversation_id,
-  ) async {
+      String board_id,
+      String conversation_id,
+      ) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'BOARD_ID': board_id,
@@ -2579,12 +2589,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation deleteInstitutionCommentConversationTable(\$input: DeleteInstitutionCommentConversationTableInput!) {
                   deleteInstitutionCommentConversationTable(input: \$input) {
 	            	    BOARD_ID
@@ -2597,14 +2607,14 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final deletedData = response.data;
         if (deletedData == null ||
             jsonDecode(deletedData!)[
-                    'deleteInstitutionCommentConversationTable'] ==
+            'deleteInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2631,12 +2641,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2647,8 +2657,8 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final updatedData = response.data;
@@ -2679,12 +2689,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-            request: GraphQLRequest<String>(
-              apiName: "Institution_API_NEW",
-              variables: {
-                'input': row,
-              },
-              document: '''
+        request: GraphQLRequest<String>(
+          apiName: "Institution_API_NEW",
+          variables: {
+            'input': row,
+          },
+          document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2695,8 +2705,8 @@ class GraphQLController {
                }  
               }
             ''',
-            ),
-          )
+        ),
+      )
           .response;
       {
         final updatedData = response.data;
@@ -2716,141 +2726,15 @@ class GraphQLController {
     }
   }
 
-  // Future<void> createMonthlyData() async {
-  //   try {
-  //     final row = MonthlyDBTest(
-  //       id: "3",
-  //       month: brainmonth,
-  //       avg_att: Random().nextInt(100) + 1,
-  //       avg_med: Random().nextInt(100) + 1,
-  //       con_score: Random().nextInt(100) + 1,
-  //       spacetime_score: Random().nextInt(100) + 1,
-  //       exec_score: Random().nextInt(100) + 1,
-  //       mem_score: Random().nextInt(100) + 1,
-  //       ling_score: Random().nextInt(100) + 1,
-  //       cal_score: Random().nextInt(100) + 1,
-  //       reac_score: Random().nextInt(100) + 1,
-  //       orient_score: Random().nextInt(100) + 1,
-  //     );
-  //     final request = ModelMutations.create(row);
-  //     final response = await Amplify.API.mutate(request: request).response;
-  //     int month = int.parse(brainmonth);
-  //     month += 100;
-  //     brainmonth = "$month";
-  //
-  //     final createdUser = response.data;
-  //     if (createdUser == null) {
-  //       safePrint('errors: ${response.errors}');
-  //       return;
-  //     }
-  //     safePrint('Mutation result: ${createdUser.month}');
-  //   } on ApiException catch (e) {
-  //     safePrint('Mutation failed: $e');
-  //   }
-  // }
-
-  // Future<MonthlyDBTest?> queryMonthlyDBItem() async {
-  //   try {
-  //     var ID = '3';
-  //     int limit =
-  //         1; // Fetch the latest 1 data items, you can change this value to fetch more or less
-  //     String sortDirection =
-  //         "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
-  //
-  //     var operation = Amplify.API.query(
-  //       request: GraphQLRequest(
-  //         document: """
-  //         query ListMonthlyDBTests(\$id: ID, \$limit: Int, \$sortDirection: ModelSortDirection) {
-  //           listMonthlyDBTests(
-  //             id: \$id,
-  //             limit: \$limit,
-  //             sortDirection: \$sortDirection
-  //           ) {
-  //             items {
-  //               id
-  //               month
-  //               total_time
-  //               avg_att
-  //               avg_med
-  //               firsts_name
-  //               first_amt
-  //               second_name
-  //               second_amt
-  //               con_score
-  //               spacetime_score
-  //               exec_score
-  //               mem_score
-  //               ling_score
-  //               cal_score
-  //               reac_score
-  //               orient_score
-  //               createdAt
-  //               updatedAt
-  //             }
-  //           }
-  //         }
-  //       """,
-  //         variables: {
-  //           "id": ID,
-  //           "limit": limit,
-  //           "sortDirection": sortDirection,
-  //         },
-  //       ),
-  //     );
-  //
-  //     var response = await operation.response;
-  //     // print(response.data);
-  //     // Map<String, dynamic> json = jsonDecode(response.data);
-  //     // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
-  //     MonthlyDBTest monthlyDBTest =
-  //         (jsonDecode(response.data)['listMonthlyDBTests']['items'] as List)
-  //             .map((item) => MonthlyDBTest.fromJson(item))
-  //             .toList()
-  //             .first;
-  //     if (monthlyDBTest == null) {
-  //       safePrint('errors: ${response.errors}');
-  //       // safePrint('errors: ${response}');
-  //     }
-  //     return monthlyDBTest;
-  //   } on ApiException catch (e) {
-  //     safePrint('Query failed: $e');
-  //     return null;
-  //   }
-  // }
-  //
-  // // Future<List<MonthlyDBTest?>> queryListMonthlyDBItems(int yearMonth) async {
-  // //   var ID = '3';
-  // //   // final queryPredicate = MonthlyDBTest.ID.eq(ID);
-  // //   //20240211- 10000 + 50
-  // //   //if( yearmonth >  )2
-  // //   print("yearmonth:${yearMonth - 10000 + 50}");
-  // //   final queryPredicateDateMax = MonthlyDBTest.MONTH.le("$yearMonth");
-  // //   final queryPredicateDatemin =
-  // //       MonthlyDBTest.MONTH.gt("${yearMonth - 10000 + 50}");
-  // //   final queryPredicateall = MonthlyDBTest.ID
-  // //       .eq(ID)
-  // //       .and(queryPredicateDateMax)
-  // //       .and(queryPredicateDatemin);
-  // //
-  // //   try {
-  // //     final request = ModelQueries.list<MonthlyDBTest>(MonthlyDBTest.classType,
-  // //         where: queryPredicateall);
-  // //     final response = await Amplify.API.query(request: request).response;
-  // //
-  // //     final items = response.data?.items;
-  // //     if (items == null) {
-  // //       print('errors: ${response.errors}');
-  // //       return const [];
-  // //     }
-  // //     return items;
-  // //   } on ApiException catch (e) {
-  // //     print('Query failed: $e');
-  // //     return const [];
-  // //   }
-  // // }
-  //
-  Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItems(
+  Future<List<MonthlyBrainSignalTable?>> queryMonthlyDBLatestItem(
       {required String ID, String? nextToken}) async {
+    int currentMonth = DateTime.now().month;
+    int day = DateTime.now().day;
+    String currentDate =
+        '${DateTime.now().year}${currentMonth > 9 ? currentMonth : '0$currentMonth'}40';
+    String compareDate =
+        '${DateTime.now().year - 1}${currentMonth > 9 ? currentMonth : '0$currentMonth'}01';
+    print(currentDate);
     try {
       // var ID = '1';
 
@@ -2892,6 +2776,248 @@ class GraphQLController {
           variables: {
             "filter": {
               "id": {"eq": ID},
+              "month": {
+                "between": [compareDate, currentDate]
+              },
+            },
+            "limit": 1000,
+            "nextToken": nextToken,
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      {
+        // print("asdf");
+        // print(response.data);
+        // print("1234");
+
+        var data = jsonDecode(response.data);
+        var items = data['listMonthlyBrainSignalTables']['items'];
+
+        if (items == null || response.data == null) {
+          print('errors: ${response.errors}');
+          return const [];
+        }
+        // Handle items as needed
+        List<MonthlyBrainSignalTable?> monthlyDBTests = (items as List)
+            .map((item) => MonthlyBrainSignalTable.fromJson(item))
+            .toList();
+        var newNextToken = data['listMonthlyBrainSignalTables']['nextToken'];
+
+        if (newNextToken != null) {
+          // recursive call for next page's data
+          var additionalItems =
+          await queryMonthlyDBLatestItem(ID: ID, nextToken: newNextToken);
+          monthlyDBTests.addAll(additionalItems);
+        }
+
+        return monthlyDBTests;
+      }
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+  // Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItems(
+  //     {required String ID, String? nextToken}) async {
+  //   try {
+  //     // var ID = '1';
+  //
+  //     var operation = Amplify.API.query(
+  //       request: GraphQLRequest(
+  //         apiName: "Institution_API_NEW",
+  //         document: """
+  //         query listMonthlyBrainSignalTables(\$filter: TableMonthlyBrainSignalTableFilterInput, \$limit: Int, \$nextToken: String) {
+  //           listMonthlyBrainSignalTables(
+  //             filter: \$filter,
+  //             limit: \$limit,
+  //             nextToken: \$nextToken
+  //           ) {
+  //             items {
+  //               id
+  //               month
+  //               total_time
+  //               avg_att
+  //               avg_med
+  //               firsts_name
+  //               first_amt
+  //               second_name
+  //               second_amt
+  //               con_score
+  //               spacetime_score
+  //               exec_score
+  //               mem_score
+  //               ling_score
+  //               cal_score
+  //               reac_score
+  //               orient_score
+  //               createdAt
+  //               updatedAt
+  //             }
+  //             nextToken
+  //           }
+  //         }
+  //       """,
+  //         variables: {
+  //           "filter": {
+  //             "id": {"eq": ID},
+  //           },
+  //           "limit": 1000,
+  //           "nextToken": nextToken,
+  //         },
+  //       ),
+  //     );
+  //
+  //     var response = await operation.response;
+  //     {
+  //       print("asdf");
+  //       print(response.data);
+  //       print("1234");
+  //
+  //       var data = jsonDecode(response.data);
+  //       var items = data['listMonthlyBrainSignalTables']['items'];
+  //
+  //       if (items == null || response.data == null) {
+  //         print('errors: ${response.errors}');
+  //         return const [];
+  //       }
+  //       // Handle items as needed
+  //       List<MonthlyBrainSignalTable?> monthlyDBTests = (items as List)
+  //           .map((item) => MonthlyBrainSignalTable.fromJson(item))
+  //           .toList();
+  //       var newNextToken = data['listMonthlyBrainSignalTables']['nextToken'];
+  //
+  //       if (newNextToken != null) {
+  //         // recursive call for next page's data
+  //         var additionalItems =
+  //             await queryListMonthlyDBItems(ID: ID, nextToken: newNextToken);
+  //         monthlyDBTests.addAll(additionalItems);
+  //       }
+  //
+  //       return monthlyDBTests;
+  //     }
+  //   } on ApiException catch (e) {
+  //     print('Query failed: $e');
+  //     return const [];
+  //   }
+  // }
+  Future<List<UserTable?>> queryListUserDBItemsForAverageAge(
+      int start, int end , {String? nextToken}) async {
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          apiName: "Institution_API_NEW",
+          document: """
+          query ListUserTables(\$filter: TableUserTableFilterInput, \$limit: Int, \$nextToken: String) {
+            listUserTables(
+              filter: \$filter,
+              limit: \$limit,
+              nextToken: \$nextToken
+            ) {
+              items {
+                ID
+                BIRTH
+                CREATEDAT
+                INSTITUTION
+                INSTITUTION_ID
+                NAME
+                SEX
+                UPDATEDAT
+              }
+              nextToken
+            }
+          }
+        """,
+          variables: {
+            "filter": {
+              // "INSTITUTION_ID": {"eq":  institutionId},
+              "BIRTH": {
+                "between": [start, end]
+              },
+            },
+            "limit": 1000,
+            "nextToken": nextToken,
+          },
+        ),
+      );
+
+      var response = await operation.response;
+      {
+        var data = jsonDecode(response.data);
+        var items = data['listUserTables']['items'];
+        if (response.data == null || items == null) {
+          print('errors: ${response.errors}');
+          return const [];
+        }
+
+        List<UserTable?> Users =
+        (items as List).map((item) => UserTable.fromJson(item)).toList();
+        var newNextToken = data['listUserTables']['nextToken'];
+
+        if (newNextToken != null) {
+          // recursive call for next page's data
+          var nextUsers = await queryListUserDBItemsForAverageAge(
+              start,end ,nextToken: newNextToken);
+          Users.addAll(nextUsers);
+        }
+
+        return Users;
+      }
+    } on ApiException catch (e) {
+      print('Query failed: $e');
+      return const [];
+    }
+  }
+
+  Future<List<MonthlyBrainSignalTable?>> queryMonthlyDBRequiredItem(
+      String id, int yearMonth, { String? nextToken}) async {
+
+    try {
+      // var ID = '1';
+
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          apiName: "Institution_API_NEW",
+          document: """
+          query listMonthlyBrainSignalTables(\$filter: TableMonthlyBrainSignalTableFilterInput, \$limit: Int, \$nextToken: String) {
+            listMonthlyBrainSignalTables(
+              filter: \$filter,
+              limit: \$limit,
+              nextToken: \$nextToken
+            ) {
+              items {
+                id
+                month
+                total_time
+                avg_att
+                avg_med
+                firsts_name
+                first_amt
+                second_name
+                second_amt
+                con_score
+                spacetime_score
+                exec_score
+                mem_score
+                ling_score
+                cal_score
+                reac_score
+                orient_score
+                createdAt
+                updatedAt
+              }
+              nextToken
+            }
+          }
+        """,
+          variables: {
+            "filter": {
+              "id": {"eq": id},
+              "month": {
+                "between": [yearMonth.toString(), (yearMonth+40).toString()]
+              },
             },
             "limit": 1000,
             "nextToken": nextToken,
@@ -2921,7 +3047,7 @@ class GraphQLController {
         if (newNextToken != null) {
           // recursive call for next page's data
           var additionalItems =
-              await queryListMonthlyDBItems(ID: ID, nextToken: newNextToken);
+          await queryMonthlyDBRequiredItem(id,yearMonth, nextToken: newNextToken);
           monthlyDBTests.addAll(additionalItems);
         }
 
@@ -2932,6 +3058,139 @@ class GraphQLController {
       return const [];
     }
   }
+// Future<void> createMonthlyData() async {
+//   try {
+//     final row = MonthlyDBTest(
+//       id: "3",
+//       month: brainmonth,
+//       avg_att: Random().nextInt(100) + 1,
+//       avg_med: Random().nextInt(100) + 1,
+//       con_score: Random().nextInt(100) + 1,
+//       spacetime_score: Random().nextInt(100) + 1,
+//       exec_score: Random().nextInt(100) + 1,
+//       mem_score: Random().nextInt(100) + 1,
+//       ling_score: Random().nextInt(100) + 1,
+//       cal_score: Random().nextInt(100) + 1,
+//       reac_score: Random().nextInt(100) + 1,
+//       orient_score: Random().nextInt(100) + 1,
+//     );
+//     final request = ModelMutations.create(row);
+//     final response = await Amplify.API.mutate(request: request).response;
+//     int month = int.parse(brainmonth);
+//     month += 100;
+//     brainmonth = "$month";
+//
+//     final createdUser = response.data;
+//     if (createdUser == null) {
+//       safePrint('errors: ${response.errors}');
+//       return;
+//     }
+//     safePrint('Mutation result: ${createdUser.month}');
+//   } on ApiException catch (e) {
+//     safePrint('Mutation failed: $e');
+//   }
+// }
+
+// Future<MonthlyDBTest?> queryMonthlyDBItem() async {
+//   try {
+//     var ID = '3';
+//     int limit =
+//         1; // Fetch the latest 1 data items, you can change this value to fetch more or less
+//     String sortDirection =
+//         "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
+//
+//     var operation = Amplify.API.query(
+//       request: GraphQLRequest(
+//         document: """
+//         query ListMonthlyDBTests(\$id: ID, \$limit: Int, \$sortDirection: ModelSortDirection) {
+//           listMonthlyDBTests(
+//             id: \$id,
+//             limit: \$limit,
+//             sortDirection: \$sortDirection
+//           ) {
+//             items {
+//               id
+//               month
+//               total_time
+//               avg_att
+//               avg_med
+//               firsts_name
+//               first_amt
+//               second_name
+//               second_amt
+//               con_score
+//               spacetime_score
+//               exec_score
+//               mem_score
+//               ling_score
+//               cal_score
+//               reac_score
+//               orient_score
+//               createdAt
+//               updatedAt
+//             }
+//           }
+//         }
+//       """,
+//         variables: {
+//           "id": ID,
+//           "limit": limit,
+//           "sortDirection": sortDirection,
+//         },
+//       ),
+//     );
+//
+//     var response = await operation.response;
+//     // print(response.data);
+//     // Map<String, dynamic> json = jsonDecode(response.data);
+//     // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
+//     MonthlyDBTest monthlyDBTest =
+//         (jsonDecode(response.data)['listMonthlyDBTests']['items'] as List)
+//             .map((item) => MonthlyDBTest.fromJson(item))
+//             .toList()
+//             .first;
+//     if (monthlyDBTest == null) {
+//       safePrint('errors: ${response.errors}');
+//       // safePrint('errors: ${response}');
+//     }
+//     return monthlyDBTest;
+//   } on ApiException catch (e) {
+//     safePrint('Query failed: $e');
+//     return null;
+//   }
+// }
+//
+// // Future<List<MonthlyDBTest?>> queryListMonthlyDBItems(int yearMonth) async {
+// //   var ID = '3';
+// //   // final queryPredicate = MonthlyDBTest.ID.eq(ID);
+// //   //20240211- 10000 + 50
+// //   //if( yearmonth >  )2
+// //   print("yearmonth:${yearMonth - 10000 + 50}");
+// //   final queryPredicateDateMax = MonthlyDBTest.MONTH.le("$yearMonth");
+// //   final queryPredicateDatemin =
+// //       MonthlyDBTest.MONTH.gt("${yearMonth - 10000 + 50}");
+// //   final queryPredicateall = MonthlyDBTest.ID
+// //       .eq(ID)
+// //       .and(queryPredicateDateMax)
+// //       .and(queryPredicateDatemin);
+// //
+// //   try {
+// //     final request = ModelQueries.list<MonthlyDBTest>(MonthlyDBTest.classType,
+// //         where: queryPredicateall);
+// //     final response = await Amplify.API.query(request: request).response;
+// //
+// //     final items = response.data?.items;
+// //     if (items == null) {
+// //       print('errors: ${response.errors}');
+// //       return const [];
+// //     }
+// //     return items;
+// //   } on ApiException catch (e) {
+// //     print('Query failed: $e');
+// //     return const [];
+// //   }
+// // }
+//
 
 
 

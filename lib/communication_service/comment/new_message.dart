@@ -65,6 +65,7 @@ class _NewMessageState extends State<NewMessage> {
         children: [
           Expanded(
             child: TextField(
+              maxLength: 255,
               style: TextStyle(color: Colors.black),
               maxLines: null, //자동으로 줄바꿈해줌
               controller: _contentController,

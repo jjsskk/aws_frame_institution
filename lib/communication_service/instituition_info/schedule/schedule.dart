@@ -30,16 +30,22 @@ class _SchedulePageState extends State<SchedulePage> {
   bool loading = true;
   var month = 1; // for DropdownDatePicker
   var year = 1; // for DropdownDatePicker
-  bool isCheckedEdit = false; // check for add or view calendar event
+  bool isCheckedEdit =
+      false; // check for edit( add or update) or view calendar event
   bool isCheckedAddOrUpdate =
       false; // check for add( false)  or update(true) query
   String saveScheduleId = '';
+  List<String> tagsFromDB = [];
+  int startHour = 0; //used to update program start time
+  int startMin = 0; //used to update program start time
+  int endHour = 0; //used to update program end time
+  int endMin = 0; //used to update program end time
 
   DateTime _dateStartTimePicker = DateTime.now();
   DateTime _dateEndTimePicker = DateTime.now();
   final GlobalKey _containerkey = GlobalKey();
 
-  final TextEditingController _programController = TextEditingController();
+  TextEditingController _programController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   final TextfieldTagsController _tagController = TextfieldTagsController();
@@ -55,9 +61,12 @@ class _SchedulePageState extends State<SchedulePage> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+  late var kFirstDay;
+  late var kLastDay;
+
   Map<DateTime, List<Event>> _event = {};
 
-  late var kEvents;
+  late var _kEvents;
 
   Map<DateTime, List<Event>> get event => _event;
 
@@ -76,47 +85,16 @@ class _SchedulePageState extends State<SchedulePage> {
     subscribeScheduleChange();
   }
 
+  void selelctCalender() {
+    kFirstDay = DateTime(year, month, 1);
+    kLastDay = DateTime(year, month + 1, 0);
+  }
+
   void subscribeScheduleChange() {
     listener = stream!.listen(
       (snapshot) {
         print('data : ${snapshot.data!}');
-        // gql.listInstitutionCommentBoard('1234',nextToken: null).then((result) {
-        //   print(result);
-        //   _comments = [];
-        //   _foundComments = [];
-        //   result.forEach((value) {
-        //     // print(value.createdAt.toString().substring(0,10));
-        //     _comments.add({
-        //       'date': value.createdAt.toString().substring(0, 10)?? '',
-        //       'title': value.TITLE?? '',
-        //       'username': value.USERNAME?? '',
-        //       'user_id': value.USER_ID?? '',
-        //       'board_id': value.BOARD_ID?? '',
-        //       'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
-        //       'new_conversation_createdat':
-        //       value.NEW_CONVERSATION_CREATEDAT.toString()
-        //     });
-        //     // _foundComments.add({
-        //     //   'date': value.createdAt.toString().substring(0, 10),
-        //     //   'title': value.TITLE,
-        //     //   'username': value.USERNAME,
-        //     //   'user_id': value.USER_ID,
-        //     //   'board_id': value.BOARD_ID,
-        //     //   'new_conversation_createdat': value.NEW_CONVERSATION_CREATEDAT
-        //     //       .toString()
-        //     // });
-        //   });
-        //   _comments.sort((a, b) {
-        //     String aa = a['new_conversation_createdat'];
-        //
-        //     String bb = b['new_conversation_createdat'];
-        //     return bb.compareTo(aa);
-        //   });
-        //   _foundComments = List.from(_comments);
-        //   setState(() {
-        //     _foundComments = _foundComments;
-        //   });
-        // });
+        getEventDataFromDB();
       },
       onError: (Object e) => safePrint('Error in subscription stream: $e'),
     );
@@ -127,6 +105,7 @@ class _SchedulePageState extends State<SchedulePage> {
     setState(() {
       loading = true;
     });
+    selelctCalender();
     String? monthStr;
     monthStr = month > 9 ? '${month}' : '0${month}';
     gql
@@ -142,19 +121,19 @@ class _SchedulePageState extends State<SchedulePage> {
         int day = int.parse(value.DATE.substring(6, 8));
         final date = DateTime.utc(year, month, day);
         if (event.containsKey(date)) {
-          event[date]!.add(Event(
-              value.CONTENT ?? '', value.TIME ?? '', value.SCHEDULE_ID ?? ''));
+          event[date]!.add(Event(value.CONTENT ?? '', value.TIME ?? '',
+              value.SCHEDULE_ID ?? '', value.TAG));
         } else {
           event.addAll({
             date: [
               Event(value.CONTENT ?? '', value.TIME ?? '',
-                  value.SCHEDULE_ID ?? '')
+                  value.SCHEDULE_ID ?? '', value.TAG)
             ]
           });
         }
       });
 
-      kEvents = LinkedHashMap<DateTime, List<Event>>(
+      _kEvents = LinkedHashMap<DateTime, List<Event>>(
         equals: isSameDay,
         hashCode: getHashCode,
       )..addAll(event);
@@ -165,6 +144,13 @@ class _SchedulePageState extends State<SchedulePage> {
         _selectedEvents!.dispose();
         _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
       }
+
+      _selectedEvents!.value.sort((a, b) {
+        String aa = a.time.substring(0, 7);
+        // print(aa);
+        String bb = b.time.substring(0, 7);
+        return aa.compareTo(bb);
+      });
       setState(() {
         loading = false;
       });
@@ -196,7 +182,7 @@ class _SchedulePageState extends State<SchedulePage> {
 
   List<Event> _getEventsForDay(DateTime day) {
     // Implementation example
-    return kEvents[day] ?? [];
+    return _kEvents[day] ?? [];
   }
 
   List<Event> _getEventsForRange(DateTime start, DateTime end) {
@@ -268,7 +254,6 @@ class _SchedulePageState extends State<SchedulePage> {
     var colorScheme = Theme.of(context).colorScheme;
     var theme = Theme.of(context);
     return Scaffold(
-
       body: loading
           ? Center(child: CircularProgressIndicator())
           : Padding(
@@ -471,7 +456,7 @@ class _SchedulePageState extends State<SchedulePage> {
                         ),
                         outsideDaysVisible: false,
                       ),
-                      onDaySelected: _onDaySelected,
+                      onDaySelected: isCheckedEdit ? null : _onDaySelected,
                       onRangeSelected: _onRangeSelected,
                       onFormatChanged: (format) {
                         if (_calendarFormat != format) {
@@ -500,6 +485,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                                 !isCheckedAddOrUpdate;
                                           _programController.clear();
                                           _tagController.clearTags();
+                                          startHour =
+                                              startMin = endMin = endHour = 0;
                                         });
                                       },
                                       icon: Icon(Icons.arrow_back),
@@ -515,7 +502,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                             print('${DateTime.now()}');
                                             print(_tagController.getTags);
                                             String start =
-                                                '${_dateStartTimePicker.hour.toString().padLeft(2, '0')}시 ${_dateStartTimePicker.minute.toString().padLeft(2, '0')} 분';
+                                                '${_dateStartTimePicker.hour.toString().padLeft(2, '0')}시 ${_dateStartTimePicker.minute.toString().padLeft(2, '0')}분';
                                             print('start : $start');
                                             String end =
                                                 '${_dateEndTimePicker.hour.toString().padLeft(2, '0')}시 ${_dateEndTimePicker.minute.toString().padLeft(2, '0')}분';
@@ -543,47 +530,47 @@ class _SchedulePageState extends State<SchedulePage> {
                                                     '$inst_id',
                                                     saveScheduleId,
                                                     _programController.text
+                                                        .trim()
                                                         .trim(),
-                                                    _tagController.getTags
-                                                        .toString(),
+                                                    _tagController.getTags,
                                                     '$start ~ $end',
                                                     '${_selectedDay!.year}$monthStr$dateStr')
                                                 : await gql.createScheduledata(
                                                     '$inst_id',
                                                     SCHE_ID,
                                                     _programController.text
+                                                        .trim()
                                                         .trim(),
-                                                    _tagController.getTags
-                                                        .toString(),
+                                                    _tagController.getTags,
                                                     '$start ~ $end',
                                                     '${_selectedDay!.year}$monthStr$dateStr');
                                             {
                                               if (isChecked) {
-                                                if (kEvents.containsKey(date)) {
-                                                  if (isCheckedAddOrUpdate)
-                                                    kEvents[date].removeWhere(
-                                                        (event) =>
-                                                            event.sche_id ==
-                                                            saveScheduleId);
-                                                  kEvents[date]!.add(Event(
-                                                      _programController.text
-                                                          .trim(),
-                                                      '$start ~ $end',
-                                                      isCheckedAddOrUpdate
-                                                          ? saveScheduleId
-                                                          : SCHE_ID));
-                                                } else {
-                                                  kEvents.addAll({
-                                                    date: [
-                                                      Event(
-                                                          _programController
-                                                              .text
-                                                              .trim(),
-                                                          '$start ~ $end',
-                                                          SCHE_ID)
-                                                    ]
-                                                  });
-                                                }
+                                                // if (kEvents.containsKey(date)) {
+                                                //   if (isCheckedAddOrUpdate)
+                                                //     kEvents[date].removeWhere(
+                                                //         (event) =>
+                                                //             event.sche_id ==
+                                                //             saveScheduleId);
+                                                //   kEvents[date]!.add(Event(
+                                                //       _programController.text
+                                                //           .trim(),
+                                                //       '$start ~ $end',
+                                                //       isCheckedAddOrUpdate
+                                                //           ? saveScheduleId
+                                                //           : SCHE_ID));
+                                                // } else {
+                                                //   kEvents.addAll({
+                                                //     date: [
+                                                //       Event(
+                                                //           _programController
+                                                //               .text
+                                                //               .trim(),
+                                                //           '$start ~ $end',
+                                                //           SCHE_ID)
+                                                //     ]
+                                                //   });
+                                                // }
                                                 setState(() {
                                                   isCheckedEdit =
                                                       !isCheckedEdit;
@@ -719,9 +706,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                           focusNode: tfn,
                                           textfieldTagsController:
                                               _tagController,
-                                          initialTags: const [
-                                            'OO 복지관',
-                                          ],
+                                          initialTags: isCheckedAddOrUpdate
+                                              ? tagsFromDB
+                                              : const [
+                                                  'OO 복지관',
+                                                ],
                                           textSeparators: const [' ', ','],
                                           letterCase: LetterCase.normal,
                                           validator: (String tag) {
@@ -973,6 +962,22 @@ class _SchedulePageState extends State<SchedulePage> {
                                               print('save:${saveScheduleId}');
                                               isCheckedAddOrUpdate =
                                                   !isCheckedAddOrUpdate;
+                                              _programController =
+                                                  TextEditingController(
+                                                      text: value[index].title);
+                                              tagsFromDB = value[index].tags;
+                                              startHour = int.parse(value[index]
+                                                  .time
+                                                  .substring(0, 2));
+                                              startMin = int.parse(value[index]
+                                                  .time
+                                                  .substring(4, 6));
+                                              endHour = int.parse(value[index]
+                                                  .time
+                                                  .substring(10, 12));
+                                              endMin = int.parse(value[index]
+                                                  .time
+                                                  .substring(14, 16));
 
                                               setState(() {
                                                 isCheckedEdit = !isCheckedEdit;
@@ -1021,11 +1026,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                       value[index]
                                                                           .sche_id);
 
-                                                                  kEvents[date].removeWhere((event) =>
-                                                                      event
-                                                                          .sche_id ==
-                                                                      value[index]
-                                                                          .sche_id);
+                                                                  // kEvents[date].removeWhere((event) =>
+                                                                  //     event
+                                                                  //         .sche_id ==
+                                                                  //     value[index]
+                                                                  //         .sche_id);
 
                                                                   Navigator.pop(
                                                                       context);
@@ -1082,7 +1087,8 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Widget hourMinute5IntervalStart() {
     return new TimePickerSpinner(
-      time: DateTime(2023),
+      time: DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day,
+          startHour, startMin),
       spacing: 20,
       itemHeight: 40,
       minutesInterval: 5,
@@ -1096,7 +1102,8 @@ class _SchedulePageState extends State<SchedulePage> {
 
   Widget hourMinute5IntervalEnd() {
     return new TimePickerSpinner(
-      time: DateTime(2023),
+      time: DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day,
+          endHour, endMin),
       spacing: 20,
       itemHeight: 40,
       minutesInterval: 5,

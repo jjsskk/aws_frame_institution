@@ -76,15 +76,14 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
 
   int AVG_MED_AVG = 0; //평균 안정감
 
-  List<String> users = [];// storing user Ids having similar ageEra
+  List<String> users = []; // storing user Ids having similar ageEra
 
   List<Future<dynamic?>> futuresList = [];
   int ageEra = 0;
-  var month = 1;  // for DropdownDatePicker
+  var month = 1; // for DropdownDatePicker
   var year = 2023; // for DropdownDatePicker
 
   int numberForonedata = 1; // for extractRequiredUserData()
-
 
   Map<String, List<int>> allData = {}; // variable for _getBars()
 
@@ -106,7 +105,17 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
   }
 
   void extractLatestBrainData() {
-    gql.queryMonthlyDBItem().then((value) {
+    gql.queryMonthlyDBLatestItem(ID:'1').then((values) {
+      print(values);
+
+      values.sort((a, b) {
+        String aa = a.month;
+
+        String bb = b.month;
+        return bb.compareTo(aa);
+      });
+
+      var value = values.first;
       setState(() {
         CON_SCORE = value!.con_score;
         SPACETIME_SCORE = value!.spacetime_score;
@@ -121,7 +130,7 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
         month = int.parse(value.month.substring(4, 6));
         print("month : $month");
         year = int.parse(value.month.substring(0, 4));
-        // extractSimilarAge();
+        extractSimilarAge();
       });
     });
   }
@@ -130,7 +139,8 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
     int changeddate = year * 10000 + month * 100;
     numberForonedata = 0;
     Future<dynamic> future =
-        gql.queryMonthlyDBRequiredItem("3", changeddate).then((value) {
+        gql.queryMonthlyDBRequiredItem("3", changeddate).then((values) {
+      var value = values.last;
       if (value != null) {
         setState(() {
           numberForonedata++;
@@ -151,45 +161,45 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
     return future;
   }
 
-  // void extractSimilarAge() {
-  //   users = [];
-  //   String birth = "19651008";
-  //   int year = int.parse(birth.substring(0, 4));
-  //   int month = int.parse(birth.substring(4, 6));
-  //   int day = int.parse(birth.substring(6, 8));
-  //   DateTime birthday = DateTime(year, month, day);
-  //
-  //   DateDuration duration;
-  //
-  //   // Find out your age as of today's date 2021-03-08
-  //   duration = AgeCalculator.age(birthday);
-  //   int age = duration.years;
-  //   print('Your age is ${age}'); // Your age is Years: 24, Months: 0, Days: 3
-  //
-  //   ageEra = ((duration.years ~/ 10) * 10);
-  //
-  //   int diff = age - ageEra;
-  //
-  //   print(diff);
-  //
-  //   int maxYear = (year + diff) * 10000;
-  //   int minYear = (year - (9 - diff)) * 10000;
-  //   print(minYear);
-  //   print(maxYear);
-  //
-  //   gql.queryListUserDBItems(minYear, maxYear).then((result) {
-  //     // extract SimilarAge users Ids
-  //     // print(result);
-  //     result.forEach((value) {
-  //       // print("${value.id}");
-  //       users.add(value.id);
-  //     });
-  //     futuresList = [];
-  //     calculateAverageSignal();
-  //   }).catchError((error) {
-  //     print(error);
-  //   });
-  // }
+  void extractSimilarAge() {
+    users = [];
+    String birth = "19651008";
+    int year = int.parse(birth.substring(0, 4));
+    int month = int.parse(birth.substring(4, 6));
+    int day = int.parse(birth.substring(6, 8));
+    DateTime birthday = DateTime(year, month, day);
+
+    DateDuration duration;
+
+    // Find out your age as of today's date 2021-03-08
+    duration = AgeCalculator.age(birthday);
+    int age = duration.years;
+    print('Your age is ${age}'); // Your age is Years: 24, Months: 0, Days: 3
+
+    ageEra = ((duration.years ~/ 10) * 10);
+
+    int diff = age - ageEra;
+
+    print(diff);
+
+    int maxYear = (year + diff) * 10000;
+    int minYear = (year - (9 - diff)) * 10000;
+    print(minYear);
+    print(maxYear);
+
+    gql.queryListUserDBItemsForAverageAge(minYear, maxYear).then((result) {
+      // extract SimilarAge users Ids
+      // print(result);
+      result.forEach((value) {
+        // print("${value.id}");
+        users.add(value.ID);
+      });
+      futuresList = [];
+      calculateAverageSignal();
+    }).catchError((error) {
+      print(error);
+    });
+  }
 
   void calculateAverageSignal() async {
     // futuresList = [];
@@ -226,7 +236,8 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
     users.forEach((id) async {
       // print(id);
       Future<dynamic> future =
-          gql.queryMonthlyDBRequiredItem(id, changeddate).then((value) {
+          gql.queryMonthlyDBRequiredItem(id, changeddate).then((values) {
+            var value = values.last;
         if (value != null) {
           numberForavg++;
           CON_SCORE_SUM += value.con_score as int;
@@ -351,8 +362,6 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
 
         AVG_MED_AVG = 0;
         allData['안정감'] = [AVG_MED, AVG_MED_AVG];
-
-
       }
       loading = false;
     });
