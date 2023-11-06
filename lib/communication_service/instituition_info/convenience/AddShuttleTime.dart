@@ -7,10 +7,7 @@ import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../storage/storage_service.dart';
 import 'Convenience.dart';
 
-
 class AddShuttleTimePage extends StatefulWidget {
-
-
   const AddShuttleTimePage({Key? key}) : super(key: key);
 
   @override
@@ -18,8 +15,6 @@ class AddShuttleTimePage extends StatefulWidget {
 }
 
 class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
-
-
   final StorageService _storageService = StorageService();
 
   File? _image;
@@ -49,10 +44,9 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
     }
     String imagePath = image.path;
 
-
-    String imageUrl = await _storageService.uploadImageAtPathUrlProtected(imagePath);
+    String imageUrl =
+        await _storageService.uploadImageAtPathUrlProtected(imagePath);
     return imageUrl;
-
   }
 
   @override
@@ -66,7 +60,6 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
       body: ListView(
         padding: EdgeInsets.all(16),
         children: [
-
           ElevatedButton(
             onPressed: _pickImage,
             child: Text('이미지 선택'),
@@ -86,7 +79,11 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
                 "INST_ID_123",
               );
 
-
+              if (result != null) {
+                if (result != null)
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('셔틀시간이 성공적으로 변경되었습니다.')));
+              }
               Navigator.pop(context, result);
             },
             child: Text('완료'),
@@ -95,5 +92,4 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
       ),
     );
   }
-
 }

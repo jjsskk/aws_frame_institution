@@ -111,7 +111,9 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
               );
 
               if (result != null) { // GraphQL 업로드가 성공했다면...
-
+                ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                  SnackBar(content: Text('공지사항이 추가되었습니다.')),
+                );
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).announceUpdate();
               }

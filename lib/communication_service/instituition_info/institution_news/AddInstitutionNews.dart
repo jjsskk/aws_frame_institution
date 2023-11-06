@@ -108,6 +108,9 @@ class _AddInstitutionNewsPageState extends State<AddInstitutionNewsPage> {
 
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).newsUpdate();
+                ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                  SnackBar(content: Text('기관소식이 추가되었습니다.')),
+                );
               }
 
 

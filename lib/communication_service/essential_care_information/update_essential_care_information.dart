@@ -24,6 +24,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
   String userid = "";
   List<String> nameList = [];
   String name = '';
+  String birth = '';
   String institutionId = "";
   String institution = '';
   String imageUrl = '';
@@ -37,8 +38,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
     return countryCode + phoneNumber;
   }
   final StorageService _storageService = StorageService();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _birthController = TextEditingController();
+
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _medicationController = TextEditingController();
   final TextEditingController _medicationWayController =
@@ -53,10 +53,10 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
     super.initState();
     isImageSelected = false;
     widget.essentialCareTable.NAME != null
-        ? _nameController.text = widget.essentialCareTable.NAME!
+        ? name = widget.essentialCareTable.NAME!
         : "";
     widget.essentialCareTable.BIRTH != null
-        ? _birthController.text = widget.essentialCareTable.BIRTH!
+        ? birth = widget.essentialCareTable.BIRTH!
         : "";
     widget.essentialCareTable.PHONE_NUMBER != null
         ? _phoneNumberController.text =
@@ -194,28 +194,27 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
               maximumSize: Size(150, 150),
             ),
           ),
-          TextField(
-            controller: _nameController,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(labelText: '이름'),
+          SizedBox(height: 30),
+          Row(
+            children: [
+              Text("이름: "),
+              Text(name),
+            ],
           ),
+          SizedBox(height: 16),
+          Row(
+            children: [
+              Text("생년월일: "),
+              Text(birth),
+            ],
+          ),
+          SizedBox(height: 16),
+
           SizedBox(height: 16),
           Form(
             key: _formKey,
             child: Column(
               children: [
-                TextFormField(
-                  controller: _birthController,
-                  style: TextStyle(color: Colors.black),
-                  decoration: InputDecoration(labelText: '생년월일(8자리)'),
-                  validator: (value) {
-                    if (value == null || value.length != 8) {
-                      return '생년월일을 8글자로 입력해주세요';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16),
                 TextFormField(
                   controller: _phoneNumberController,
                   style: TextStyle(color: Colors.black),
@@ -260,8 +259,8 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                   }
 
                   if(await gql.updateEssentialCare(
-                      _birthController.text,
-                      _nameController.text,
+                      birth,
+                      name,
                       imageUrl,
                       _phoneNumberController.text,
                       institution,
@@ -269,9 +268,8 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                       _medicationController.text,
                       _medicationWayController.text,
                       userid)){
-                    final snackBar = await SnackBar(
-                      content: const Text('필수 돌봄정보가 수정되었습니다'),
-
+                    ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                      SnackBar(content: Text('필수 돌봄 정보가 수정되었습니다.')),
                     );
                   }
                 }

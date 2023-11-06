@@ -11,6 +11,8 @@ import '../models/MonthlyBrainSignalTable.dart';
 class InstitutionSummaryPage extends StatefulWidget {
   InstitutionSummaryPage({Key? key}) : super(key: key);
 
+
+
   @override
   State<InstitutionSummaryPage> createState() => _InstitutionSummaryPageState();
 }
@@ -22,6 +24,14 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   String? selectedLabel;
   bool useSides = false;
   List<String> nameList = [];
+  String? startYear = DateTime.now().year.toString();
+  String? startMonth = '01';
+  String? endYear = DateTime.now().year.toString();
+  String? endMonth = '12';
+  String day = '01';
+
+  List<String> years = List<String>.generate(50, (i) => (DateTime.now().year - i).toString());
+  List<String> months = List<String>.generate(12, (i) => ((i + 1) < 10 ? '0' : '') + (i + 1).toString());
 
   //그래프 버튼마다 색상을 다르게 하기 위해 존재함 각각 그래프의 색상!
   List<Color> buttomColors = [
@@ -58,6 +68,23 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       return Container();
     }
   }
+
+
+
+  Widget buildDropdown(String selectedValue, List<String> items,
+      ValueChanged<String?> onChanged) {
+    return DropdownButtonFormField(
+      value: selectedValue,
+      items: items.map((String value) {
+        return new DropdownMenuItem(
+          value: value,
+          child: new Text(value, style: TextStyle(color: Colors.black),),
+        );
+      }).toList(),
+      onChanged: onChanged,
+    );
+  }
+
 
   //이 위젯은 그래프의 각 y축의 값을 나타내는 위젯입니다.
   Widget leftTitleWidgets(double value, TitleMeta meta) {
@@ -287,6 +314,35 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
           padding: EdgeInsets.all(16), child: LineChart(_getLineChartData())),
     );
   }
+  void onSearchPressed() async {
+    if(startYear == null || startMonth == null || endYear == null || endMonth == null){
+      showDialog(context: context,builder:(BuildContext context)=>AlertDialog(title: Text("년도와 월을 올바르게 선택해주세요"),));
+      return;
+    }
+    int startYr = int.parse(startYear!);
+    int startMth = int.parse(startMonth!);
+    int endYr = int.parse(endYear!);
+    int endMth = int.parse(endMonth!);
+
+
+    if(DateTime(endYr,endMth).isBefore(DateTime(startYr,startMth))){
+      showDialog(context: context,builder:(BuildContext context)=>AlertDialog(title: Text("년도를 올바르게 선택해주세요"),));
+      return;
+    }
+
+    // Fetch data with the specified range
+    final dataStartStr=startYear!+startMonth!+day;
+    final dataEndStr=endYear!+endMonth!+day;
+
+
+    // final users = await gql.queryListUsers(institutionId: "123"); // User list query here
+    //
+    // for(var user in users){
+    //   fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
+    // }
+    fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
+  }
+
 
   //그래프 위에 버튼을 구성하는 위젯입니다.
   //그리드를 통해 버튼을 2행으로 구성해서 총 10개를 보여주게 됩니다. 그래서 1행당 5개의 버튼이 존재하게 됩니다.
@@ -367,19 +423,19 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Map<String, String> nameToId = {};
   List<List<MonthlyBrainSignalTable?>> userList = [];
 
-  Future<void> fetchData() async {
+  Future<void> fetchData(String startYear, String startMonth,String endYear,String endMonth,String day,) async {
     try {
+      averagesByMonth = {};
       final users = await gql.queryListUsers(institutionId: "123");
-
+      final dataStartStr=startYear+startMonth!+day;
+      final dataEndStr=endYear!+endMonth!+day;
+      results = [];
       for (var user in users) {
         print(user.ID);
-        // Assuming queryUserMonthlyData returns a map where keys are fields and values are lists of monthly data.
-        final data = await gql.queryListMonthlyDBItems(ID: user.ID);
-        // final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
+        final data = await gql.queryListMonthlyDBItemsBetween(ID: user.ID, startMonth: dataStartStr, endMonth: dataEndStr);
 
-        print("Type of myResult: ${data.runtimeType}");
+        // print("Type of myResult: ${data.runtimeType}");
 
-        // 날짜에 따라 오름차순으로 정렬
         data.sort((a, b) {
           int yearA = int.parse(a.month.substring(0, 4));
           int monthA = int.parse(a.month.substring(4, 6));
@@ -397,111 +453,104 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
         for (int i = 0; i < data.length; i++) {
           MonthlyBrainSignalTable? currentItem = data[i];
           if (currentItem != null) {
-            // currentItem에 대한 작업 수행
-            // print(data[i]);
           } else {
-            // 아이템이 null인 경우에 대한 처리
             print("null");
           }
         }
+
         setState(() {
           for (var i in data) {
             results.add(i);
           }
-          // userList.add(data);
         });
       }
 
-      // for(var user in userList){
+      // for (var user in results) {
       //   print(user);
       // }
-      for (var user in results) {
-        print(user);
-      }
-      // 2. 리스트를 월별로 그룹화합니다.
+
       Map<String, List<MonthlyBrainSignalTable>> groupedByMonth = {};
       for (var item in results) {
-        if (!groupedByMonth.containsKey(item?.month)) {
-          groupedByMonth[item!.month] = [];
+        String yearMonth = item!.month.substring(0, 6);
+        if (!groupedByMonth.containsKey(yearMonth)) {
+          groupedByMonth[yearMonth] = [];
         }
-        groupedByMonth[item?.month]?.add(item!);
+        groupedByMonth[yearMonth]?.add(item);
       }
 
-      // 3. 각 그룹에서 필드의 평균을 계산합니다.
 
       for (var month in groupedByMonth.keys) {
         var group = groupedByMonth[month];
 
         int? totalAvgAtt =
-            group?.map((item) => item.avg_att).reduce((a, b) => a! + b!);
+        group?.map((item) => item.avg_att).reduce((a, b) => a! + b!);
         int avgAtt = (totalAvgAtt! / group!.length).round();
 
         int? totalAvgMed =
-            group?.map((item) => item.avg_med).reduce((a, b) => a! + b!);
+        group?.map((item) => item.avg_med).reduce((a, b) => a! + b!);
         int avgMed = (totalAvgMed! / group!.length).round();
 
         int? totalConScore =
-            group?.map((item) => item.con_score).reduce((a, b) => a! + b!);
+        group?.map((item) => item.con_score).reduce((a, b) => a! + b!);
         int avgConScore = (totalConScore! / group!.length).round();
 
-        int? totalSpacetimeScore = group
-            ?.map((item) => item.spacetime_score)
-            .reduce((a, b) => a! + b!);
-        int avtSpacetimeScore = (totalSpacetimeScore! / group!.length).round();
+        int? totalSpacetimeScore =
+        group?.map((item) => item.spacetime_score).reduce((a, b) => a! + b!);
+        int avgSpacetimeScore = (totalSpacetimeScore! / group!.length).round();
 
         int? totalExecScore =
-            group?.map((item) => item.exec_score).reduce((a, b) => a! + b!);
-        int avgExecScore = (totalExecScore! / group.length.toDouble()).round();
+        group?.map((item) => item.exec_score).reduce((a, b) => a! + b!);
+        int avgExecScore = (totalExecScore! / group!.length).round();
 
         int? totalMemScore =
-            group?.map((item) => item.mem_score!).reduce((a, b) => a + b);
-        int avgMemScore = (totalMemScore! / group.length.toDouble()).round();
+        group?.map((item) => item.mem_score).reduce((a, b) => a! + b!);
+        int avgMemScore = (totalMemScore! / group!.length).round();
 
         int? totalLingScore =
-            group.map((item) => item.ling_score!).reduce((a, b) => a + b);
-        int avgLingSocre = (totalLingScore! / group.length.toDouble()).round();
+        group?.map((item) => item.ling_score).reduce((a, b) => a! + b!);
+        int avgLingScore = (totalLingScore! / group!.length).round();
 
-        int? totalCalSocre =
-            group.map((item) => item.cal_score!).reduce((a, b) => a + b);
-        int avgCalSocre = (totalCalSocre! / group.length.toDouble()).round();
+        int? totalCalScore =
+        group?.map((item) => item.cal_score).reduce((a, b) => a! + b!);
+        int avgCalScore = (totalCalScore! / group!.length).round();
 
         int? totalReacScore =
-            group.map((item) => item.reac_score!).reduce((a, b) => a + b);
-        int avgReacSocre = (totalReacScore! / group.length.toDouble()).round();
+        group?.map((item) => item.reac_score).reduce((a, b) => a! + b!);
+        int avgReacScore = (totalReacScore! / group!.length).round();
 
         int? totalOrientScore =
-            group.map((item) => item.orient_score!).reduce((a, b) => a + b);
-        int avgOrientScore =
-            (totalOrientScore / group.length.toDouble()).round();
-
-        // 다른 필드에 대해서도 같은 방식으로 계산합니다.
+        group?.map((item) => item.orient_score).reduce((a, b) => a! + b!);
+        int avgOrientScore = (totalOrientScore! / group!.length).round();
 
         averagesByMonth[month] = {
           'avg_att': avgAtt,
           'avg_med': avgMed,
           'con_score': avgConScore,
-          'spacetime_score': avtSpacetimeScore,
+          'spacetime_score': avgSpacetimeScore,
           'exec_score': avgExecScore,
           'mem_score': avgMemScore,
-          'ling_score': avgLingSocre,
-          'cal_score': avgCalSocre,
-          'reac_score': avgReacSocre,
+          'ling_score': avgLingScore,
+          'cal_score': avgCalScore,
+          'reac_score': avgReacScore,
           'orient_score': avgOrientScore
         };
       }
+
       print('ddd');
       print(averagesByMonth);
+      print(dataStartStr);
     } catch (error) {
       print(error);
     }
   }
+
 
   @override
   void initState() {
     gql = GraphQLController.Obj;
     super.initState();
     index = 0;
-    fetchData();
+    fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
   }
 
   var brainbutton = '뇌파 데이터 추가';
@@ -524,17 +573,19 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _buildButtons(),
-                  TextButton(
-                    onPressed: () async {
-                      await gql.createMonthlyData();
-                      setState(() {
-                        braincount++;
-                        brainbutton = "$braincount번 추가";
-                      });
-                    },
-                    child: Text(brainbutton),
+                  Container(
+                    height: 50, // Or any other specific height
+                    child: Row(
+                      children: [
+                        Expanded(child: buildDropdown(startYear??'---',years,(value){setState((){startYear=value;});})),
+                        Expanded(child: buildDropdown(startMonth??'---',months,(value){setState((){startMonth=value;});})),
+                        Expanded(child: buildDropdown(endYear??'---',years,(value){setState((){endYear=value;});})),
+                        Expanded(child: buildDropdown(endMonth??'---',months,(value){setState((){endMonth=value;});})),
+                        ElevatedButton(onPressed:onSearchPressed,child:Text('검색'),),
+                      ],
+                    ),
                   ),
+                  _buildButtons(),
                   AspectRatio(
                     aspectRatio: 6 / 5,
                     child: Container(

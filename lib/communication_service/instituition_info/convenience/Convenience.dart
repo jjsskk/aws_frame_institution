@@ -36,7 +36,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
         });
       } else {
         setState(() {
-          FOOD_IMAGE_URL = ''; // 데이터가 없는 경우 이미지 URL을 빈 문자열로 설정
+          FOOD_IMAGE_URL = 'null'; // 데이터가 없는 경우 이미지 URL을 빈 문자열로 설정
         });
       }
     }).catchError((error) {
@@ -133,15 +133,6 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               icon: const Icon(Icons.create),
                               color: appBarColor,
                               onPressed: () async {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AddFoodMenuPage(
-                                      month: _generateDateItems(),
-                                      date: date,
-                                    ),
-                                  ),
-                                );
                                 var result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -189,15 +180,16 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                 );
 
                                 if (confirmed ?? false) {
-                                  await gql.deleteFood(
+                                  var result =await gql.deleteFood(
                                       dateTime: FOOD_DATETIME,
                                       institutionId: FOOD_INSTITUTION_ID);
 
                                   // Show snackbar after deletion
+                                  if(result !=  null)
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
-                                              '$FOOD_DATETIME 항목이 성공적으로 삭제되었습니다.')));
+                                              '$FOOD_DATETIME월 식단정보가 성공적으로 삭제되었습니다.')));
 
                                   setState(() {
                                     getFood();
@@ -226,7 +218,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                   ),
 
                   FOOD_IMAGE_URL != ''
-                      ? FutureBuilder<String>(
+                      ?FOOD_IMAGE_URL!='null'? FutureBuilder<String>(
                           future:
                               storageService.getImageUrlFromS3(FOOD_IMAGE_URL),
                           builder: (BuildContext context,
@@ -239,9 +231,10 @@ class _ConveniencePageState extends State<ConveniencePage> {
                             } else if (snapshot.hasError) {
                               return Text('이미지를 불러올 수 없습니다.');
                             }
-                            return CircularProgressIndicator();
+                            return Text('데이터가 없습니다.');
                           })
-                      : Text('데이터가 없습니다'),
+                        : Text('데이터가 없습니다.')
+                      : Center(child: CircularProgressIndicator()),
 
                   //   }
                   //   print("aasdasdas");
@@ -315,15 +308,16 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                     );
 
                                     if (confirmed ?? false) {
-                                      await gql.deleteShuttleTime(
+                                      var result = await gql.deleteShuttleTime(
                                           institutionId:
                                               SHUTTLE_INSTITUTION_ID);
 
                                       // Show snackbar after deletion
+                                      if(result != null)
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(
-                                                  '$SHUTTLE_INSTITUTION_ID 항목이 성공적으로 삭제되었습니다.')));
+                                                  '셔틀시간이 성공적으로 삭제되었습니다.')));
 
                                       setState(() {
                                         getShuttleTime();
@@ -349,9 +343,9 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                   } else if (snapshot.hasError) {
                                     return Text('이미지를 불러올 수 없습니다.');
                                   }
-                                  return CircularProgressIndicator();
+                                  return Text('데이터가 없습니다');
                                 })
-                            : Text('데이터가 없습니다'),
+                            : CircularProgressIndicator(),
                       ],
                     ),
                   ),

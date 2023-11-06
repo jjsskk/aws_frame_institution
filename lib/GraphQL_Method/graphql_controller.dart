@@ -85,12 +85,9 @@ class GraphQLController {
     }
   }
 
-  //todo: bool으로 해서 리턴 값에 따라 행동하도록
-  //todo: snack bar생성
-  //todo: cud는 전부 이런 식으로
   Future<bool> createAnnounceData() async {
     final row = {
-      'ANNOUNCEMENT_ID': userid,
+      'ANNOUNCEMENT_ID': '${TemporalDateTime.now()}',
       'CONTENT': 'fdfdf',
       'IMAGE': 'dfdf',
       'INSTITUTION': 'String',
@@ -401,7 +398,7 @@ class GraphQLController {
   Future<bool> createInstitutionNews(String content, String image,
       String institution, String New_id, String title, String url) async {
     final row = {
-      'NEWS_ID': userid,
+      'NEWS_ID': '${TemporalDateTime.now()}',
       'CONTENT': content,
       'IMAGE': image,
       'INSTITUTION': institution,
@@ -1152,6 +1149,7 @@ class GraphQLController {
       'USER_ID': userId,
       'INSTITUTION_ID': institutionId,
     };
+    print('delete');
     print(userId);
     print(institutionId);
     try {
@@ -1611,6 +1609,88 @@ class GraphQLController {
       }
     } on ApiException catch (e) {
       safePrint('Mutation failed: $e');
+    }
+  }
+  //BETWEEN
+  Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItemsBetween(
+      {required String ID, required String startMonth, required String endMonth, String? nextToken}) async {
+    try {
+      print("??");
+      print(startMonth);
+      print(endMonth);
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          apiName: "Institution_API_NEW",
+          document: """
+          query listMonthlyBrainSignalTables(\$filter: TableMonthlyBrainSignalTableFilterInput, \$limit: Int, \$nextToken: String) {
+            listMonthlyBrainSignalTables(
+              filter: \$filter,
+              limit: \$limit,
+              nextToken: \$nextToken
+            ) {
+              items {
+                id
+                month
+                total_time
+                avg_att
+                avg_med
+                firsts_name
+                first_amt
+                second_name
+                second_amt
+                con_score
+                spacetime_score
+                exec_score
+                mem_score
+                ling_score
+                cal_score 
+                reac_score 
+                orient_score 
+                createdAt 
+                updatedAt 
+	      }
+	      nextToken 
+	    }
+	  }
+        """,
+          variables: {
+            "filter": {
+              "id": {"eq": ID},
+              "month": {"between": [startMonth, endMonth]},
+            },
+            "limit": 1000,
+            "nextToken": nextToken,
+          },
+        ),
+      );
+
+      var response = await operation.response;
+
+      var data = jsonDecode(response.data);
+      var items = data['listMonthlyBrainSignalTables']['items'];
+
+      if (items == null || response.data == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
+
+      List<MonthlyBrainSignalTable?> monthlyDBTests = (items as List)
+          .map((item) => MonthlyBrainSignalTable.fromJson(item))
+          .toList();
+
+      var newNextToken = data['listMonthlyBrainSignalTables']['nextToken'];
+
+      if (newNextToken != null) {
+        // recursive call for next page's data
+        var additionalItems =
+        await queryListMonthlyDBItemsBetween(ID: ID, startMonth:startMonth,endMonth:endMonth,nextToken:newNextToken);
+        monthlyDBTests.addAll(additionalItems);
+      }
+
+      return monthlyDBTests;
+    } on ApiException catch (e) {
+      print('Query failed:$e');
+      return const [];
     }
   }
 
@@ -2852,6 +2932,8 @@ class GraphQLController {
       return const [];
     }
   }
+
+
 
 //
 // // Future<List<MonthlyDBTest?>> queryMonthlyDBTwoItems(int yearMonth) async {

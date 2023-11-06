@@ -285,6 +285,7 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
   //그래프 위에 버튼을 구성하는 위젯입니다.
   //그리드를 통해 버튼을 2행으로 구성해서 총 10개를 보여주게 됩니다. 그래서 1행당 5개의 버튼이 존재하게 됩니다.
   // 버튼의 모양을 수정하고 싶다면 이 부분을 수정하면 될 것입니다.
+  //todo 이 용도가 print를 위한 건지
   Widget _buildButtons() {
     return GridView.count(
       crossAxisCount: 5,  // 2행을 만듦
@@ -338,7 +339,6 @@ class _BrainSignalPageState extends State<BrainSignalPage> {
             setState(() {
               selectedLabel = label;
             });
-            print("Month: $month, $label: $value");
           }
         },
         child: Text(
