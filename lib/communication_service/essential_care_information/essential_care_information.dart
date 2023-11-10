@@ -56,6 +56,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
+    _essentialCare = [];
     await gql
         .queryEssentialCareInformationByInstitutionId(
             institutionId: "INST_ID_123")
@@ -65,7 +66,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
         for (var care in value) {
           if (care.NAME != null) {
             // NAME이 null이 아닌 경우에만 추가
-            String tempName = "${care.NAME!} (${care.BIRTH!})";
+            String tempName = "${care.NAME!}";
             tempNameList.add(tempName);
           }
         }
@@ -135,6 +136,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
 
   void initState() {
     super.initState();
+    nameList = [];
     gql = GraphQLController.Obj;
     index = 0; //맨 처음 dropdown
     getEssentialCare();
@@ -245,11 +247,6 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             decoration:
             BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
           ),
-
-
-
-
-
           SizedBox(height:30),
           Row(
             children: [
@@ -361,6 +358,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                     },
                   );
                   if (confirmed ?? false) {
+                    nameList = [];
+                    name = '';
                     await gql.deleteEssentialCare(_userid, institutionId);
 
                     // Show snackbar after deletion
@@ -369,29 +368,37 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                         content: Text('$essentialName 항목이 성공적으로 삭제되었습니다.'),
                       ),
                     );
-
-
                     // setState() 내부에서 getEssentialCare() 함수를 호출합니다.
-                    setState(() async {
-                      await getEssentialCare();
-
-                      if (nameList.isNotEmpty) {
-                        name = nameList[0]; // 첫 번째 항목으로 재설정
-                      } else {
-                        name = '';
-                      }
+                    setState(() {
+                      // await getEssentialCare();
+                      getEssentialCare();
+                      // if (nameList.isNotEmpty) {
+                      //   // nameList.remove(name);
+                      //   // _essentialCare.removeAt(index);
+                      //   name = nameList[0];
+                      //   _NameSelected(name);
+                      //   if (nameList.isNotEmpty) {
+                      //
+                      //   } else {
+                      //     name = '';
+                      //     print('empty');
+                      //   }
+                      // } else {
+                      //   name = '';
+                      // }
                     });
                   }
                 },
 
                 child: Text("삭제 -"),
               ),
+
               TextButton(
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddEssentialCareInfoPage()),
+                          builder: (context) => AddEssentialCareInfoPage(nameList: nameList)),
                     );
 
                     // 만약 필요한 업데이트가 있다면 setState() 호출
@@ -429,20 +436,11 @@ class CustomDropDown extends StatefulWidget {
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
-  String? selectedValue;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedValue = widget.selected;
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       style: TextStyle(color: Colors.black),
-      value: selectedValue,
+      value: widget.selected, // 이 부분을 widget.selected로 변경합니다.
       items: [
         for (var name in widget.Items)
           DropdownMenuItem(
@@ -451,9 +449,6 @@ class _CustomDropDownState extends State<CustomDropDown> {
           ),
       ],
       onChanged: (value) {
-        setState(() {
-          selectedValue = value;
-        });
         widget.onChanged(value!);
       },
     );

@@ -133,10 +133,11 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
             onPressed: () async {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = '';
-
-              _image != null
-                  ? imageUrl = await uploadImageToS3(_image)
-                  : imageUrl = widget.announcement.IMAGE!;
+              if(_image != null) {
+                imageUrl = await uploadImageToS3(_image);
+              } else if(widget.announcement.IMAGE != null) {
+                imageUrl = widget.announcement.IMAGE!;
+              }
 
               var result = await gql.updateAnnouncement(
                 announcementId: widget.announcement.ANNOUNCEMENT_ID,
@@ -147,8 +148,12 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                 title: _titleController.text,
                 url: _urlController.text,
               );
-
+              Map<String, String> announcement = {};
               if (result != null) { // GraphQL 업로드가 성공했다면...
+                announcement['title'] = _titleController.text;
+                announcement['content'] = _contentController.text;
+                announcement['image'] = imageUrl;
+                announcement['url'] = _urlController.text;
 
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).announceUpdate();
@@ -158,7 +163,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
 
               }
 
-              Navigator.pop(context, result);
+              Navigator.pop(context, announcement);
             },
             child: Text('완료'),
           ),
@@ -166,7 +171,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
             style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red)),
             onPressed: () {
-              Navigator.pop(context, true);
+              Navigator.pop(context);
             },
             child: Text('취소', style: TextStyle(color: Colors.white)),
           ),

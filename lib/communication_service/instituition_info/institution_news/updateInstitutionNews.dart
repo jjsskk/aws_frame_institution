@@ -65,6 +65,7 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
     widget.news.URL != null
         ? _contentController.text = widget.news.URL!
         : _contentController.text = "";
+
   }
 
   @override
@@ -131,9 +132,12 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = '';
 
-              _image != null
-                  ? imageUrl = await uploadImageToS3(_image)
-                  : imageUrl = widget.news.IMAGE!;
+              if(_image != null) {
+                imageUrl = await uploadImageToS3(_image);
+              } else if(widget.news.IMAGE != null) {
+                imageUrl = widget.news.IMAGE!;
+              }
+
 
               var result = await gql.updateInstitutionNews(
                 newsId: widget.news.NEWS_ID,
@@ -145,7 +149,14 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 url: _urlController.text,
               );
 
+              Map<String, String> news = {};
+
               if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                news['title'] = _titleController.text;
+                news['content'] = _contentController.text;
+                news['image'] = imageUrl;
+                news['url'] = _urlController.text;
 
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).newsUpdate();
@@ -154,10 +165,19 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 );
               }
 
-              Navigator.pop(context);
+              Navigator.pop(context, news); // 여기를 수정했습니다. result는 업데이트된 데이터입니다.
             },
             child: Text('완료'),
           ),
+          ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red)),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('취소', style: TextStyle(color: Colors.white)),
+          ),
+
         ],
       ),
     );

@@ -106,10 +106,22 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   }
 }
 
-class AnnouncementDetailPage extends StatelessWidget {
+class AnnouncementDetailPage extends StatefulWidget {
   final InstitutionAnnouncementTable announcement;
   final StorageService storageService;
+
+  AnnouncementDetailPage(
+      {Key? key, required this.announcement, required this.storageService})
+      : super(key: key);
+
+  @override
+  State<AnnouncementDetailPage> createState() => _AnnouncementDetailPageState();
+}
+
+class _AnnouncementDetailPageState extends State<AnnouncementDetailPage> {
   final gql = GraphQLController.Obj;
+
+  String title = '', content  = '', url = '', image = '';
 
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
@@ -117,11 +129,16 @@ class AnnouncementDetailPage extends StatelessWidget {
 
   late var result;
 
-  AnnouncementDetailPage(
-      {Key? key, required this.announcement, required this.storageService})
-      : super(key: key);
   bool isUpdated = false;
-
+  @override
+  void initState() {
+    title = widget.announcement.TITLE!;
+    widget.announcement.CONTENT  != null ? content = widget.announcement.CONTENT!: content = '';
+    widget.announcement.URL!=null ?url = widget.announcement.URL!:url = '';
+    widget.announcement.IMAGE!=null?image = widget.announcement.IMAGE!: image = '';
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,16 +146,25 @@ class AnnouncementDetailPage extends StatelessWidget {
         title: Text('공지사항 세부 정보'),
         actions: [
           IconButton(
-              onPressed: () {
-                var result = Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => updateAnnouncementPage(
-                        announcement: announcement,
-                        storageService: storageService),
+                        announcement: widget.announcement,
+                        storageService: widget.storageService),
                   ),
                 );
-                if (result != null) isUpdated = true;
+
+                  if (result != null) {
+                    setState(() {
+                      title = result['title'];
+                      result['content'] != null? content = result['content'] : content ='';
+                      result['url']!= null? url = result['url']: url = '';
+                      result['image'] != null? image = result['image']:image = '';
+                    });
+                  }
+
               },
               icon: Icon(Icons.create)),
           IconButton(
@@ -165,8 +191,8 @@ class AnnouncementDetailPage extends StatelessWidget {
                 );
 
                 if (shouldDelete == true) {  // '예' 버튼을 눌렀다면...
-                  var result = gql.deleteAnnouncement(institution_id: announcement.INSTITUTION_ID!, announcementId:
-                  announcement.ANNOUNCEMENT_ID!);
+                  var result = gql.deleteAnnouncement(institution_id: widget.announcement.INSTITUTION_ID!, announcementId:
+                  widget.announcement.ANNOUNCEMENT_ID!);
 
                   if (result != null) {
                     Provider.of<LoginState>(context, listen:false).announceUpdate();
@@ -190,28 +216,21 @@ class AnnouncementDetailPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              isUpdated
-                  ? Text(result.TITLE!,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-                  : Text(announcement.TITLE!,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              Text(title,
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               SizedBox(height: 16),
               Text(
-                  '작성일: ' + getYearMonthDay(announcement.createdAt.toString())),
+                  '작성일: ' + getYearMonthDay(widget.announcement.createdAt.toString())),
               SizedBox(height: 16),
-              announcement.CONTENT != null
-                  ? Text(announcement.CONTENT!)
-                  : Text(""),
+              content != null ? Text(content) : Text(""),
               SizedBox(height: 16),
-              announcement.URL != null ? Text(announcement.CONTENT!) : Text(""),
+              url != null ? Text(url) : Text(""),
               SizedBox(height: 16),
-              if (announcement.IMAGE != null)
-                if (announcement.IMAGE!.isNotEmpty)
+              if (image != null)
+                if (image!.isNotEmpty)
                   FutureBuilder<String>(
                     future:
-                        storageService.getImageUrlFromS3(announcement.IMAGE!),
+                        widget.storageService.getImageUrlFromS3(image!),
                     builder:
                         (BuildContext context, AsyncSnapshot<String> snapshot) {
                       if (snapshot.hasData) {

@@ -19,7 +19,9 @@ import '../../models/UserTable.dart';
 import '../instituition_info/convenience/Convenience.dart';
 
 class AddEssentialCareInfoPage extends StatefulWidget {
-  const AddEssentialCareInfoPage({Key? key}) : super(key: key);
+  final List<String> nameList;
+  const AddEssentialCareInfoPage({Key? key, required this.nameList}) : super(key: key);
+
 
   @override
   State<AddEssentialCareInfoPage> createState() =>
@@ -92,6 +94,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
 
         setState(() {
           _essentialCare = value;
+          for(var i in widget.nameList){
+            tempNameList.remove(i);
+          }
           nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
 
           name = nameList[index]; // 가장 첫 이름으로 함
@@ -138,7 +143,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
     gql = GraphQLController.Obj;
     index = 0; //맨 처음 dropdown
     getEssentialCare();
+
   }
+
 
   void _NameSelected(String selectedName) {
     setState(() {
@@ -274,6 +281,27 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
             children: [
               ElevatedButton(
                 onPressed: () async {
+                  if(nameList.isEmpty){
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("알림"),
+                            content: Text("추가할 수 있는 이용자가 없습니다."),
+                            actions: [
+                              TextButton(
+                                child: Text("확인"),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                  }
                   // TODO: AWS S3에 이미지 업로드
                   if (_formKey.currentState!.validate()) {
                     String imageUrl = "";
