@@ -77,20 +77,20 @@ class _MyAppState extends State<MyApp> {
         // colorScheme: ColorScheme(brightness: brightness, primary: primary, onPrimary: onPrimary, secondary: secondary, onSecondary: onSecondary, error: error, onError: onError, background: background, onBackground: onBackground, surface: surface, onSurface: onSurface),
           // dividerColor: Colors.white,
           // scaffoldBackgroundColor: Colors.black87,
-        primaryColorLight: Colors.indigo,
-          primarySwatch: Colors.deepPurple,
+        primaryColorLight: const Color(0xff2b3fee),
+          primarySwatch: Colors.indigo,
           snackBarTheme: SnackBarThemeData(
-            backgroundColor: Colors.indigoAccent,
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
           ),
           textTheme: const TextTheme(
               subtitle1:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               //textstyle used for login and signup and resetpassword page
               subtitle2: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
               )),
           //textstyle used for login and signup and resetpassword page
 

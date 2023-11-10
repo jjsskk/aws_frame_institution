@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   bool loading_Manager = true;
   bool loading_comment = true;
 
-  bool checkAttribute = false; //  to call getProtectorAttributes() once
+  // bool checkAttribute = false; //  to call getProtectorAttributes() once
   int year = 0;
   int month = 0;
   List<Map<String, dynamic>> _comments = [];
@@ -87,6 +87,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    getInstitutionAttributes();
     BackButtonInterceptor.add(backKeyInterceptor,
         context: context); // for back key
     keyObj = KeyForBottomAppbar();
@@ -119,36 +120,26 @@ class _HomePageState extends State<HomePage> {
 
   void getInstitutionAttributes() async {
     try {
-      checkAttribute = true;
+      // checkAttribute = true;
       var attribute = await Amplify.Auth.fetchUserAttributes();
       {
         attribute.forEach((element) {
-          if (element.userAttributeKey.key == "name")
-            setState(() {
-              // username = element.value;
-              appState.managerName = (element.value) ?? "no result";
-              print(appState.managerName);
-            });
-
-          if (element.userAttributeKey.key == "phone_number")
-            setState(() {
-              // userphonenumber = element.value;
-              appState.managerPhonenumber = (element.value) ?? " no result";
-            });
-
-          if (element.userAttributeKey.key == "email")
-            setState(() {
-              // useremail = element.value;
-              appState.managerEmail = (element.value) ?? "no result";
-              // loading = false;
-            });
-
-          if (element.userAttributeKey.key.toLowerCase() ==
-              "custom:institutionNumber".toLowerCase())
-            setState(() {
-              // useremail = element.value;
-              appState.institutionNumber = (element.value) ?? "no result";
-            });
+          if (element.userAttributeKey.key == "name") {
+            // username = element.value;
+            gql.managerName = (element.value) ?? "no result";
+            print(appState.managerName);
+          } else if (element.userAttributeKey.key == "phone_number") {
+            // userphonenumber = element.value;
+            gql.managerPhonenumber = (element.value) ?? " no result";
+          } else if (element.userAttributeKey.key == "email") {
+            // useremail = element.value;
+            gql.managerEmail = (element.value) ?? "no result";
+            // loading = false;
+          } else if (element.userAttributeKey.key.toLowerCase() ==
+              "custom:institutionNumber".toLowerCase()) {
+            // useremail = element.value;
+            gql.institutionNumber = (element.value) ?? "no result";
+          }
         });
         setState(() {
           loading_Manager = false;
@@ -178,18 +169,14 @@ class _HomePageState extends State<HomePage> {
     var colorScheme = Theme.of(context).colorScheme;
     var theme = Theme.of(context);
     appState = context.watch<LoginState>();
-
-    if (!checkAttribute) getInstitutionAttributes();
     return (loading_Manager || loading_comment)
         ? LoadingPage()
         : Scaffold(
             drawer: GlobalDrawer.getDrawer(context, appState),
             key: keyObj.key,
             appBar: AppBar(
-              title: Text(
-                ' ${appState.managerName} 담당자님 안녕하세요',
-                style: TextStyle(fontSize: 15),
-              ),
+              title: Text(' ${gql.managerName} 담당자님 안녕하세요!',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               actions: [
                 IconButton(
                   icon: const Icon(
@@ -202,170 +189,357 @@ class _HomePageState extends State<HomePage> {
               automaticallyImplyLeading:
                   false, // -> important to making top drawer button not visible while keeping drawer function in scaffold
             ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    // GraphPage(),
-                    Text('기관정보'),
-                    TextButton(
-                        onPressed: () {
-                          gql.createUserData();
-                        },
-                        child: Text('유저 추가')),
-                    TextButton(
-                        onPressed: () {
-                          gql.createAnnounceData();
-                        },
-                        child: Text('공지 추가')),
-
-                    TextButton(
-                        onPressed: () {
-                          gql.queryAnnounceItem().then((value) {
-                            print(value);
-                          });
-                        },
-                        child: Text('값 부르기')),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InstitutionInfoPage(
-                                          initialIndex: 0,
-                                        )),
-                              );
-                            },
-                            child: Text('공지사항')),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InstitutionInfoPage(
-                                          initialIndex: 1,
-                                        )),
-                              );
-                            },
-                            child: Text('기관 소식')),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InstitutionInfoPage(
-                                          initialIndex: 2,
-                                        )),
-                              );
-                            },
-                            child: Text('시간표')),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => InstitutionInfoPage(
-                                          initialIndex: 3,
-                                        )),
-                              );
-                            },
-                            child: Text('편의사항')),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('이용자 관리'),
-                            ElevatedButton(
+            body: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image:
+                      AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      // const SizedBox(
+                      //   height: 20,
+                      // ),
+                      // GraphPage(),
+                      Text(
+                        '기관 정보',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       gql.createUserData();
+                      //     },
+                      //     child: Text('유저 추가')),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       gql.createAnnounceData();
+                      //     },
+                      //     child: Text('공지 추가')),
+                      //
+                      // TextButton(
+                      //     onPressed: () {
+                      //       gql.queryAnnounceItem().then((value) {
+                      //         print(value);
+                      //       });
+                      //     },
+                      //     child: Text('값 부르기')),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff1f43f3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  )),
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          EssentialCareInfoPage()),
+                                      builder: (context) => InstitutionInfoPage(
+                                            initialIndex: 0,
+                                          )),
                                 );
                               },
-                              child: Text('필수 돌봄 정보'),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('훈련 보고서'),
-                            TextButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AnalyzingReportPage()),
-                                  );
-                                },
-                                icon: Icon(Icons.accessibility_new_rounded),
-                                label: Text('기관 요약 보고서')),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            TextButton.icon(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            IndividualAnalysisPage()),
-                                  );
-                                },
-                                icon: Icon(Icons.account_box),
-                                label: Text('개별 분석 보고서')),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CommentViewPage()),
-                          );
-                        },
-                        child: Text('보호자 코멘트')),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: _buildListCards(context),
+                              child: Text(
+                                '공지사항',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff1f43f3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  )),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => InstitutionInfoPage(
+                                            initialIndex: 1,
+                                          )),
+                                );
+                              },
+                              child: Text('기관 소식',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff1f43f3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  )),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => InstitutionInfoPage(
+                                            initialIndex: 2,
+                                          )),
+                                );
+                              },
+                              child: Text('시간표',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xff1f43f3),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  )),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => InstitutionInfoPage(
+                                            initialIndex: 3,
+                                          )),
+                                );
+                              },
+                              child: Text('편의사항',
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold))),
+                        ],
                       ),
-                    )
-                  ],
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EssentialCareInfoPage()),
+                                  );
+                                },
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero, // 내부 여백을 제거합니다.
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  // Column의 크기를 자식의 크기에 맞춤
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  // 중앙 정렬
+                                  children: <Widget>[
+                                    Image.asset(
+                                      'image/community (8).png',
+                                      width: 120,
+                                      height: 120,
+                                    ),
+                                    // 아이콘
+                                    Text('이용자 돌봄 정보',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold)),
+                                    // 텍스트
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Text('훈련 보고서'),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        InstitutionSummaryPage()),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero, // 내부 여백을 제거합니다.
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              // Column의 크기를 자식의 크기에 맞춤
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // 중앙 정렬
+                              children: <Widget>[
+                                Image.asset(
+                                  'image/report (10).png',
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                // 아이콘
+                                Text('기관 요약 보고서',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                // 텍스트
+                              ],
+                            ),
+                          ),
+                          // ElevatedButton(
+                          //     style: ElevatedButton.styleFrom(
+                          //         backgroundColor: const Color(0xff1f43f3),
+                          //         shape: RoundedRectangleBorder(
+                          //           borderRadius:
+                          //               BorderRadius.circular(15.0),
+                          //         )),
+                          //     onPressed: () {
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 InstitutionSummaryPage()),
+                          //       );
+                          //     },
+                          //     child: Text(
+                          //       '기관 요약 보고서',
+                          //       style:
+                          //           TextStyle(fontWeight: FontWeight.bold),
+                          //     )),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        IndividualAnalysisPage()),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero, // 내부 여백을 제거합니다.
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              // Column의 크기를 자식의 크기에 맞춤
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              // 중앙 정렬
+                              children: <Widget>[
+                                Image.asset(
+                                  'image/community (14).png',
+                                  width: 100,
+                                  height: 100,
+                                ),
+                                // 아이콘
+                                Text('개별 분석 보고서',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold)),
+                                // 텍스트
+                              ],
+                            ),
+                          ),
+
+                          // TextButton.icon(
+                          //     onPressed: () {
+                          //       Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 IndividualAnalysisPage()),
+                          //       );
+                          //     },
+                          //     icon: Icon(Icons.account_box),
+                          //     label: Text('개별 분석 보고서')),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        constraints: BoxConstraints(
+                          minHeight: MediaQuery.of(context).size.height / 3,
+                          maxHeight: double.infinity,
+                        ),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("image/community (7).png"),
+                            // 여기에 배경 이미지 경로를 지정합니다.
+                            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xff1f43f3),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          )),
+                                      onPressed: () {},
+                                      child: Text(
+                                        '한달 간 최근 코멘트',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                  ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              const Color(0xff1f43f3),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                          )),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  CommentViewPage()),
+                                        );
+                                      },
+                                      child: Text(
+                                        '더 보기 >>',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Column(
+                                children: _buildListCards(context),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -373,8 +547,8 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {},
               tooltip: 'Create',
               child: CircleAvatar(
-                radius: 28,
-                backgroundImage: AssetImage('image/frame.png'),
+                radius: 30,
+                backgroundImage: AssetImage('image/ui (14).png'),
                 backgroundColor: Colors.white,
               ),
             ),
@@ -383,121 +557,115 @@ class _HomePageState extends State<HomePage> {
             bottomNavigationBar: bottomappbar);
   }
 
-  List<StatelessWidget> _buildListCards(BuildContext context) {
+  List<Column> _buildListCards(BuildContext context) {
     if (_comments.isEmpty) {
-      return const <Card>[];
+      return [
+        Column(
+          children: [
+            Text('한달 내 최신 코멘트가 없습니다', style: TextStyle(color: Colors.black)),
+          ],
+        ),
+      ];
     }
     final ThemeData theme = Theme.of(context);
 
-    var temp = _comments.map((comment) {
-      return InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CommentViewPage()),
-          );
-        },
-        child: Stack(
-          children: [
-            Card(
-              child: ListTile(
-                title: Text(
-                  comment['title'],
-                  style: TextStyle(color: Colors.black),
+    return _comments.map((comment) {
+      return Column(
+        children: [
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailCommentPage(
+                          user_id: comment['user_id'],
+                          board_id: comment['board_id'],
+                        )),
+              );
+            },
+            child: Container(
+              constraints: BoxConstraints(
+                maxHeight:
+                    double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+              ),
+              // height: MediaQuery.of(context).size.height / 10,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("image/ui (8).png"),
+                  // 여기에 배경 이미지 경로를 지정합니다.
+                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
                 ),
-                subtitle: Text(comment['username'] + ' 훈련자님'),
-                trailing: Text(comment['date']),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailCommentPage(
-                              user_id: comment['user_id'],
-                              board_id: comment['board_id'],
-                            )),
-                  );
-                },
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(comment['title'],
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                        Text(
+                          comment['date'],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Text(comment['username'] + ' 훈련자님',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold)),
+                  ],
+                ),
               ),
             ),
-            // Card(
-            //   clipBehavior: Clip.antiAlias,
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: Row(
-            //       crossAxisAlignment: CrossAxisAlignment.start,
-            //       children: <Widget>[
-            //         Expanded(
-            //           flex: 1,
-            //           child: Card(
-            //             child: AspectRatio(
-            //               aspectRatio: 1 / 1,
-            //               child: CircleAvatar(
-            //                 child: Image.asset(
-            //                   'image/frame.png',
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
+
+            //
+            // Stack(
+            //   children: [
+            //     Card(
+            //       child: ListTile(
+            //         title: Text(
+            //           comment['title'],
+            //           style: TextStyle(color: Colors.black),
             //         ),
-            //         SizedBox(
-            //           width: 8,
-            //         ),
-            //         Expanded(
-            //           flex: 2,
-            //           child: Column(
-            //             crossAxisAlignment: CrossAxisAlignment.start,
-            //             children: <Widget>[
-            //               Text(comment['date']),
-            //               SizedBox(
-            //                 height: 5,
-            //               ),
-            //               Text(
-            //                 comment['username'] + ' 훈련자님',
-            //                 style: TextStyle(
-            //                     fontSize: 15, fontWeight: FontWeight.bold),
-            //               ),
-            //               SizedBox(
-            //                 height: 5,
-            //               ),
-            //               Text(
-            //                 comment['title'],
-            //                 style: TextStyle(
-            //                     fontSize: 15, fontWeight: FontWeight.bold),
-            //               ),
-            //               const SizedBox(height: 4.0),
-            //             ],
-            //           ),
-            //         ),
-            //       ],
+            //         subtitle: Text(comment['username'] + ' 훈련자님'),
+            //         trailing: Text(comment['date']),
+            //         onTap: () {
+            //           Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (context) => DetailCommentPage(
+            //                       user_id: comment['user_id'],
+            //                       board_id: comment['board_id'],
+            //                     )),
+            //           );
+            //         },
+            //       ),
             //     ),
-            //   ),
+            //     comment['new_conversation'] == true
+            //         ? Container(
+            //             alignment: Alignment.topRight,
+            //             child: CircleAvatar(
+            //               backgroundColor: Colors.white,
+            //               backgroundImage: AssetImage('image/new_message.png'),
+            //             ),
+            //           )
+            //         : const SizedBox(),
+            //   ],
             // ),
-            comment['new_conversation'] == true
-                ? Container(
-                    alignment: Alignment.topRight,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      backgroundImage: AssetImage('image/new_message.png'),
-                    ),
-                  )
-                : const SizedBox()
-            // Container(
-            //   alignment: Alignment.topLeft,
-            //   margin: EdgeInsets.all(20),
-            //   padding: EdgeInsets.all(10),
-            //   decoration: BoxDecoration(
-            //       borderRadius: BorderRadius.circular(100),
-            //       border: Border.all(width: 2, color: Colors.white)),
-            //   child: Icon(
-            //     Icons.add_comment,
-            //     color: Colors.white,
-            //   ),
-            // ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 5,
+          )
+        ],
       );
     }).toList();
-
-    return temp;
   }
 }

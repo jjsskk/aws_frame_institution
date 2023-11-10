@@ -366,7 +366,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   int braincount = 0;
   Map<String, String> nameToId = {};
   List<List<MonthlyBrainSignalTable?>> userList = [];
-
   Future<void> fetchData() async {
     try {
       final users = await gql.queryListUsers(institutionId: "123");
@@ -374,7 +373,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       for (var user in users) {
         print(user.ID);
         // Assuming queryUserMonthlyData returns a map where keys are fields and values are lists of monthly data.
-        final data = await gql.queryListMonthlyDBItems(ID: user.ID);
+        final data = await gql. queryMonthlyDBLatestItem(ID: user.ID);
         // final data = await gql.queryListMonthlyDBItems(ID: nameToId[name]);
 
         print("Type of myResult: ${data.runtimeType}");

@@ -9,13 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'dart:math';
+import 'package:ntp/ntp.dart';
 
 class GraphQLController {
-  GraphQLController();
-
-  static final _Obj = GraphQLController();
+  static final _Obj = GraphQLController._internal();
 
   static get Obj => _Obj;
+
+  factory GraphQLController() {
+    return _Obj;
+  }
+
+  // It'll be called exactly once, by the static property assignment above
+  // it's also private, so it can only be called in this clas
+  GraphQLController._internal();
+
+  // institution's attribute info
+  String _managerEmail = '';
+  String _managerName = '';
+  String _managerPhonenumber = '';
+  String _institutionNumber = '';
 
   //user
   var birth = 19640101;
@@ -24,6 +37,39 @@ class GraphQLController {
 
   //brain signal
   var brainmonth = "20230101";
+
+  void resetVariables() {
+    print("provider!!!");
+    // institution's attribute info
+    _managerEmail = '';
+    _managerName = '';
+    _managerPhonenumber = '';
+    _institutionNumber = '';
+  }
+
+  String get managerEmail => _managerEmail;
+
+  String get managerName => _managerName;
+
+  String get managerPhonenumber => _managerPhonenumber;
+
+  String get institutionNumber => _institutionNumber;
+
+  set managerEmail(String value) {
+    _managerEmail = value;
+  }
+
+  set managerName(String value) {
+    _managerName = value;
+  }
+
+  set managerPhonenumber(String value) {
+    _managerPhonenumber = value;
+  }
+
+  set institutionNumber(String value) {
+    _institutionNumber = value;
+  }
 
   Future<void> createUserData() async {
     final user = {
@@ -548,6 +594,7 @@ class GraphQLController {
     }
     return false;
   }
+
 //////////////////여기까지
   Future<bool> createFood(
       String dateTime, String imageUrl, String institutionId) async {
@@ -585,9 +632,8 @@ class GraphQLController {
           safePrint('errors: ${response.errors}');
           return false;
         }
-        if (createdData.toString() ==
-            "{\"createInstitutionFoodTable\":null}") {
-           var result = updateFood(dateTime, imageUrl, institutionId);
+        if (createdData.toString() == "{\"createInstitutionFoodTable\":null}") {
+          var result = updateFood(dateTime, imageUrl, institutionId);
           return result;
         }
         safePrint('Mutation result: ${createdData.toString()}');
@@ -644,7 +690,6 @@ class GraphQLController {
       }
       safePrint('Mutation result: ${deletedData.toString()}');
       // print('User created successfully: ${response.data}');;
-
 
       safePrint('Mutation result: ${deletedData.toString()}');
     } on ApiException catch (e) {
@@ -933,14 +978,14 @@ class GraphQLController {
   //   }
   // }
 
- Future<List<InstitutionAnnouncementTable>>
-    queryInstitutionAnnouncementsByInstitutionId(
-        {required String institutionId, String? nextToken}) async {
-  try {
-    var operation = Amplify.API.query(
-      request: GraphQLRequest(
-        apiName: "Institution_API_NEW",
-        document: """
+  Future<List<InstitutionAnnouncementTable>>
+      queryInstitutionAnnouncementsByInstitutionId(
+          {required String institutionId, String? nextToken}) async {
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          apiName: "Institution_API_NEW",
+          document: """
           query ListInstitutionAnnouncementTables(\$filter: TableInstitutionAnnouncementTableFilterInput, \$limit: Int, \$nextToken: String) {
             listInstitutionAnnouncementTables(filter: \$filter, limit: \$limit, nextToken: \$nextToken) {
               items {
@@ -958,50 +1003,48 @@ class GraphQLController {
             }
           }
         """,
-        variables: {
-          "filter": {"INSTITUTION_ID": {"eq": institutionId}},
-          "limit": 1000,
-          "nextToken": nextToken,
-        },
-      ),
-    );
+          variables: {
+            "filter": {
+              "INSTITUTION_ID": {"eq": institutionId}
+            },
+            "limit": 1000,
+            "nextToken": nextToken,
+          },
+        ),
+      );
 
-    var response = await operation.response;
+      var response = await operation.response;
 
-    print(response.data);
+      print(response.data);
 
-    var data = jsonDecode(response.data);
-    var items = data['listInstitutionAnnouncementTables']['items'];
+      var data = jsonDecode(response.data);
+      var items = data['listInstitutionAnnouncementTables']['items'];
 
-    if (items == null || response.data == null) {
-      print('errors: ${response.errors}');
-      return const [];
-    }
+      if (items == null || response.data == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
 
-    List<InstitutionAnnouncementTable> announcements =
-        (items as List)
-            .map((item) => InstitutionAnnouncementTable.fromJson(item))
-            .toList();
+      List<InstitutionAnnouncementTable> announcements = (items as List)
+          .map((item) => InstitutionAnnouncementTable.fromJson(item))
+          .toList();
 
-    var newNextToken = data['listInstitutionAnnouncementTables']['nextToken'];
+      var newNextToken = data['listInstitutionAnnouncementTables']['nextToken'];
 
-     if (newNextToken != null) {
-       // recursive call for next page's data
-       var additionalItems =
-           await queryInstitutionAnnouncementsByInstitutionId(institutionId : institutionId , nextToken : newNextToken);
-       announcements.addAll(additionalItems);
-     }
+      if (newNextToken != null) {
+        // recursive call for next page's data
+        var additionalItems =
+            await queryInstitutionAnnouncementsByInstitutionId(
+                institutionId: institutionId, nextToken: newNextToken);
+        announcements.addAll(additionalItems);
+      }
 
-     return announcements;
-
-  } on ApiException catch (e) {
+      return announcements;
+    } on ApiException catch (e) {
       print('Query failed: $e');
       return const [];
+    }
   }
-}
-
-
-
 
   Future<List<InstitutionNewsTable>> queryInstitutionNewsByInstitutionId(
       {required String institutionId, String? nextToken}) async {
@@ -1057,9 +1100,8 @@ class GraphQLController {
 
       if (newNextToken != null) {
         // recursive call for next page's data
-        var additionalItems =
-            await queryInstitutionNewsByInstitutionId(
-                institutionId: institutionId, nextToken: newNextToken);
+        var additionalItems = await queryInstitutionNewsByInstitutionId(
+            institutionId: institutionId, nextToken: newNextToken);
         news.addAll(additionalItems);
       }
 
@@ -1238,14 +1280,14 @@ class GraphQLController {
   // }
 
 //todo: 안됨
-   Future<List<InstitutionEssentialCareTable>>
-    queryEssentialCareInformationByInstitutionId(
-        {required String institutionId, String? nextToken}) async {
-  try {
-    var operation = Amplify.API.query(
-      request: GraphQLRequest(
-        apiName: "Institution_API_NEW",
-        document: """
+  Future<List<InstitutionEssentialCareTable>>
+      queryEssentialCareInformationByInstitutionId(
+          {required String institutionId, String? nextToken}) async {
+    try {
+      var operation = Amplify.API.query(
+        request: GraphQLRequest(
+          apiName: "Institution_API_NEW",
+          document: """
           query ListInstitutionEssentialCareTables(\$filter: TableInstitutionEssentialCareTableFilterInput, \$limit: Int, \$nextToken: String) {
             listInstitutionEssentialCareTables(filter: \$filter, limit: \$limit, nextToken: \$nextToken) {
               items {
@@ -1265,49 +1307,49 @@ class GraphQLController {
             }
           }
         """,
-        variables: {
-          "filter": {"INSTITUTION_ID": {"eq": institutionId}},
-          "limit": 1000,
-          "nextToken": nextToken,
-        },
-      ),
-    );
+          variables: {
+            "filter": {
+              "INSTITUTION_ID": {"eq": institutionId}
+            },
+            "limit": 1000,
+            "nextToken": nextToken,
+          },
+        ),
+      );
 
-    var response = await operation.response;
+      var response = await operation.response;
 
-    print(response.data);
+      print(response.data);
 
-    var data = jsonDecode(response.data);
-    var items = data['listInstitutionEssentialCareTables']['items'];
+      var data = jsonDecode(response.data);
+      var items = data['listInstitutionEssentialCareTables']['items'];
 
-    if (items == null || response.data == null) {
-      print('errors: ${response.errors}');
-      return const [];
-    }
+      if (items == null || response.data == null) {
+        print('errors: ${response.errors}');
+        return const [];
+      }
 
-   List<InstitutionEssentialCareTable> essentialCare =
-       (items as List)
-           .map((item) => InstitutionEssentialCareTable.fromJson(item))
-           .toList();
+      List<InstitutionEssentialCareTable> essentialCare = (items as List)
+          .map((item) => InstitutionEssentialCareTable.fromJson(item))
+          .toList();
 
-     var newNextToken = data['listInstitutionEssentialCareTables']['nextToken'];
+      var newNextToken =
+          data['listInstitutionEssentialCareTables']['nextToken'];
 
-     if (newNextToken != null) {
-       // recursive call for next page's data
-       var additionalItems =
-           await queryEssentialCareInformationByInstitutionId(institutionId : institutionId , nextToken : newNextToken);
-       essentialCare.addAll(additionalItems);
-     }
+      if (newNextToken != null) {
+        // recursive call for next page's data
+        var additionalItems =
+            await queryEssentialCareInformationByInstitutionId(
+                institutionId: institutionId, nextToken: newNextToken);
+        essentialCare.addAll(additionalItems);
+      }
 
-     return essentialCare;
-
-  } on ApiException catch (e) {
+      return essentialCare;
+    } on ApiException catch (e) {
       print('Query failed: $e');
       return const [];
+    }
   }
-}
-
-
 
   Future<InstitutionFoodTable?> queryFoodByInstitutionIdAndDate(
       String institutionId, String date) async {
@@ -1396,8 +1438,6 @@ class GraphQLController {
     }
   }
 
-
-
   //
   // //todo 봉인!!!
   // Future<MonthlyBrainSignalTable?> queryMonthlyDBItem() async {
@@ -1424,13 +1464,13 @@ class GraphQLController {
   //             con_score
   //             spacetime_score
   //             exec_score
-	// 		        mem_score
-	// 		        ling_score
-	// 		        cal_score
-	// 		        reac_score
-	// 		        orient_score
-	// 		        createdAt
-	// 		        updatedAt
+  // 		        mem_score
+  // 		        ling_score
+  // 		        cal_score
+  // 		        reac_score
+  // 		        orient_score
+  // 		        createdAt
+  // 		        updatedAt
   //           }
   //         }
   //       }
@@ -1463,7 +1503,6 @@ class GraphQLController {
   //     return null;
   //   }
   // }
-
 
 //   Future<MonthlyBrainSignalTable?>
 //     queryMonthlyDBItem({required String ID, String? nextToken}) async {
@@ -1546,8 +1585,6 @@ class GraphQLController {
 //       return null;
 //   }
 // }
-
-
 
   Future<void> createMonthlyData() async {
     final row = {
@@ -1632,9 +1669,9 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              document: '''
             mutation createInstitutionEventScheduleTable(\$input: CreateInstitutionEventScheduleTableInput!) {
                   createInstitutionEventScheduleTable(input: \$input) {
                     INSTITUTION_ID
@@ -1648,11 +1685,11 @@ class GraphQLController {
                }  
               }
             ''',
-          variables: {
-            'input': row,
-          },
-        ),
-      )
+              variables: {
+                'input': row,
+              },
+            ),
+          )
           .response;
       {
         final createdData = response.data;
@@ -1674,8 +1711,8 @@ class GraphQLController {
   }
 
   Future<List<InstitutionEventScheduleTable?>>
-  queryInstitutionScheduleByInstitutionId(String institutionId, String date,
-      {String? nextToken}) async {
+      queryInstitutionScheduleByInstitutionId(String institutionId, String date,
+          {String? nextToken}) async {
     String inst_id = 'aaa';
     int dateNext = int.parse(date);
     dateNext += 40;
@@ -1730,7 +1767,7 @@ class GraphQLController {
             .map((item) => InstitutionEventScheduleTable.fromJson(item))
             .toList();
         var newNextToken =
-        data['listInstitutionEventScheduleTables']['nextToken'];
+            data['listInstitutionEventScheduleTables']['nextToken'];
 
         if (newNextToken != null) {
           // recursive call for next page's data
@@ -1773,7 +1810,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-            (Object error) {
+        (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -1803,9 +1840,9 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              document: '''
           mutation updateInstitutionEventScheduleTable(\$input: UpdateInstitutionEventScheduleTableInput!) {
             updateInstitutionEventScheduleTable(input: \$input) {
               SCHEDULE_ID
@@ -1818,9 +1855,9 @@ class GraphQLController {
             }  
           }
         ''',
-          variables: {'input': row},
-        ),
-      )
+              variables: {'input': row},
+            ),
+          )
           .response;
       {
         final updatedData = response.data;
@@ -1841,16 +1878,16 @@ class GraphQLController {
   }
 
   Future<bool?> deleteScheduledata(
-      String inst_id,
-      String schedule_id,
-      ) async {
+    String inst_id,
+    String schedule_id,
+  ) async {
     final row = {'INSTITUTION_ID': inst_id, 'SCHEDULE_ID': schedule_id};
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              document: '''
             mutation deleteInstitutionEventScheduleTable(\$input: DeleteInstitutionEventScheduleTableInput!) {
                   deleteInstitutionEventScheduleTable(input: \$input) {
                     INSTITUTION_ID
@@ -1858,11 +1895,11 @@ class GraphQLController {
                }  
               }
             ''',
-          variables: {
-            'input': row,
-          },
-        ),
-      )
+              variables: {
+                'input': row,
+              },
+            ),
+          )
           .response;
       {
         final deletedData = response.data;
@@ -1927,7 +1964,7 @@ class GraphQLController {
         }
 
         List<UserTable?> Users =
-        (items as List).map((item) => UserTable.fromJson(item)).toList();
+            (items as List).map((item) => UserTable.fromJson(item)).toList();
         var newNextToken = data['listUserTables']['nextToken'];
 
         if (newNextToken != null) {
@@ -1965,12 +2002,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation createInstitutionCommentBoardTable(\$input: CreateInstitutionCommentBoardTableInput!) {
                   createInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -1988,8 +2025,8 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final createdData = response.data;
@@ -2039,7 +2076,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-            (Object error) {
+        (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -2076,6 +2113,7 @@ class GraphQLController {
                 WRITER
                 TITLE
                 USERNAME
+                CONTENT
                 INSTITUTION_ID
                 NEW_CONVERSATION_PROTECTOR
                 NEW_CONVERSATION_INST
@@ -2112,7 +2150,7 @@ class GraphQLController {
             .map((item) => InstitutionCommentBoardTable.fromJson(item))
             .toList();
         var newNextToken =
-        data['listInstitutionCommentBoardTables']['nextToken'];
+            data['listInstitutionCommentBoardTables']['nextToken'];
 
         if (newNextToken != null) {
           // recursive call for next page's data
@@ -2171,8 +2209,8 @@ class GraphQLController {
           return null;
         }
         InstitutionCommentBoardTable comment =
-        InstitutionCommentBoardTable.fromJson(
-            jsonDecode(response.data)['getInstitutionCommentBoardTable']);
+            InstitutionCommentBoardTable.fromJson(
+                jsonDecode(response.data)['getInstitutionCommentBoardTable']);
         if (comment == null) {
           print('errors: ${response.errors}');
           return null;
@@ -2198,12 +2236,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2215,8 +2253,8 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final updatedData = response.data;
@@ -2237,9 +2275,9 @@ class GraphQLController {
   }
 
   Future<bool?> deleteCommentBoarddata(
-      String user_id,
-      String board_id,
-      ) async {
+    String user_id,
+    String board_id,
+  ) async {
     final row = {
       'USER_ID': user_id,
       'BOARD_ID': board_id,
@@ -2247,9 +2285,9 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              document: '''
             mutation deleteInstitutionCommentBoardTable(\$input: DeleteInstitutionCommentBoardTableInput!) {
                   deleteInstitutionCommentBoardTable(input: \$input) {
                     USER_ID
@@ -2258,11 +2296,11 @@ class GraphQLController {
                }  
               }
             ''',
-          variables: {
-            'input': row,
-          },
-        ),
-      )
+              variables: {
+                'input': row,
+              },
+            ),
+          )
           .response;
       {
         final deletedData = response.data;
@@ -2298,12 +2336,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation createInstitutionCommentConversationTable(\$input: CreateInstitutionCommentConversationTableInput!) {
                   createInstitutionCommentConversationTable(input: \$input) {
 	                  BOARD_ID
@@ -2316,14 +2354,14 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final createdData = response.data;
         if (createdData == null ||
             jsonDecode(createdData!)[
-            'createInstitutionCommentConversationTable'] ==
+                    'createInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2339,8 +2377,8 @@ class GraphQLController {
   }
 
   Future<List<InstitutionCommentConversationTable?>>
-  listInstitutionCommentConversation(String boardId,
-      {String? nextToken}) async {
+      listInstitutionCommentConversation(String boardId,
+          {String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2385,11 +2423,11 @@ class GraphQLController {
           return const [];
         }
         List<InstitutionCommentConversationTable?> conversations = (items
-        as List)
+                as List)
             .map((item) => InstitutionCommentConversationTable.fromJson(item))
             .toList();
         var newNextToken =
-        data['listInstitutionCommentConversationTables']['nextToken'];
+            data['listInstitutionCommentConversationTables']['nextToken'];
         // print('nullcheck : $newNextToken');
         if (newNextToken != null) {
           // recursive call for next page's data
@@ -2430,7 +2468,7 @@ class GraphQLController {
           print("subscription success");
         },
       ).handleError(
-            (Object error) {
+        (Object error) {
           safePrint('Error in subscription stream: $error');
         },
       );
@@ -2443,10 +2481,10 @@ class GraphQLController {
   }
 
   Future<bool?> updateCommentConversationdata(
-      String board_id,
-      String conversation_id,
-      String content,
-      ) async {
+    String board_id,
+    String conversation_id,
+    String content,
+  ) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'BOARD_ID': board_id,
@@ -2457,12 +2495,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation updateInstitutionCommentConversationTable(\$input: UpdateInstitutionCommentConversationTableInput!) {
                   updateInstitutionCommentConversationTable(input: \$input) {
 	            	    BOARD_ID
@@ -2475,14 +2513,14 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final updatedData = response.data;
         if (updatedData == null ||
             jsonDecode(updatedData!)[
-            'updateInstitutionCommentConversationTable'] ==
+                    'updateInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2498,9 +2536,9 @@ class GraphQLController {
   }
 
   Future<bool?> deleteCommentConversationdata(
-      String board_id,
-      String conversation_id,
-      ) async {
+    String board_id,
+    String conversation_id,
+  ) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'BOARD_ID': board_id,
@@ -2509,12 +2547,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation deleteInstitutionCommentConversationTable(\$input: DeleteInstitutionCommentConversationTableInput!) {
                   deleteInstitutionCommentConversationTable(input: \$input) {
 	            	    BOARD_ID
@@ -2527,14 +2565,14 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final deletedData = response.data;
         if (deletedData == null ||
             jsonDecode(deletedData!)[
-            'deleteInstitutionCommentConversationTable'] ==
+                    'deleteInstitutionCommentConversationTable'] ==
                 null) {
           safePrint('errors: ${response.errors}');
           return false;
@@ -2561,12 +2599,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2577,8 +2615,8 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final updatedData = response.data;
@@ -2609,12 +2647,12 @@ class GraphQLController {
     try {
       final response = await Amplify.API
           .mutate(
-        request: GraphQLRequest<String>(
-          apiName: "Institution_API_NEW",
-          variables: {
-            'input': row,
-          },
-          document: '''
+            request: GraphQLRequest<String>(
+              apiName: "Institution_API_NEW",
+              variables: {
+                'input': row,
+              },
+              document: '''
             mutation updateInstitutionCommentBoardTable(\$input: UpdateInstitutionCommentBoardTableInput!) {
                   updateInstitutionCommentBoardTable(input: \$input) {
 	                  BOARD_ID
@@ -2625,8 +2663,8 @@ class GraphQLController {
                }  
               }
             ''',
-        ),
-      )
+            ),
+          )
           .response;
       {
         final updatedData = response.data;
@@ -2728,7 +2766,7 @@ class GraphQLController {
         if (newNextToken != null) {
           // recursive call for next page's data
           var additionalItems =
-          await queryMonthlyDBLatestItem(ID: ID, nextToken: newNextToken);
+              await queryMonthlyDBLatestItem(ID: ID, nextToken: newNextToken);
           monthlyDBTests.addAll(additionalItems);
         }
 
@@ -2823,8 +2861,8 @@ class GraphQLController {
   //     return const [];
   //   }
   // }
-  Future<List<UserTable?>> queryListUserDBItemsForAverageAge(
-      int start, int end , {String? nextToken}) async {
+  Future<List<UserTable?>> queryListUserDBItemsForAverageAge(int start, int end,
+      {String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2873,13 +2911,13 @@ class GraphQLController {
         }
 
         List<UserTable?> Users =
-        (items as List).map((item) => UserTable.fromJson(item)).toList();
+            (items as List).map((item) => UserTable.fromJson(item)).toList();
         var newNextToken = data['listUserTables']['nextToken'];
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var nextUsers = await queryListUserDBItemsForAverageAge(
-              start,end ,nextToken: newNextToken);
+          var nextUsers = await queryListUserDBItemsForAverageAge(start, end,
+              nextToken: newNextToken);
           Users.addAll(nextUsers);
         }
 
@@ -2892,8 +2930,8 @@ class GraphQLController {
   }
 
   Future<List<MonthlyBrainSignalTable?>> queryMonthlyDBRequiredItem(
-      String id, int yearMonth, { String? nextToken}) async {
-
+      String id, int yearMonth,
+      {String? nextToken}) async {
     try {
       // var ID = '1';
 
@@ -2936,7 +2974,7 @@ class GraphQLController {
             "filter": {
               "id": {"eq": id},
               "month": {
-                "between": [yearMonth.toString(), (yearMonth+40).toString()]
+                "between": [yearMonth.toString(), (yearMonth + 40).toString()]
               },
             },
             "limit": 1000,
@@ -2966,8 +3004,8 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var additionalItems =
-          await queryMonthlyDBRequiredItem(id,yearMonth, nextToken: newNextToken);
+          var additionalItems = await queryMonthlyDBRequiredItem(id, yearMonth,
+              nextToken: newNextToken);
           monthlyDBTests.addAll(additionalItems);
         }
 
@@ -2978,6 +3016,7 @@ class GraphQLController {
       return const [];
     }
   }
+
 // Future<void> createMonthlyData() async {
 //   try {
 //     final row = MonthlyDBTest(

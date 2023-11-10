@@ -1134,7 +1134,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(nameForLinechart),
+                              Text(nameForLinechart,style: TextStyle(color: Colors.black),),
                               Expanded(
                                 child: LinearPercentIndicator(
                                   animation: true,
