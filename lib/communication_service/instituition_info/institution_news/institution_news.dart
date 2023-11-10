@@ -148,7 +148,7 @@ class InstitutionNewsDetailPage extends StatelessWidget {
                     Provider.of<LoginState>(context, listen:false).newsUpdate();
 
                     ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
-                      SnackBar(content: Text('소식이 삭제되었습니다.')),
+                      SnackBar(content: Text('기관소식이 삭제되었습니다.')),
                     );
 
                     Navigator.pop(context);

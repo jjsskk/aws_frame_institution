@@ -107,7 +107,11 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
                   "INST_ID_123",
               );
 
-              print(imageUrl);
+              if(result == true){
+                ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                  SnackBar(content: Text('식단정보가 추가되었습니다.')),
+                );
+              }
 
 
               Navigator.pop(context, result);

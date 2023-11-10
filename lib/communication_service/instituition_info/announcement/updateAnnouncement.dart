@@ -152,6 +152,9 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
 
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).announceUpdate();
+                ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                  SnackBar(content: Text('공지사항이 수정되었습니다.')),
+                );
 
               }
 

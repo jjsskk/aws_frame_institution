@@ -33,7 +33,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   final TextEditingController _medicationController = TextEditingController();
   final TextEditingController _medicationWayController =
       TextEditingController();
-  String userid = "";
+  String _userid = "";
   List<String> nameList = [];
   String name = '';
   String essentialName = '';
@@ -69,12 +69,14 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             tempNameList.add(tempName);
           }
         }
-
+        nameList = [];
         setState(() {
           _essentialCare = value;
           nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
+          name = nameList.isNotEmpty ? nameList[0] : '';
+          print("name");
+          print(name);
 
-          name = nameList[index]; // 가장 첫 이름으로 함
 
           if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
             String convertToE164(String phoneNumber, String countryCode) {
@@ -107,7 +109,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             imageUrl = _essentialCare[index].IMAGE != null
                 ? _essentialCare[index].IMAGE!
                 : "";
-            userid = _essentialCare[index].USER_ID != null
+            _userid = _essentialCare[index].USER_ID != null
                 ? _essentialCare[index].USER_ID!
                 : "";
             institutionId = _essentialCare[index].INSTITUTION_ID != null
@@ -146,29 +148,32 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
       print(nameList);
       name = selectedName;
       index = nameList.indexOf(selectedName);
+
       print(name);
+      print(index);
       if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
-        _essentialCare[index].MEDICATION != null
-            ? _nameController.text = _essentialCare[index].NAME!
+        _essentialCare[index].NAME != null
+            ? essentialName = _essentialCare[index].NAME!
             : "";
         _essentialCare[index].BIRTH != null
-            ? _birthController.text = _essentialCare[index].BIRTH!
+            ? birth = _essentialCare[index].BIRTH!
             : "";
+
         _essentialCare[index].PHONE_NUMBER != null
-            ? _phoneNumberController.text =
+            ? phoneNumber =
                 convertToE164(_essentialCare[index].PHONE_NUMBER!, "0")
             : "";
         _essentialCare[index].MEDICATION != null
-            ? _medicationController.text = _essentialCare[index].MEDICATION!
+            ? medication = _essentialCare[index].MEDICATION!
             : "";
         _essentialCare[index].MEDICATION_WAY != null
-            ? _medicationWayController.text =
+            ? medicationWay =
                 _essentialCare[index].MEDICATION_WAY!
             : "";
         imageUrl = _essentialCare[index].IMAGE != null
             ? imageUrl = _essentialCare[index].IMAGE!
             : "";
-        userid = _essentialCare[index].USER_ID != null
+        _userid = _essentialCare[index].USER_ID != null
             ? _essentialCare[index].USER_ID!
             : "";
         institutionId = _essentialCare[index].INSTITUTION_ID != null
@@ -355,28 +360,30 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                       );
                     },
                   );
-
                   if (confirmed ?? false) {
-                    await gql.deleteEssentialCare(userid, institutionId);
+                    await gql.deleteEssentialCare(_userid, institutionId);
 
                     // Show snackbar after deletion
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                          content: Text('$essentialName 항목이 성공적으로 삭제되었습니다.')),
+                        content: Text('$essentialName 항목이 성공적으로 삭제되었습니다.'),
+                      ),
                     );
 
-                    setState(() {
-                      if (index >= 0 && index < nameList.length) {
-                        nameList.removeAt(index);
-                      }
-                      index = 0;
-                      // nameList[index].
-                      // getEssentialCare();
 
+                    // setState() 내부에서 getEssentialCare() 함수를 호출합니다.
+                    setState(() async {
+                      await getEssentialCare();
+
+                      if (nameList.isNotEmpty) {
+                        name = nameList[0]; // 첫 번째 항목으로 재설정
+                      } else {
+                        name = '';
+                      }
                     });
-                    index = 0; // Reset dropdown to first item
                   }
                 },
+
                 child: Text("삭제 -"),
               ),
               TextButton(
@@ -389,9 +396,9 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
 
                     // 만약 필요한 업데이트가 있다면 setState() 호출
                     if (result == true) {
-                      setState(() {
+                      setState(() async {
                         index = 0; //맨 처음 dropdown
-                        getEssentialCare();
+                        await getEssentialCare();
                       });
                     }
                   },
@@ -400,6 +407,55 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+
+class CustomDropDown extends StatefulWidget {
+  final List<String> Items;
+  final String selected;
+  final Function(String) onChanged;
+
+  const CustomDropDown(
+      {Key? key,
+        required this.Items,
+        required this.onChanged,
+        required this.selected})
+      : super(key: key);
+
+  @override
+  _CustomDropDownState createState() => _CustomDropDownState();
+}
+
+class _CustomDropDownState extends State<CustomDropDown> {
+  String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.selected;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      style: TextStyle(color: Colors.black),
+      value: selectedValue,
+      items: [
+        for (var name in widget.Items)
+          DropdownMenuItem(
+            child: Text(name),
+            value: name,
+          ),
+      ],
+      onChanged: (value) {
+        setState(() {
+          selectedValue = value;
+        });
+        widget.onChanged(value!);
+      },
     );
   }
 }
