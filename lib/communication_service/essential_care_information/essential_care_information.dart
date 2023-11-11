@@ -1,13 +1,13 @@
 import 'dart:math';
+import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/add_essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/update_essential_care_information.dart';
 import 'package:aws_frame_institution/models/InstitutionEssentialCareTable.dart';
+import 'package:aws_frame_institution/storage/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../GraphQL_Method/graphql_controller.dart';
-import '../../storage/storage_service.dart';
+
 import 'dart:io';
-import '../instituition_info/convenience/Convenience.dart';
 
 class EssentialCareInfoPage extends StatefulWidget {
   const EssentialCareInfoPage({Key? key}) : super(key: key);
@@ -56,6 +56,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
+    _essentialCare = [];
     await gql
         .queryEssentialCareInformationByInstitutionId(
             institutionId: "INST_ID_123")
@@ -65,7 +66,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
         for (var care in value) {
           if (care.NAME != null) {
             // NAME이 null이 아닌 경우에만 추가
-            String tempName = "${care.NAME!} (${care.BIRTH!})";
+            String tempName = "${care.NAME!}";
             tempNameList.add(tempName);
           }
         }
@@ -135,6 +136,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
 
   void initState() {
     super.initState();
+    nameList = [];
     gql = GraphQLController.Obj;
     index = 0; //맨 처음 dropdown
     getEssentialCare();
@@ -216,11 +218,11 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                   onChanged: _NameSelected,
                 )
               : Container(),
-          SizedBox(height:30),
           imageUrl != ""
               ? FutureBuilder<String>(
               future: storageService.getImageUrlFromS3(imageUrl),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              builder:
+                  (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.hasData) {
                   String careImageUrl = snapshot.data!;
                   return Container(
@@ -229,7 +231,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        fit: BoxFit.fill,
+                        fit: BoxFit.contain,
                         image: NetworkImage(careImageUrl),
                       ),
                     ),
@@ -240,57 +242,116 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                 return CircularProgressIndicator();
               })
               : Container(
-            width: 150,
-            height: 150,
-            decoration:
-            BoxDecoration(shape: BoxShape.circle, color: Colors.grey),
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.contain,
+                image: AssetImage('image/community (14).png'),
+              ),
+            ),
           ),
-
-
-
-
-
-          SizedBox(height:30),
+          SizedBox(height: 30),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("이름: "),
-              Text(essentialName),
+              Row(
+                children: [
+                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Container(
+                    decoration: BoxDecoration(
+                      color:Color(0xFFD3D8EA),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Text(essentialName,style: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
+              Flexible(
+                child: Container(),
+              ),
+              Row(
+                children: [
+                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Container(
+                    decoration: BoxDecoration(
+                      color:Color(0xFFD3D8EA),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Text(birth,style: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          SizedBox(height: 16),
+
+
+          SizedBox(height: 30),
           Row(
             children: [
-              Text("생년월일: "),
-              Text(birth),
+              Text("전화번호: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Container(
+                decoration: BoxDecoration(
+                  color:Color(0xFFD3D8EA),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Text(phoneNumber,style: TextStyle(fontSize: 15)),
+                ),
+              ),
+
             ],
           ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Text("전화번호: "),
-              Text(phoneNumber),
-            ],
-          ),
-          SizedBox(height: 16),
+          SizedBox(height: 30),
           medication != ""
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("복용약: "),
-                    Text(medication),
-                  ],
-                )
+              ? Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("복용약: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Container(
+                decoration: BoxDecoration(
+                  color:Color(0xFFD3D8EA),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Text(medication,style: TextStyle(fontSize: 15)),
+                ),
+              ),
+
+            ],
+          )
               : Text(""),
-          SizedBox(height: 16),
+          SizedBox(height: 30),
           medicationWay != ""
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("복용법: "),
-                    Text(medicationWay),
-                  ],
-                )
+              ? Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("복용법: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              SizedBox(width: 5,),
+              Container(
+                decoration: BoxDecoration(
+                  color:Color(0xFFD3D8EA),
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                    child: Text(medicationWay, style: TextStyle(fontSize: 15),)
+                ),
+              ),
+
+            ],
+          )
               : Text(""),
+
           SizedBox(height: 16),
           Row(
             children: [
@@ -361,6 +422,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                     },
                   );
                   if (confirmed ?? false) {
+                    nameList = [];
+                    name = '';
                     await gql.deleteEssentialCare(_userid, institutionId);
 
                     // Show snackbar after deletion
@@ -369,29 +432,37 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                         content: Text('$essentialName 항목이 성공적으로 삭제되었습니다.'),
                       ),
                     );
-
-
                     // setState() 내부에서 getEssentialCare() 함수를 호출합니다.
-                    setState(() async {
-                      await getEssentialCare();
-
-                      if (nameList.isNotEmpty) {
-                        name = nameList[0]; // 첫 번째 항목으로 재설정
-                      } else {
-                        name = '';
-                      }
+                    setState(() {
+                      // await getEssentialCare();
+                      getEssentialCare();
+                      // if (nameList.isNotEmpty) {
+                      //   // nameList.remove(name);
+                      //   // _essentialCare.removeAt(index);
+                      //   name = nameList[0];
+                      //   _NameSelected(name);
+                      //   if (nameList.isNotEmpty) {
+                      //
+                      //   } else {
+                      //     name = '';
+                      //     print('empty');
+                      //   }
+                      // } else {
+                      //   name = '';
+                      // }
                     });
                   }
                 },
 
                 child: Text("삭제 -"),
               ),
+
               TextButton(
                   onPressed: () async {
                     final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AddEssentialCareInfoPage()),
+                          builder: (context) => AddEssentialCareInfoPage(nameList: nameList)),
                     );
 
                     // 만약 필요한 업데이트가 있다면 setState() 호출
@@ -429,20 +500,11 @@ class CustomDropDown extends StatefulWidget {
 }
 
 class _CustomDropDownState extends State<CustomDropDown> {
-  String? selectedValue;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedValue = widget.selected;
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       style: TextStyle(color: Colors.black),
-      value: selectedValue,
+      value: widget.selected, // 이 부분을 widget.selected로 변경합니다.
       items: [
         for (var name in widget.Items)
           DropdownMenuItem(
@@ -451,9 +513,6 @@ class _CustomDropDownState extends State<CustomDropDown> {
           ),
       ],
       onChanged: (value) {
-        setState(() {
-          selectedValue = value;
-        });
         widget.onChanged(value!);
       },
     );

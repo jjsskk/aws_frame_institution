@@ -20,10 +20,10 @@ class _ConveniencePageState extends State<ConveniencePage> {
   late Future<InstitutionFoodTable?> food;
   late final gql;
   final StorageService storageService = StorageService();
-  String FOOD_IMAGE_URL = '';
+  String FOOD_IMAGE_URL = 'loading';
   String FOOD_INSTITUTION_ID = '';
   String FOOD_DATETIME = '';
-  String SHUTTLE_IMAGE_URL = '';
+  String SHUTTLE_IMAGE_URL = 'loading';
   String SHUTTLE_INSTITUTION_ID = '';
 
   void getFood() {
@@ -131,7 +131,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.create),
-                              color: appBarColor,
+                              color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 var result = await Navigator.push(
                                   context,
@@ -145,7 +145,6 @@ class _ConveniencePageState extends State<ConveniencePage> {
 
                                 if (result != null) {
                                   setState(() {
-
                                     getFood();
                                   });
                                 }
@@ -153,7 +152,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
-                              color: appBarColor,
+                              color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 // Show confirmation dialog
                                 final confirmed = await showDialog<bool>(
@@ -180,16 +179,16 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                 );
 
                                 if (confirmed ?? false) {
-                                  var result =await gql.deleteFood(
+                                  var result = await gql.deleteFood(
                                       dateTime: FOOD_DATETIME,
                                       institutionId: FOOD_INSTITUTION_ID);
 
                                   // Show snackbar after deletion
-                                  if(result !=  null)
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              '$FOOD_DATETIME월 식단정보가 성공적으로 삭제되었습니다.')));
+                                  if (result != null)
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                '$FOOD_DATETIME월 식단정보가 성공적으로 삭제되었습니다.')));
 
                                   setState(() {
                                     getFood();
@@ -217,23 +216,26 @@ class _ConveniencePageState extends State<ConveniencePage> {
                     ),
                   ),
 
-                  FOOD_IMAGE_URL != ''
-                      ?FOOD_IMAGE_URL!='null'? FutureBuilder<String>(
-                          future:
-                              storageService.getImageUrlFromS3(FOOD_IMAGE_URL),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
-                            if (snapshot.hasData) {
-                              String foodImageUrl = snapshot.data!;
-                              return Image.network(
-                                foodImageUrl,
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text('이미지를 불러올 수 없습니다.');
-                            }
-                            return Text('데이터가 없습니다.');
-                          })
-                        : Text('데이터가 없습니다.')
+                  FOOD_IMAGE_URL != 'loading'
+                      ? FOOD_IMAGE_URL != ''
+                          ? FutureBuilder<String>(
+                              future: storageService
+                                  .getImageUrlFromS3(FOOD_IMAGE_URL),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String> snapshot) {
+                                if (snapshot.hasData) {
+                                  String foodImageUrl = snapshot.data!;
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                    child: Image.network(foodImageUrl),
+                                  );
+
+                                } else if (snapshot.hasError) {
+                                  return Center(child: Text('이미지를 불러올 수 없습니다.'));
+                                }
+                                return Center(child: Text('데이터가 없습니다.'));
+                              })
+                          : Center(child: Text('데이터가 없습니다.'))
                       : Center(child: CircularProgressIndicator()),
 
                   //   }
@@ -259,7 +261,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.create),
-                                  color: appBarColor,
+                                  color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     var result = await Navigator.push(
                                       context,
@@ -279,7 +281,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete),
-                                  color: appBarColor,
+                                  color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     // Show confirmation dialog
                                     final confirmed = await showDialog<bool>(
@@ -313,11 +315,11 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                               SHUTTLE_INSTITUTION_ID);
 
                                       // Show snackbar after deletion
-                                      if(result != null)
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  '셔틀시간이 성공적으로 삭제되었습니다.')));
+                                      if (result != null)
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    '셔틀시간이 성공적으로 삭제되었습니다.')));
 
                                       setState(() {
                                         getShuttleTime();
@@ -329,22 +331,25 @@ class _ConveniencePageState extends State<ConveniencePage> {
                             ),
                           ],
                         ),
-                        SHUTTLE_IMAGE_URL != ''
-                            ? FutureBuilder<String>(
-                                future: storageService
-                                    .getImageUrlFromS3(SHUTTLE_IMAGE_URL),
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<String> snapshot) {
-                                  if (snapshot.hasData) {
-                                    String imageUrl = snapshot.data!;
-                                    return Image.network(
-                                      imageUrl,
-                                    );
-                                  } else if (snapshot.hasError) {
-                                    return Text('이미지를 불러올 수 없습니다.');
-                                  }
-                                  return Text('데이터가 없습니다');
-                                })
+                        SHUTTLE_IMAGE_URL != 'loading'
+                            ? SHUTTLE_IMAGE_URL != ''
+                                ? FutureBuilder<String>(
+                                    future: storageService
+                                        .getImageUrlFromS3(SHUTTLE_IMAGE_URL),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<String> snapshot) {
+                                      if (snapshot.hasData) {
+                                        String imageUrl = snapshot.data!;
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                          child: Image.network(imageUrl),
+                                        );
+                                      } else if (snapshot.hasError) {
+                                        return Text('이미지를 불러올 수 없습니다.');
+                                      }
+                                      return Text('데이터가 없습니다');
+                                    })
+                                : Text('데이터가 없습니다.')
                             : CircularProgressIndicator(),
                       ],
                     ),

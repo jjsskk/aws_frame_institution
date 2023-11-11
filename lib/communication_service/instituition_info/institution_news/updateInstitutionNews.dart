@@ -65,6 +65,7 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
     widget.news.URL != null
         ? _contentController.text = widget.news.URL!
         : _contentController.text = "";
+
   }
 
   @override
@@ -73,7 +74,30 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('기관소식 변경'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '기관 소식 수정',
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
+
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -99,8 +123,10 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
           ),
           SizedBox(height: 16),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
+
             onPressed: _pickImage,
-            child: Text('이미지 선택'),
+            child: Text('이미지 선택', style: TextStyle(color: Color(0xFF2B3FF0))),
           ),
           _image != null
               ? Padding(
@@ -127,13 +153,18 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                       : Container()
                   : Container(),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
+
             onPressed: () async {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = '';
 
-              _image != null
-                  ? imageUrl = await uploadImageToS3(_image)
-                  : imageUrl = widget.news.IMAGE!;
+              if(_image != null) {
+                imageUrl = await uploadImageToS3(_image);
+              } else if(widget.news.IMAGE != null) {
+                imageUrl = widget.news.IMAGE!;
+              }
+
 
               var result = await gql.updateInstitutionNews(
                 newsId: widget.news.NEWS_ID,
@@ -145,7 +176,14 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 url: _urlController.text,
               );
 
+              Map<String, String> news = {};
+
               if (result != null) { // GraphQL 업로드가 성공했다면...
+
+                news['title'] = _titleController.text;
+                news['content'] = _contentController.text;
+                news['image'] = imageUrl;
+                news['url'] = _urlController.text;
 
                 // Provider에 새 공지사항 추가
                 Provider.of<LoginState>(context, listen: false).newsUpdate();
@@ -154,10 +192,12 @@ class _updateInstitutionNewsPageState extends State<updateInstitutionNewsPage> {
                 );
               }
 
-              Navigator.pop(context);
+              Navigator.pop(context, news); // 여기를 수정했습니다. result는 업데이트된 데이터입니다.
             },
-            child: Text('완료'),
+            child: Text('완료', style: TextStyle(color: Color(0xFF2B3FF0))),
           ),
+
+
         ],
       ),
     );

@@ -1299,7 +1299,7 @@ class GraphQLController {
                 PHONE_NUMBER
                 USER_ID
                 createdAt
-				updatedAt
+				  updatedAt
               }
               nextToken
             }
