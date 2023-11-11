@@ -1,3 +1,4 @@
+import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/analytics/analytics_events.dart';
 import 'package:aws_frame_institution/analytics/analytics_service.dart';
 import 'package:aws_frame_institution/auth_flow/auth_credentials.dart';
@@ -50,10 +51,16 @@ class _LoginPageState extends State<LoginPage> {
 
   late var appState;
 
+  var gql = GraphQLController.Obj;
+
   @override
   void initState() {
     super.initState();
     // Get.deleteAll();
+    if (!providerReset) {
+      gql.resetVariables();
+      providerReset = true;
+    }
     BackButtonInterceptor.add(backKeyInterceptor, context: context);
     _loadId();
   }
@@ -115,68 +122,71 @@ class _LoginPageState extends State<LoginPage> {
     final textColor = Theme.of(context).textTheme;
     final theme = Theme.of(context);
     appState = context.watch<LoginState>();
-    if (!providerReset) {
-      appState.resetVariables();
-      providerReset = true;
-    }
     // display_cacheId();
     // 2
     return Scaffold(
-      backgroundColor: Colors.black87,
-      // 3
-      body: ModalProgressHUD(
-        // loading image on entire screen
-        inAsyncCall: showSpinner,
-        child: GestureDetector(
-          // if you touch any point on screen, keyboard is automatically down
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SafeArea(
-            child: ListView(
-                children: [
-              const SizedBox(
-                height: 50,
-              ),
-              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('image/frame.png'),
-                  ),
+
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+          ),
+        ),
+        child: ModalProgressHUD(
+          // loading image on entire screen
+          inAsyncCall: showSpinner,
+          child: GestureDetector(
+            // if you touch any point on screen, keyboard is automatically down
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SafeArea(
+              child: ListView(
+                  children: [
+                const SizedBox(
+                  height: 50,
                 ),
-              ]),
-              // Login Form
-              const SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0),
-                child: _loginForm(textColor),
-              ),
-              // 6
-              // Sign Up Button
-              // Expanded(
-              //   child: Align(
-              //     alignment: Alignment.bottomCenter,
-              Container(
-                  height: MediaQuery.of(context).size.height / 6,
-                  alignment: Alignment.center,
-                  child: TextButton.icon(
-                    onPressed: widget.shouldShowSignUp,
-                    label: Text(
-                      'Don\'t have an account? Sign up.',
-                      style: textColor.subtitle2,
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage('image/frame.png'),
                     ),
-                    style: TextButton.styleFrom(
-                        primary: iconColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        backgroundColor: theme.primaryColorLight),
-                    icon: Icon(Icons.arrow_forward),
-                  ))
-            ]),
+                  ),
+                ]),
+                // Login Form
+                const SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40.0),
+                  child: _loginForm(textColor),
+                ),
+                // 6
+                // Sign Up Button
+                // Expanded(
+                //   child: Align(
+                //     alignment: Alignment.bottomCenter,
+                Container(
+                    height: MediaQuery.of(context).size.height / 6,
+                    alignment: Alignment.center,
+                    child: TextButton.icon(
+                      onPressed: widget.shouldShowSignUp,
+                      label: Text(
+                        'Don\'t have an account? Sign up.',
+                        style: textColor.subtitle2,
+                      ),
+                      style: TextButton.styleFrom(
+                          primary: iconColor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          backgroundColor: theme.primaryColorLight),
+                      icon: Icon(Icons.arrow_forward),
+                    ))
+              ]),
+            ),
           ),
         ),
       ),

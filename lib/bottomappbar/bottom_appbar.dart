@@ -10,16 +10,19 @@ class GlobalBottomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    var colorScheme = const Color(0xfff1f1f1);
     var theme = Theme.of(context);
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       // if you want to remove notch, input null
-      color: colorScheme.primary,
+      color: const Color(0xfff1f1f1),
       child: IconTheme(
-        data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
+        data: IconThemeData(color: const Color(0xff2b3fee)),
         child: Row(
           children: <Widget>[
+            const SizedBox(
+              width: 65,
+            ),
             IconButton(
               onPressed: () {
                 // print(keyObj.key);
@@ -27,15 +30,17 @@ class GlobalBottomAppBar extends StatelessWidget {
               },
               icon: Icon(
                 Icons.menu,
-                size: 30,
+                size: 35,
               ),
             ),
-            const Spacer(),
+            const SizedBox(
+              width: 180,
+            ),
             IconButton(
               onPressed: () {},
               icon: Icon(
-                Icons.adjust,
-                size: 30,
+                Icons.settings,
+                size: 35,
               ),
             ),
           ],

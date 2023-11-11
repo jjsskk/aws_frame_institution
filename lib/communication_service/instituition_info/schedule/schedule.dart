@@ -25,8 +25,6 @@ class _SchedulePageState extends State<SchedulePage> {
   String inst = 'aaaa';
   int inst_id = 1;
 
-  // int sche_id = 1;
-
   bool loading = true;
   var month = 1; // for DropdownDatePicker
   var year = 1; // for DropdownDatePicker
@@ -36,6 +34,7 @@ class _SchedulePageState extends State<SchedulePage> {
       false; // check for add( false)  or update(true) query
   String saveScheduleId = '';
   List<String> tagsFromDB = [];
+
   int startHour = 0; //used to update program start time
   int startMin = 0; //used to update program start time
   int endHour = 0; //used to update program end time
@@ -80,9 +79,9 @@ class _SchedulePageState extends State<SchedulePage> {
     year = _focusedDay.year;
     _selectedDay = _focusedDay;
     getEventDataFromDB();
-    stream = gql.subscribeInstitutionSchedule("1234");
-    print(stream);
-    subscribeScheduleChange();
+    // stream = gql.subscribeInstitutionSchedule("1234");
+    // print(stream);
+    // subscribeScheduleChange();
   }
 
   void selelctCalender() {
@@ -90,15 +89,15 @@ class _SchedulePageState extends State<SchedulePage> {
     kLastDay = DateTime(year, month + 1, 0);
   }
 
-  void subscribeScheduleChange() {
-    listener = stream!.listen(
-      (snapshot) {
-        print('data : ${snapshot.data!}');
-        getEventDataFromDB();
-      },
-      onError: (Object e) => safePrint('Error in subscription stream: $e'),
-    );
-  }
+  // void subscribeScheduleChange() {
+  //   listener = stream!.listen(
+  //     (snapshot) {
+  //       print('data : ${snapshot.data!}');
+  //       getEventDataFromDB();
+  //     },
+  //     onError: (Object e) => safePrint('Error in subscription stream: $e'),
+  //   );
+  // }
 
   void getEventDataFromDB() {
     _event = {};
@@ -170,28 +169,10 @@ class _SchedulePageState extends State<SchedulePage> {
     super.dispose();
   }
 
-  // measure size for calender event time set container
-  Size? _getSize() {
-    if (_containerkey.currentContext != null) {
-      final RenderBox renderBox =
-          _containerkey.currentContext!.findRenderObject() as RenderBox;
-      Size size = renderBox.size;
-      return size;
-    }
-  }
 
   List<Event> _getEventsForDay(DateTime day) {
     // Implementation example
     return _kEvents[day] ?? [];
-  }
-
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation example
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -208,24 +189,6 @@ class _SchedulePageState extends State<SchedulePage> {
     }
   }
 
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents!.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents!.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents!.value = _getEventsForDay(end);
-    }
-  }
 
   static const List<String> _pickActivity = <String>[
     '내부 활동',
@@ -234,20 +197,6 @@ class _SchedulePageState extends State<SchedulePage> {
     '외부 강사',
     'java'
   ];
-
-  // CalendarFormat _calendarFormat = CalendarFormat.month;
-  //
-  // DateTime _focusedDay = DateTime.now();
-  //
-  // DateTime? _selectedDay;
-  // Map<DateTime, List<Event>> _events = {
-  //   DateTime.utc(2023, 8, 13): [Event(title: 'title'), Event(title: 'title2'), Event(title: 'title2'), Event(title: 'title2'), Event(title: 'title2'), Event(title: 'title2')],
-  //   DateTime.utc(2023, 8, 14): [Event(title: 'title3')],
-  // };
-  //
-  // List<Event> _getEventsForDay(DateTime day) {
-  //   return _events[day] ?? [];
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -321,97 +270,6 @@ class _SchedulePageState extends State<SchedulePage> {
                             icon: Icon(Icons.search))
                       ],
                     ),
-                    // TableCalendar(
-                    //   firstDay: DateTime.utc(2020, 1, 1),
-                    //   lastDay: DateTime.utc(2030, 3, 14),
-                    //   // headerVisible: false,
-                    //   locale: 'ko-KR',
-                    //   focusedDay: _focusedDay,
-                    //   daysOfWeekHeight: 30,
-                    //   calendarFormat: _calendarFormat,
-                    //   rangeStartDay: DateTime(2023, 8, 9),
-                    //   rangeEndDay: DateTime(2023, 8, 12),
-                    //   calendarStyle: const CalendarStyle(
-                    //     isTodayHighlighted: false,
-                    //     selectedDecoration: BoxDecoration(
-                    //       color: Colors.blue,
-                    //       shape: BoxShape.circle,
-                    //     ),
-                    //     rangeHighlightScale: 1.0,
-                    //     // range 색상 조정
-                    //     rangeHighlightColor: const Color(0xFFBBDDFF),
-                    //     // rangeStartDay 글자 조정
-                    //     rangeStartTextStyle: const TextStyle(
-                    //       color: const Color(0xFFFAFAFA),
-                    //     ),
-                    //     // rangeStartDay 모양 조정
-                    //     rangeStartDecoration: const BoxDecoration(
-                    //       color: const Color(0xFF6699FF),
-                    //       shape: BoxShape.circle,
-                    //     ),
-                    //     // rangeEndDay 글자 조정
-                    //     rangeEndTextStyle: const TextStyle(
-                    //       color: const Color(0xFFFAFAFA),
-                    //     ),
-                    //     // rangeEndDay 모양 조정
-                    //     rangeEndDecoration: const BoxDecoration(
-                    //       color: const Color(0xFF6699FF),
-                    //       shape: BoxShape.circle,
-                    //     ),
-                    //     // startDay, endDay 사이의 글자 조정
-                    //     withinRangeTextStyle: const TextStyle(),
-                    //     // startDay, endDay 사이의 모양 조정
-                    //     withinRangeDecoration:
-                    //         const BoxDecoration(shape: BoxShape.circle),
-                    //     // marker 여러개 일 때 cell 영역을 벗어날지 여부
-                    //     canMarkersOverflow: false,
-                    //     // 자동정렬 여부
-                    //     markersAutoAligned: true,
-                    //     // marker 크기 조절
-                    //     markerSize: 10.0,
-                    //     // marker 크기 비율 조절
-                    //     markerSizeScale: 10.0,
-                    //     // marker 의 기준점 조정
-                    //     markersAnchor: 0.7,
-                    //     // marker margin 조절
-                    //     markerMargin:
-                    //         const EdgeInsets.symmetric(horizontal: 0.3),
-                    //     // marker 위치 조정
-                    //     markersAlignment: Alignment.bottomCenter,
-                    //     // 한줄에 보여지는 marker 갯수
-                    //     markersMaxCount: 4,
-                    //     markersOffset: const PositionedOffset(),
-                    //     // marker 모양 조정
-                    //     markerDecoration: const BoxDecoration(
-                    //       color: Colors.red,
-                    //       shape: BoxShape.circle,
-                    //     ),
-                    //   ),
-                    //   selectedDayPredicate: (day) {
-                    //     return isSameDay(_selectedDay, day);
-                    //   },
-                    //   onDaySelected: (selectedDay, focusedDay) {
-                    //     if (!isSameDay(_selectedDay, selectedDay)) {
-                    //       // Call `setState()` when updating the selected day
-                    //       setState(() {
-                    //         _selectedDay = selectedDay;
-                    //         _focusedDay =
-                    //             focusedDay; // update `_focusedDay` here as well
-                    //       });
-                    //     }
-                    //   },
-                    //   onFormatChanged: (format) {
-                    //     if (_calendarFormat != format) {
-                    //       setState(() {
-                    //         _calendarFormat = format;
-                    //       });
-                    //     }
-                    //   },
-                    //   onPageChanged: (focusedDay) {
-                    //     _focusedDay = focusedDay;
-                    //   },
-                    //   eventLoader: _getEventsForDay,
-                    // ),
                     TableCalendar<Event>(
                       headerVisible: false,
                       locale: 'ko-KR',
@@ -457,7 +315,6 @@ class _SchedulePageState extends State<SchedulePage> {
                         outsideDaysVisible: false,
                       ),
                       onDaySelected: isCheckedEdit ? null : _onDaySelected,
-                      onRangeSelected: _onRangeSelected,
                       onFormatChanged: (format) {
                         if (_calendarFormat != format) {
                           setState(() {
@@ -507,7 +364,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                             String end =
                                                 '${_dateEndTimePicker.hour.toString().padLeft(2, '0')}시 ${_dateEndTimePicker.minute.toString().padLeft(2, '0')}분';
                                             print('end : $end');
-                                            print(_getSize());
                                             if (!_formKey.currentState!
                                                 .validate()) return;
                                             String? monthStr;
@@ -546,6 +402,9 @@ class _SchedulePageState extends State<SchedulePage> {
                                                     '${_selectedDay!.year}$monthStr$dateStr');
                                             {
                                               if (isChecked) {
+                                                getEventDataFromDB();
+                                                _programController.clear();
+                                                _tagController.clearTags();
                                                 // if (kEvents.containsKey(date)) {
                                                 //   if (isCheckedAddOrUpdate)
                                                 //     kEvents[date].removeWhere(
@@ -814,7 +673,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                       ),
                                                                       onTap:
                                                                           () {
-                                                                        //print("$tag selected");
+                                                                        print(
+                                                                            "$tag selected");
                                                                       },
                                                                     ),
                                                                     const SizedBox(
@@ -987,6 +847,54 @@ class _SchedulePageState extends State<SchedulePage> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
+                                                Row(
+                                                    children: value[index]
+                                                        .tags
+                                                        .map((String tag) {
+                                                  return Container(
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(20.0),
+                                                      ),
+                                                      color: Color.fromARGB(
+                                                          255, 74, 137, 92),
+                                                    ),
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            right: 10.0),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10.0,
+                                                        vertical: 4.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        InkWell(
+                                                          child: Text(
+                                                            '#$tag',
+                                                            style:
+                                                                const TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                          ),
+                                                          onTap: () {
+                                                            print(
+                                                                "$tag selected");
+                                                          },
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 4.0),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }).toList()),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
                                                 Text(
                                                   '${value[index].title}',
                                                   style: TextStyle(
@@ -1013,24 +921,47 @@ class _SchedulePageState extends State<SchedulePage> {
                                                               Text('삭제하시겠습니까?'),
                                                           actions: [
                                                             TextButton(
-                                                                onPressed: () {
-                                                                  final date = DateTime.utc(
-                                                                      _selectedDay!
-                                                                          .year,
-                                                                      _selectedDay!
-                                                                          .month,
-                                                                      _selectedDay!
-                                                                          .day);
-                                                                  gql.deleteScheduledata(
-                                                                      "1",
-                                                                      value[index]
-                                                                          .sche_id);
-
-                                                                  // kEvents[date].removeWhere((event) =>
-                                                                  //     event
-                                                                  //         .sche_id ==
-                                                                  //     value[index]
-                                                                  //         .sche_id);
+                                                                onPressed:
+                                                                    () async {
+                                                                  bool
+                                                                      isChecked =
+                                                                      await gql.deleteScheduledata(
+                                                                          "1",
+                                                                          value[index]
+                                                                              .sche_id);
+                                                                  {
+                                                                    if (isChecked) {
+                                                                      getEventDataFromDB();
+                                                                      ScaffoldMessenger.of(
+                                                                              context)
+                                                                          .showSnackBar(
+                                                                              SnackBar(
+                                                                        content:
+                                                                            Text(
+                                                                          '일정이 삭제되었습니다.',
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ));
+                                                                      // kEvents[date].removeWhere((event) =>
+                                                                      //     event
+                                                                      //         .sche_id ==
+                                                                      //     value[index]
+                                                                      //         .sche_id);
+                                                                    } else {
+                                                                      ScaffoldMessenger.of(
+                                                                              context)
+                                                                          .showSnackBar(
+                                                                              SnackBar(
+                                                                        content:
+                                                                            Text(
+                                                                          '오류가 발생되어 삭제되지 않았습니다.',
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                      ));
+                                                                    }
+                                                                  }
 
                                                                   Navigator.pop(
                                                                       context);
