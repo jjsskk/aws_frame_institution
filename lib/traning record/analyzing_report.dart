@@ -233,10 +233,10 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
     print("monthint: $changeddate");
 
     int numberForavg = 0;
-    users.forEach((id) async {
+    users.forEach((selectedAgeUserId) async {
       // print(id);
       Future<dynamic> future =
-          gql.queryMonthlyDBRequiredItem(id, changeddate).then((values) {
+          gql.queryMonthlyDBRequiredItem(selectedAgeUserId, changeddate).then((values) {
             var value = values.last;
         if (value != null) {
           numberForavg++;
@@ -413,6 +413,12 @@ class _AnalyzingReportPageState extends State<AnalyzingReportPage> {
       body: loading
           ? Center(child: CircularProgressIndicator())
           : Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+          ),
+        ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
