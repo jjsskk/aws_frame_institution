@@ -57,42 +57,84 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<InstitutionNewsTable>>(
-        future: _news,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('image/ui (4).png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: FutureBuilder<List<InstitutionNewsTable>>(
+          future: _news,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) {
-                final news = snapshot.data![index];
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      news.TITLE!,
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    subtitle: Text(getYearMonthDay(news.createdAt.toString())),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InstitutionNewsDetailPage(
-                              news: news, storageService: storageService),
+            if (snapshot.hasData) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  final news = snapshot.data![index];
+                  return Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 350,
+                      child: AspectRatio(
+                        aspectRatio: 1232 / 392,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => InstitutionNewsDetailPage(
+                                    news: news, storageService: storageService),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('image/community (7).png'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    getYearMonthDay(
+                                        news.createdAt.toString()),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        backgroundColor: Colors.transparent,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  Text(
+                                    news.TITLE!,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        backgroundColor: Colors.transparent,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
-            );
-          }
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
 
-          return Center(child: Text('공지사항이 없습니다.'));
-        },
+            return Center(child: Text('기관소식이 없습니다.'));
+          },
+        ),
       ),
     );
   }
@@ -132,7 +174,26 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('기관소식 세부 정보'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '기관소식 세부 정보',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
         actions: [
           IconButton(
               onPressed: () async {
@@ -153,7 +214,7 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                   });
                 }
               },
-              icon: Icon(Icons.create)),
+              icon: Icon(Icons.create, color: Colors.white,size: 25)),
           IconButton(
               onPressed: () async {
                 // showDialog 함수를 사용하여 다이얼로그 표시
@@ -198,41 +259,60 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                   }
                 }
               },
-              icon: Icon(Icons.delete))
+              icon: Icon(Icons.delete, color: Colors.white,size: 25,))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              SizedBox(height: 16),
-              Text('작성일: ' + getYearMonthDay(news.createdAt.toString())),
-              SizedBox(height: 16),
-              content != null ? Text(content) : Text(""),
-              SizedBox(height: 16),
-              url != null ? Text(url) : Text(""),
-              SizedBox(height: 16),
-              if (image != null)
-                if (image.isNotEmpty)
-                  FutureBuilder<String>(
-                    future: widget.storageService.getImageUrlFromS3(image!),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<String> snapshot) {
-                      if (snapshot.hasData) {
-                        String imageUrl = snapshot.data!;
-                        return Image.network(imageUrl);
-                      } else if (snapshot.hasError) {
-                        return Text('이미지를 불러올 수 없습니다.');
-                      } else {
-                        return CircularProgressIndicator();
-                      }
-                    },
-                  ),
-            ],
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('image/ui (4).png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style:
+                    TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Text('작성일: ' +
+                    getYearMonthDay(widget.news.createdAt.toString())),
+                SizedBox(height: 8),
+                Divider(),
+                SizedBox(height: 8),
+                content != null ? Text(content) : Text(""),
+                SizedBox(height: 16),
+                url != null ? Text(url) : Text(""),
+                SizedBox(height: 16),
+                if (image != null)
+                  if (image!.isNotEmpty)
+                    FutureBuilder<String>(
+                      future: widget.storageService.getImageUrlFromS3(image!),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<String> snapshot) {
+                        if (snapshot.hasData) {
+                          String imageUrl = snapshot.data!;
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                            child: Image.network(imageUrl),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('이미지를 불러올 수 없습니다.');
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+
+
+              ],
+            ),
           ),
         ),
       ),

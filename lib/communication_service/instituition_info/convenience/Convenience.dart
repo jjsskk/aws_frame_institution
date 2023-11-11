@@ -131,7 +131,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.create),
-                              color: appBarColor,
+                              color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 var result = await Navigator.push(
                                   context,
@@ -152,7 +152,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
-                              color: appBarColor,
+                              color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 // Show confirmation dialog
                                 final confirmed = await showDialog<bool>(
@@ -225,15 +225,17 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                   AsyncSnapshot<String> snapshot) {
                                 if (snapshot.hasData) {
                                   String foodImageUrl = snapshot.data!;
-                                  return Image.network(
-                                    foodImageUrl,
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                    child: Image.network(foodImageUrl),
                                   );
+
                                 } else if (snapshot.hasError) {
-                                  return Text('이미지를 불러올 수 없습니다.');
+                                  return Center(child: Text('이미지를 불러올 수 없습니다.'));
                                 }
-                                return Text('데이터가 없습니다.');
+                                return Center(child: Text('데이터가 없습니다.'));
                               })
-                          : Text('데이터가 없습니다.')
+                          : Center(child: Text('데이터가 없습니다.'))
                       : Center(child: CircularProgressIndicator()),
 
                   //   }
@@ -259,7 +261,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               children: [
                                 IconButton(
                                   icon: const Icon(Icons.create),
-                                  color: appBarColor,
+                                  color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     var result = await Navigator.push(
                                       context,
@@ -279,7 +281,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                 ),
                                 IconButton(
                                   icon: const Icon(Icons.delete),
-                                  color: appBarColor,
+                                  color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     // Show confirmation dialog
                                     final confirmed = await showDialog<bool>(
@@ -338,8 +340,9 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                         AsyncSnapshot<String> snapshot) {
                                       if (snapshot.hasData) {
                                         String imageUrl = snapshot.data!;
-                                        return Image.network(
-                                          imageUrl,
+                                        return ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                          child: Image.network(imageUrl),
                                         );
                                       } else if (snapshot.hasError) {
                                         return Text('이미지를 불러올 수 없습니다.');

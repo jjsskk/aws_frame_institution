@@ -76,7 +76,29 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
     var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('공지사항 변경'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '공지사항 변경',
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -102,8 +124,9 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
           ),
           SizedBox(height: 16),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
             onPressed: _pickImage,
-            child: Text('이미지 선택'),
+            child: Text('이미지 선택',style: TextStyle(color: Color(0xFF2B3FF0)),),
           ),
           _image != null
               ? Padding(
@@ -130,6 +153,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
                       : Container()
                   : Container(),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
             onPressed: () async {
               // TODO: AWS S3에 이미지 업로드
               String imageUrl = '';
@@ -165,15 +189,7 @@ class _updateAnnouncementPageState extends State<updateAnnouncementPage> {
 
               Navigator.pop(context, announcement);
             },
-            child: Text('완료'),
-          ),
-          ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text('취소', style: TextStyle(color: Colors.white)),
+            child: Text('완료',style: TextStyle(color: Color(0xFF2B3FF0)),),
           ),
         ],
       ),

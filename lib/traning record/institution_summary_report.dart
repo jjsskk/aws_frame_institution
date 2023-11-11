@@ -74,6 +74,9 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Widget buildDropdown(String selectedValue, List<String> items,
       ValueChanged<String?> onChanged) {
     return DropdownButtonFormField(
+      decoration: InputDecoration(
+        border: InputBorder.none, // 이 부분을 추가하여 밑줄을 제거합니다.
+      ),
       value: selectedValue,
       items: items.map((String value) {
         return new DropdownMenuItem(
@@ -224,16 +227,18 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       colorIndex = buttonLabels.keys.toList().indexOf(selectedLabel!);
       graphData = _getGraphData(selectedLabel!, colorIndex);
     }
-    List<Color> selectedGradientColors = [
-      buttomColors[colorIndex],
+    List<Color> selectedGradientColors = [      buttomColors[colorIndex],
       buttomColors[colorIndex].withOpacity(0.8),
     ];
+
 
     return LineChartData(
         lineTouchData: LineTouchData(enabled: true),
         gridData: FlGridData(
-          show: true,
+          show: false,
           drawVerticalLine: true,
+
+
         ),
         titlesData: FlTitlesData(
             show: true,
@@ -254,9 +259,15 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                 // margin: 12,
               ),
             ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false, // 이 부분을 false로 설정하여 상단 x축의 숫자를 숨깁니다.
+              ),
+            ),
+
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false))),
         borderData: FlBorderData(
-            show: true,
+            show: false,
             border: Border.all(color: const Color(0xff37434d), width: 1)),
         minX: 0,
         maxX: (graphData.length - 1).toDouble(),
@@ -270,6 +281,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                 .values
                 .toList(),
             isCurved: true,
+
             gradient: LinearGradient(colors: selectedGradientColors),
             barWidth: 5,
             isStrokeCapRound: true,
@@ -311,7 +323,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       width: MediaQuery.of(context).size.width,
       height: 300,
       child: Padding(
-          padding: EdgeInsets.all(16), child: LineChart(_getLineChartData())),
+          padding: EdgeInsets.all(8), child: LineChart(_getLineChartData())),
     );
   }
   void onSearchPressed() async {
@@ -350,70 +362,73 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Widget _buildButtons() {
     return GridView.count(
       crossAxisCount: 5,
-      // 2행을 만듦
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      // 스크롤을 막음
       padding: EdgeInsets.all(1.0),
-      children: buttonLabels.keys
-          .map((label) => ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(), // 이 부분을 통해서 원형으로 구성하게 됩니다.
+      mainAxisSpacing: 4.0,  // 메인 축 간격 설정
+      crossAxisSpacing: 4.0,  // 교차 축 간격 설정
+      children: buttonLabels.keys.map((label) => ElevatedButton(
 
-                  fixedSize: Size(10.0, 5.0), // 원하는 버튼 width와 height를 설
-                ),
-                onPressed: () {
-                  for (var result in results) {
-                    String? month = result?.month.substring(4, 6);
-                    var value;
-                    switch (label) {
-                      case "avg_att":
-                        value = result?.avg_att;
-                        break;
-                      case "avg_med":
-                        value = result?.avg_med;
-                        break;
-                      case "con_score":
-                        value = result?.con_score;
-                        break;
-                      case "spacetime_score":
-                        value = result?.spacetime_score;
-                        break;
-                      case "exec_score":
-                        value = result?.exec_score;
-                        break;
-                      case "mem_score":
-                        value = result?.mem_score;
-                        break;
-                      case "ling_score":
-                        value = result?.ling_score;
-                        break;
-                      case "cal_score":
-                        value = result?.cal_score;
-                        break;
-                      case "reac_score":
-                        value = result?.reac_score;
-                        break;
-                      case "orient_score":
-                        value = result?.orient_score;
-                        break;
-                      default:
-                        value = null;
-                    }
-                    setState(() {
-                      selectedLabel = label;
-                    });
-                    print("Month: $month, $label: $value");
-                  }
-                },
-                child: Text(
-                  buttonLabels[label]!,
-                  style: TextStyle(fontSize: 13.0, height: 1.3), // 버튼 텍스트 크기 조절
-                ),
-              ))
-          .toList(),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 1),
+          shape: CircleBorder(),
+          fixedSize: Size(10.0, 5.0),
+          primary: selectedLabel == label ? Color(0xFF2B3FF0) : null,  // 선택된 라벨에 따라 색상 변경
+
+        ),
+        onPressed: () {
+          for (var result in results) {
+            String? month = result?.month.substring(4, 6);
+            var value;
+            switch (label) {
+              case "avg_att":
+                value = result?.avg_att;
+                break;
+              case "avg_med":
+                value = result?.avg_med;
+                break;
+              case "con_score":
+                value = result?.con_score;
+                break;
+              case "spacetime_score":
+                value = result?.spacetime_score;
+                break;
+              case "exec_score":
+                value = result?.exec_score;
+                break;
+              case "mem_score":
+                value = result?.mem_score;
+                break;
+              case "ling_score":
+                value = result?.ling_score;
+                break;
+              case "cal_score":
+                value = result?.cal_score;
+                break;
+              case "reac_score":
+                value = result?.reac_score;
+                break;
+              case "orient_score":
+                value = result?.orient_score;
+                break;
+              default:
+                value = null;
+            }
+            setState(() {
+              selectedLabel = label;
+            });
+            print("Month: $month, $label: $value");
+          }
+        },
+        child: Text(
+          buttonLabels[label]!,
+          style: TextStyle(fontSize: 16.0, height: 1.3, fontWeight: FontWeight.w500,color: selectedLabel == label ? Colors.white : Color(0xFF2B3FF0), ),
+
+        ),
+      )).toList(),
     );
   }
+
 
   double numberOfFeatures = 3;
   List<MonthlyBrainSignalTable?> results = []; //넣어 둘 친구
@@ -563,8 +578,26 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
       appBar: AppBar(
-        title: Text('뇌 신호 그래프'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '기관 요약 보고서',
+          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
+        ),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -575,9 +608,10 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                 children: <Widget>[
                   Container(
                     height: 50, // Or any other specific height
+                    padding: EdgeInsets.symmetric(horizontal: 15),
                     child: Row(
                       children: [
-                        Expanded(child: buildDropdown(startYear??'---',years,(value){setState((){startYear=value;});})),
+                        Expanded(child: buildDropdown(startYear??'---',years,(value){setState((){startYear=value;});} )),
                         Expanded(child: buildDropdown(startMonth??'---',months,(value){setState((){startMonth=value;});})),
                         Expanded(child: buildDropdown(endYear??'---',years,(value){setState((){endYear=value;});})),
                         Expanded(child: buildDropdown(endMonth??'---',months,(value){setState((){endMonth=value;});})),
@@ -593,7 +627,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           ),
-                          color: Color(0xff232d37)),
+                          color: Colors.white.withOpacity(0.5)),
                       child: Padding(
                         padding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 10),

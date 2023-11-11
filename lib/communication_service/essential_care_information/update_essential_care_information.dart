@@ -120,7 +120,29 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
     var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('필수 돌봄 정보 수정'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          '이용인 정보 수정',
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
+        ),
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -158,7 +180,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
               })
               : ElevatedButton(
             onPressed: _pickImage,
-            child: Text('이미지 선택'),
+            child: Image.asset(('image/community (14).png')),
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
               minimumSize: Size(150, 150),
@@ -187,7 +209,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
           )
               : ElevatedButton(
             onPressed: _pickImage,
-            child: Text('이미지 선택'),
+            child: Image.asset(('image/community (14).png')),
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
               minimumSize: Size(150, 150),
@@ -196,16 +218,41 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
           ),
           SizedBox(height: 30),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text("이름: "),
-              Text(name),
-            ],
-          ),
-          SizedBox(height: 16),
-          Row(
-            children: [
-              Text("생년월일: "),
-              Text(birth),
+              Row(
+                children: [
+                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Container(
+                    decoration: BoxDecoration(
+                      color:Color(0xFFD3D8EA),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Text(name,style: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
+              Flexible(
+                child: Container(),
+              ),
+              Row(
+                children: [
+                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Container(
+                    decoration: BoxDecoration(
+                      color:Color(0xFFD3D8EA),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                      child: Text(birth,style: TextStyle(fontSize: 15)),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           SizedBox(height: 16),
@@ -249,7 +296,10 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
           ),
           SizedBox(height: 16),
           ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
+
             onPressed: () async {
+
               // TODO: AWS S3에 이미지 업로드
 
 
@@ -279,7 +329,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                 Navigator.pop(context, true);
 
             },
-            child: Text('완료'),
+            child: Text('완료', style: TextStyle(color: Color(0xFF2B3FF0))),
           ),
         ],
       ),

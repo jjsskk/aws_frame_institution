@@ -324,7 +324,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            AnalyzingReportPage()),
+                                            InstitutionSummaryPage()),
                                   );
                                 },
                                 icon: Icon(Icons.accessibility_new_rounded),

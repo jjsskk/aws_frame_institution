@@ -78,7 +78,7 @@ class StorageService {
       final imageFile = File(path);
       final imageKey = '${DateTime.now().millisecondsSinceEpoch}.jpg';
       final options = S3UploadFileOptions(
-          accessLevel: StorageAccessLevel.private);
+          accessLevel: StorageAccessLevel.guest);
 
       await Amplify.Storage.uploadFile(
           local: imageFile, key: imageKey, options: options);
@@ -104,7 +104,7 @@ class StorageService {
     try {
       // 3
       final options = S3UploadFileOptions(
-          accessLevel: StorageAccessLevel.private);
+          accessLevel: StorageAccessLevel.guest);
 
       // 4
       await Amplify.Storage.uploadFile(

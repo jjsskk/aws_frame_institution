@@ -2,7 +2,6 @@ import 'package:aws_frame_institution/communication_service/comment/comment_view
 import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/communication_service/user_activity.dart';
-import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:aws_frame_institution/traning%20record/analyzing_report.dart';
 import 'package:flutter/material.dart';
