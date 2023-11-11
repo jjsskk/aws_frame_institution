@@ -251,9 +251,7 @@ class _HomePageState extends State<HomePage> {
                                 '공지사항',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               )),
-                          const SizedBox(
-                            width: 10,
-                          ),
+
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff1f43f3),
@@ -272,9 +270,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text('기관 소식',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
-                          const SizedBox(
-                            width: 10,
-                          ),
+
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff1f43f3),
@@ -293,9 +289,7 @@ class _HomePageState extends State<HomePage> {
                               child: Text('시간표',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold))),
-                          const SizedBox(
-                            width: 10,
-                          ),
+
                           ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xff1f43f3),
@@ -484,7 +478,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 30),
                           child: Column(
                             children: [
                               Row(
@@ -549,7 +543,7 @@ class _HomePageState extends State<HomePage> {
               child: CircleAvatar(
                 radius: 30,
                 backgroundImage: AssetImage('image/ui (14).png'),
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
               ),
             ),
             floatingActionButtonLocation:

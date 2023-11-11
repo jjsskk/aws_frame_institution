@@ -3010,7 +3010,7 @@ class GraphQLController {
   }
 
   Future<List<MonthlyBrainSignalTable?>> queryMonthlyDBRequiredItem(
-      String id, int yearMonth,
+      String selectedAgeUserId, int yearMonth,
       {String? nextToken}) async {
     try {
       // var ID = '1';
@@ -3052,7 +3052,7 @@ class GraphQLController {
         """,
           variables: {
             "filter": {
-              "id": {"eq": id},
+              "id": {"eq": selectedAgeUserId},
               "month": {
                 "between": [yearMonth.toString(), (yearMonth + 40).toString()]
               },
@@ -3084,7 +3084,7 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var additionalItems = await queryMonthlyDBRequiredItem(id, yearMonth,
+          var additionalItems = await queryMonthlyDBRequiredItem(selectedAgeUserId, yearMonth,
               nextToken: newNextToken);
           monthlyDBTests.addAll(additionalItems);
         }
