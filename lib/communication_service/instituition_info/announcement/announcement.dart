@@ -167,7 +167,7 @@ class AnnouncementDetailPage extends StatefulWidget {
 class _AnnouncementDetailPageState extends State<AnnouncementDetailPage> {
   final gql = GraphQLController.Obj;
 
-  String title = '', content = '', url = '', image = '';
+  String title = '', content = '', url = '', image = 'loading';
 
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
@@ -306,25 +306,28 @@ class _AnnouncementDetailPageState extends State<AnnouncementDetailPage> {
                 SizedBox(height: 16),
                 url != null ? Text(url) : Text(""),
                 SizedBox(height: 16),
-                if (image != null)
-                  if (image!.isNotEmpty)
-                    FutureBuilder<String>(
-                      future: widget.storageService.getImageUrlFromS3(image!),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<String> snapshot) {
-                        if (snapshot.hasData) {
-                          String imageUrl = snapshot.data!;
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                            child: Image.network(imageUrl),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text('이미지를 불러올 수 없습니다.');
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    ),
+
+                image != 'loading'
+                    ? image != ''
+                    ? FutureBuilder<String>(
+                    future: widget.storageService
+                        .getImageUrlFromS3(image),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<String> snapshot) {
+                      if (snapshot.hasData) {
+                        String foodImageUrl = snapshot.data!;
+                        return ClipRRect(
+                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                          child: Image.network(foodImageUrl),
+                        );
+
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('이미지를 불러올 수 없습니다.'));
+                      }
+                      return Center(child: Text(''));
+                    })
+                    : Center(child: Text(''))
+                    : Center(child: CircularProgressIndicator()),
               ],
             ),
           ),

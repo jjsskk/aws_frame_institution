@@ -562,12 +562,20 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
 
   @override
   void initState() {
-    gql = GraphQLController.Obj;
     super.initState();
+    gql = GraphQLController.Obj;
     index = 0;
-    fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchData(startYear!, startMonth!, endYear!, endMonth!, day).then((_) {
+        if (ModalRoute.of(context)!.isCurrent) {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      });
+    });
   }
-
+  bool isLoading = true;
   var brainbutton = '뇌파 데이터 추가';
 
   @override
@@ -599,7 +607,9 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body:  isLoading
+        ? Center(child: CircularProgressIndicator()) :
+      SingleChildScrollView(
         child: Center(
           child: Container(
             color: Colors.white,
