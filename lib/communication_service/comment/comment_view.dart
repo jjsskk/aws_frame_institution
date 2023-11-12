@@ -8,6 +8,7 @@ import 'package:aws_frame_institution/communication_service/comment/Add_comment.
 import 'package:aws_frame_institution/communication_service/comment/Detail_comment.dart';
 import 'package:aws_frame_institution/drawer/drawer.dart';
 import 'package:aws_frame_institution/bottomappbar/globalkey.dart';
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:aws_frame_institution/models/InstitutionCommentBoardTable.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:flutter/material.dart';
@@ -337,8 +338,19 @@ class _CommentViewPageState extends State<CommentViewPage> {
     var appState = context.watch<LoginState>();
     return Scaffold(
       appBar: AppBar(
-        title: Text('코멘트 모아보기', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text(
+          '코멘트 모아보기',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(
@@ -354,218 +366,233 @@ class _CommentViewPageState extends State<CommentViewPage> {
         ],
       ),
       body: (loading_comment || loading_user)
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height / 17,
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage("image/report (20).png"),
-                              // 여기에 배경 이미지 경로를 지정합니다.
-                              fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                            ),
-                          ),
-                          child: Center(
-                            child: DropdownButton<String>(
-                              dropdownColor: Colors.indigoAccent,
-                              icon: Icon(
-                                // Add this
-                                Icons.arrow_drop_down, // Add this
-                                color: Colors.white, // Add this
+          ? LoadingPage()
+          : Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image:
+                      AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
+                  fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+                ),
+              ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height / 17,
+                            width: MediaQuery.of(context).size.width / 2,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("image/report (20).png"),
+                                // 여기에 배경 이미지 경로를 지정합니다.
+                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
                               ),
-                              value: dropdownValueForUser,
-                              onChanged: (String? value) {
-                                if (mounted) {
-                                  setState(() {
-                                    dropdownValueForUser = value!;
-                                    loading_comment = true;
-                                  });
-                                }
-                                selectedName = value!;
-                                _userData.forEach((key, mapValue) {
-                                  if (value == mapValue) {
-                                    late String columnName;
-                                    if (value == '전체') {
-                                      selectedId = '1234'; //institution_id
-                                      selectedName = value!;
-                                      columnName = 'INSTITUTION_ID';
-                                    } else {
-                                      selectedId = key;
-                                      selectedName = value!;
-                                      columnName = 'USER_ID';
-                                    }
-                                    print('userid: ' + selectedId);
-                                    gql
-                                        .listInstitutionCommentBoard(
-                                            columnName,
-                                            selectedId,
-                                            '$current_year',
-                                            current_month < 10
-                                                ? '0${current_month}'
-                                                : '$current_month',
-                                            nextToken: null)
-                                        .then((result) {
-                                      print(result);
-                                      _comments = [];
-                                      _foundComments = [];
-                                      storeAndSort(result);
-                                      setCurrentDate();
-                                      if (mounted) {
-                                        setState(() {
-                                          loading_comment = false;
-                                        });
-                                      }
+                            ),
+                            child: Center(
+                              child: DropdownButton<String>(
+                                dropdownColor: Colors.indigoAccent,
+                                icon: Icon(
+                                  // Add this
+                                  Icons.arrow_drop_down, // Add this
+                                  color: Colors.white, // Add this
+                                ),
+                                value: dropdownValueForUser,
+                                onChanged: (String? value) {
+                                  if (mounted) {
+                                    setState(() {
+                                      dropdownValueForUser = value!;
+                                      loading_comment = true;
                                     });
                                   }
-                                });
-                              },
-                              items: _userData.values
-                                  .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold)),
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 16, 8, 16),
-                              child: Container(
-                                child: TextField(
-                                  controller: _searchController,
-                                  onChanged: (value) => _runFilter(value),
-                                  decoration: InputDecoration(
-                                    hintText: 'Search...',
-                                    // Add a clear button to the search bar
-                                    suffixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.clear,
-                                        color: Colors.transparent,
-                                      ),
-                                      onPressed: () =>
-                                          _searchController.clear(),
-                                    ),
-                                    // Add a search icon or button to the search bar
-                                    prefixIcon: IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        color: Colors.transparent,
-                                      ),
-                                      onPressed: () {
-                                        _runFilter(
-                                            _searchController.text.trim());
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    fit: BoxFit.fitWidth,
-                                    image: AssetImage(
-                                      "image/community (6).png",
-                                    ),
-                                  ),
-                                ),
-                              )),
-                        ),
-                        dropDownDisappear
-                            ? InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    dropDownDisappear = !dropDownDisappear;
+                                  selectedName = value!;
+                                  _userData.forEach((key, mapValue) {
+                                    if (value == mapValue) {
+                                      late String columnName;
+                                      if (value == '전체') {
+                                        selectedId = '1234'; //institution_id
+                                        selectedName = value!;
+                                        columnName = 'INSTITUTION_ID';
+                                      } else {
+                                        selectedId = key;
+                                        selectedName = value!;
+                                        columnName = 'USER_ID';
+                                      }
+                                      print('userid: ' + selectedId);
+                                      gql
+                                          .listInstitutionCommentBoard(
+                                              columnName,
+                                              selectedId,
+                                              '$current_year',
+                                              current_month < 10
+                                                  ? '0${current_month}'
+                                                  : '$current_month',
+                                              nextToken: null)
+                                          .then((result) {
+                                        print(result);
+                                        _comments = [];
+                                        _foundComments = [];
+                                        storeAndSort(result);
+                                        setCurrentDate();
+                                        if (mounted) {
+                                          setState(() {
+                                            loading_comment = false;
+                                          });
+                                        }
+                                      });
+                                    }
                                   });
                                 },
+                                items: _userData.values
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold)),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 16, 8, 16),
                                 child: Container(
-                                  width: MediaQuery.of(context).size.width / 9,
-                                  child: Image.asset('image/community (4).png'),
-                                ),
-                              )
-                            : Container(
-                                height: MediaQuery.of(context).size.height / 21,
-                                width: MediaQuery.of(context).size.width / 5.5,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: AssetImage("image/report (20).png"),
-                                    // 여기에 배경 이미지 경로를 지정합니다.
-                                    fit:
-                                        BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                                  ),
-                                ),
-                                child: Center(
-                                  child: DropdownButton<String>(
-                                    dropdownColor: Colors.indigoAccent,
-                                    icon: Icon(
-                                      // Add this
-                                      Icons.arrow_drop_down, // Add this
-                                      color: Colors.white, // Add this
-                                    ),
-                                    value: dropdownValueForFilter,
-                                    onChanged: (String? value) {
-                                      setState(
-                                        () {
-                                          dropdownValueForFilter = value!;
-                                          dropDownDisappear =
-                                              !dropDownDisappear;
-                                        },
-                                      );
-                                    },
-                                    items: _filterlist
-                                        .map<DropdownMenuItem<String>>(
-                                            (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                                  child: TextField(
+                                    controller: _searchController,
+                                    onChanged: (value) => _runFilter(value),
+                                    decoration: InputDecoration(
+                                      hintText: 'Search...',
+                                      // Add a clear button to the search bar
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.clear,
+                                          color: Colors.transparent,
                                         ),
-                                      );
-                                    }).toList(),
+                                        onPressed: () =>
+                                            _searchController.clear(),
+                                      ),
+                                      // Add a search icon or button to the search bar
+                                      prefixIcon: IconButton(
+                                        icon: Icon(
+                                          Icons.search,
+                                          color: Colors.transparent,
+                                        ),
+                                        onPressed: () {
+                                          _runFilter(
+                                              _searchController.text.trim());
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              )
-                      ],
-                    ),
-                    Expanded(
-                        child: NotificationListener<ScrollNotification>(
-                      onNotification: (ScrollNotification notification) {
-                        /*
-                     스크롤 할때 발생되는 이벤트
-                     해당 함수에서 어느 방향으로 스크롤을 했는지를 판단해
-                     리스트 가장 밑에서 아래서 위로 40프로 이상 스크롤 했을때
-                     서버에서 데이터를 추가로 가져오는 루틴이 포함됨.
-                    */
-                        if (!loading_scroll) scrollNotification(notification);
-                        return false;
-                      },
-                      child: ListView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          // controller: _scrollController,
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.all(16.0),
-                          children: _buildListCards(context)),
-                    )),
-                  ],
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.fitWidth,
+                                      image: AssetImage(
+                                        "image/community (6).png",
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                          ),
+                          dropDownDisappear
+                              ? InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      dropDownDisappear = !dropDownDisappear;
+                                    });
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 9,
+                                    child:
+                                        Image.asset('image/community (4).png'),
+                                  ),
+                                )
+                              : Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 21,
+                                  width:
+                                      MediaQuery.of(context).size.width / 5.5,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image:
+                                          AssetImage("image/report (20).png"),
+                                      // 여기에 배경 이미지 경로를 지정합니다.
+                                      fit: BoxFit
+                                          .fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: DropdownButton<String>(
+                                      dropdownColor: Colors.indigoAccent,
+                                      icon: Icon(
+                                        // Add this
+                                        Icons.arrow_drop_down, // Add this
+                                        color: Colors.white, // Add this
+                                      ),
+                                      value: dropdownValueForFilter,
+                                      onChanged: (String? value) {
+                                        setState(
+                                          () {
+                                            dropdownValueForFilter = value!;
+                                            dropDownDisappear =
+                                                !dropDownDisappear;
+                                          },
+                                        );
+                                      },
+                                      items: _filterlist
+                                          .map<DropdownMenuItem<String>>(
+                                              (String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+                      Expanded(
+                          child: NotificationListener<ScrollNotification>(
+                        onNotification: (ScrollNotification notification) {
+                          /*
+                       스크롤 할때 발생되는 이벤트
+                       해당 함수에서 어느 방향으로 스크롤을 했는지를 판단해
+                       리스트 가장 밑에서 아래서 위로 40프로 이상 스크롤 했을때
+                       서버에서 데이터를 추가로 가져오는 루틴이 포함됨.
+                      */
+                          if (!loading_scroll) scrollNotification(notification);
+                          return false;
+                        },
+                        child: ListView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            // controller: _scrollController,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.all(16.0),
+                            children: _buildListCards(context)),
+                      )),
+                    ],
+                  ),
                 ),
               ),
             ),

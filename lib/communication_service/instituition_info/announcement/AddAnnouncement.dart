@@ -86,7 +86,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(20),
         children: [
           TextField(
             controller: _titleController,

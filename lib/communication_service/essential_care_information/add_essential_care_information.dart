@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:aws_frame_institution/communication_service/essential_care_information/update_essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -130,6 +131,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
           _essentialCare = []; // 데이터가 없는 경우 이미지 URL을 빈 문자열로 설정
         });
       }
+      setState(() {
+        loading =false;
+      });
     }).catchError((error) {
       setState(() {
         _essentialCare = []; // 에러 발생 시 이미지 URL을 빈 문자열로 설정
@@ -137,6 +141,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
       print("Error fetching data: $error");
     });
   }
+  bool loading = true;
 
   void initState() {
     super.initState();
@@ -206,15 +211,33 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
           ),
         ),
       ),
-      body: ListView(
+      body: loading? LoadingPage():ListView(
         padding: EdgeInsets.all(16),
         children: [
           nameList.isNotEmpty
-              ? CustomDropDown(
-                  Items: nameList,
-                  selected: name,
-                  onChanged: _NameSelected,
-                )
+              ? Row(
+                children: [
+                  Container(
+            height: MediaQuery.of(context).size.height / 23,
+            width: MediaQuery.of(context).size.width / 2.1,
+            decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    image: AssetImage("image/report (20).png"),
+                    // 여기에 배경 이미지 경로를 지정합니다.
+                    fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                  ),
+            ),
+                    child: Center(
+                      child: CustomDropDown(
+                          Items: nameList,
+                          selected: name,
+                          onChanged: _NameSelected,
+                        ),
+                    ),
+                  ),
+                ],
+              )
               : Container(),
           SizedBox(height: 30),
           _image != null
@@ -324,12 +347,18 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
           ),
           SizedBox(height: 16),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              ElevatedButton(
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
 
-                onPressed: () async {
-                  if(nameList.isEmpty){
+
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff1f43f3),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      )),
+                  onPressed: () async {
+                    if(nameList.isEmpty){
 
                       showDialog(
                         context: context,
@@ -349,39 +378,40 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                         },
                       );
 
-                  }
-                  // TODO: AWS S3에 이미지 업로드
-                  if (_formKey.currentState!.validate()) {
-                    String imageUrl = "";
-
-                    if (isImageSelected == true) {
-                      imageUrl = await uploadImageToS3(_image);
                     }
+                    // TODO: AWS S3에 이미지 업로드
+                    if (_formKey.currentState!.validate()) {
+                      String imageUrl = "";
 
-                    if(await gql.createEssentialCare(
-                        birth,
-                        essentialName,
-                        imageUrl,
-                        _phoneNumberController.text,
-                        imageUrl,
-                        // 그냥 일단 institution으로 이미지를 보낼거임
-                        "INST_ID_123",
-                        _medicationController.text,
-                        _medicationWayController.text,
-                        "${dt}"
-                    )){
-                      ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
-                        SnackBar(content: Text('필수돌봄정보가 생성되었습니다.')),
-                      );
+                      if (isImageSelected == true) {
+                        imageUrl = await uploadImageToS3(_image);
+                      }
+
+                      if(await gql.createEssentialCare(
+                          birth,
+                          essentialName,
+                          imageUrl,
+                          _phoneNumberController.text,
+                          imageUrl,
+                          // 그냥 일단 institution으로 이미지를 보낼거임
+                          "INST_ID_123",
+                          _medicationController.text,
+                          _medicationWayController.text,
+                          "${dt}"
+                      )){
+                        ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                          SnackBar(content: Text('필수돌봄정보가 생성되었습니다.')),
+                        );
+                      }
+
+                      print(_phoneNumberController.text);
+
+                      Navigator.pop(context, true);
                     }
-
-                    print(_phoneNumberController.text);
-
-                    Navigator.pop(context, true);
-                  }
-                },
-                child: Text('완료', style: TextStyle(color: Color(0xFF2B3FF0))),
-              ),
+                  },
+                  child: Text('완료',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold)))
             ],
           ),
         ],

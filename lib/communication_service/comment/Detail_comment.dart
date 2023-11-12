@@ -4,6 +4,7 @@ import 'package:amplify_core/amplify_core.dart';
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/comment/Edit_comment.dart';
 import 'package:aws_frame_institution/communication_service/comment/new_message.dart';
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -155,6 +156,14 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
         title: Text('코멘트 상세보기',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(
@@ -239,143 +248,151 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
         ],
       ),
       body: (loading_comment || loading_conversation)
-          ? Center(child: CircularProgressIndicator())
+          ? LoadingPage()
           : GestureDetector(
               onTap: () {
                 FocusScope.of(context).unfocus();
               },
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          Container(
-                            constraints: BoxConstraints(
-                              maxHeight: double
-                                  .infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
-                            ),
-                            // height: MediaQuery.of(context).size.height / 10,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("image/ui (9).png"),
-                                // 여기에 배경 이미지 경로를 지정합니다.
-                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
+                    fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(
+                                maxHeight: double
+                                    .infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+                              ),
+                              // height: MediaQuery.of(context).size.height / 10,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("image/ui (9).png"),
+                                  // 여기에 배경 이미지 경로를 지정합니다.
+                                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 20.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          child: Icon(
+                                            Icons.person,
+                                            color: Colors.black,
+                                          ),
+                                          height: 35,
+                                          width: 35,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(50),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text('$user 훈련자님의 보호자님에게',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Divider(
+                                                thickness: 2.0,
+                                              ),
+                                              Text(date),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        child: Icon(
-                                          Icons.person,
-                                          color: Colors.black,
-                                        ),
-                                        height: 35,
-                                        width: 35,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(50),
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Container(
+                              constraints: BoxConstraints(
+                                minHeight: MediaQuery.of(context).size.height / 3,
+                                maxHeight: double.infinity,
+                              ),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage("image/community (7).png"),
+                                  // 여기에 배경 이미지 경로를 지정합니다.
+                                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                ),
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: SingleChildScrollView(
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
-                                          children: [
-                                            Text('$user 훈련자님의 보호자님에게',
+                                          children: <Widget>[
+                                            Text(commentTitle,
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold)),
+                                                    fontSize: 25,
+                                                    fontWeight: FontWeight.bold)),
                                             Divider(
                                               thickness: 2.0,
                                             ),
-                                            Text(date),
+                                            Text(commentContent,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),
+                                            const SizedBox(
+                                              height: 10,
+                                            )
                                           ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          Container(
-                            constraints: BoxConstraints(
-                              minHeight: MediaQuery.of(context).size.height / 3,
-                              maxHeight: double.infinity,
-                            ),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage("image/community (7).png"),
-                                // 여기에 배경 이미지 경로를 지정합니다.
-                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                              ),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(commentTitle,
-                                              style: TextStyle(
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.bold)),
-                                          Divider(
-                                            thickness: 2.0,
-                                          ),
-                                          Text(commentContent,
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold)),
-                                          const SizedBox(
-                                            height: 10,
-                                          )
-                                        ],
-                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          Divider(
-                            thickness: 2.0,
-                          ),
-                          Column(
-                            children: _buildListCards(),
-                          )
-                        ],
+                            Divider(
+                              thickness: 2.0,
+                            ),
+                            Column(
+                              children: _buildListCards(),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    NewMessage(
-                      user_id: widget.user_id,
-                      board_id: widget.board_id,
-                      writer: gql.managerName,
-                      email: gql.managerEmail,
-                    ),
-                  ],
+                      NewMessage(
+                        user_id: widget.user_id,
+                        board_id: widget.board_id,
+                        writer: gql.managerName,
+                        email: gql.managerEmail,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

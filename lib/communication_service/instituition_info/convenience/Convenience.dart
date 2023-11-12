@@ -393,12 +393,18 @@ class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-      style: TextStyle(color: Colors.black),
+      dropdownColor: Colors.indigoAccent,
+
+      icon: Icon(
+        // Add this
+        Icons.arrow_drop_down, // Add this
+        color: Colors.white, // Add this
+      ),
       value: selectedValue,
       items: [
         for (final date in widget.Items)
           DropdownMenuItem(
-            child: Text(date),
+            child: Text(date,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
             value: date,
           ),
       ],

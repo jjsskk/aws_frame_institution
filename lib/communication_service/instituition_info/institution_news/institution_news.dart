@@ -1,4 +1,5 @@
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_news/updateInstitutionNews.dart';
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:aws_frame_institution/models/InstitutionNewsTable.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +69,7 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
           future: _news,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
+              return LoadingPage();
             }
 
             if (snapshot.hasData) {

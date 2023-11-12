@@ -71,6 +71,8 @@ dev_dependencies:
   flutter_time_picker_spinner: ^2.0.0
   textfield_tags: ^2.0.2
   ntp: ^2.0.0
+  flutter_spinkit: ^5.1.0
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
