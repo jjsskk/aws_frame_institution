@@ -1,6 +1,7 @@
 import 'package:aws_frame_institution/communication_service/instituition_info/announcement/updateAnnouncement.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../GraphQL_Method/graphql_controller.dart';
 import '../../../models/InstitutionAnnouncementTable.dart';
@@ -314,6 +315,10 @@ class _AnnouncementDetailPageState extends State<AnnouncementDetailPage> {
                         .getImageUrlFromS3(image),
                     builder: (BuildContext context,
                         AsyncSnapshot<String> snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        return const Center(child: CircularProgressIndicator(),);
+
                       if (snapshot.hasData) {
                         String foodImageUrl = snapshot.data!;
                         return ClipRRect(

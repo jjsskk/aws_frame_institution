@@ -298,6 +298,9 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                         .getImageUrlFromS3(image),
                     builder: (BuildContext context,
                         AsyncSnapshot<String> snapshot) {
+
+                      if(snapshot.connectionState == ConnectionState.waiting)
+                        return const Center(child: CircularProgressIndicator(),);
                       if (snapshot.hasData) {
                         String foodImageUrl = snapshot.data!;
                         return ClipRRect(
