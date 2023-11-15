@@ -123,8 +123,8 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
 
   // 버튼의 각 라벨들을 매핑해주는 것들입니다. 왼쪽에 있는 것은 db를 통해서 불러온 값이고 오른쪽이 보여주고자 하는 값입니다.
   Map<String, String> buttonLabels = {
-    "avg_att": "평균\n집중도",
-    "avg_med": "평균\n안정감",
+    "avg_att": "집중도",
+    "avg_med": "안정감",
     "con_score": "주의력",
     "spacetime_score": "시공간",
     "exec_score": "집행기능",
@@ -230,18 +230,16 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       colorIndex = buttonLabels.keys.toList().indexOf(selectedLabel!);
       graphData = _getGraphData(selectedLabel!, colorIndex);
     }
-    List<Color> selectedGradientColors = [      buttomColors[colorIndex],
+    List<Color> selectedGradientColors = [
+      buttomColors[colorIndex],
       buttomColors[colorIndex].withOpacity(0.8),
     ];
-
 
     return LineChartData(
         lineTouchData: LineTouchData(enabled: true),
         gridData: FlGridData(
           show: false,
           drawVerticalLine: true,
-
-
         ),
         titlesData: FlTitlesData(
             show: true,
@@ -267,7 +265,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                 showTitles: false, // 이 부분을 false로 설정하여 상단 x축의 숫자를 숨깁니다.
               ),
             ),
-
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false))),
         borderData: FlBorderData(
             show: false,
@@ -284,7 +281,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
                 .values
                 .toList(),
             isCurved: true,
-
             gradient: LinearGradient(colors: selectedGradientColors),
             barWidth: 5,
             isStrokeCapRound: true,
@@ -307,26 +303,13 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   //buttonColors를 통해 그래프의 색을 정하고, leftTitleWidgets를 통해 Y축을 정하고 bottomTitleWidgets으로 x축의 값을 정해 그리게 됩니다.
 
   Widget _buildLineChart() {
-    List<double> graphData = [];
-    if (selectedLabel != null) {
-      graphData = _getGraphData(
-          selectedLabel!, buttonLabels.keys.toList().indexOf(selectedLabel!));
-      if (graphData.isNotEmpty) {
-        var maxValue = graphData.reduce((a, b) => a > b ? a : b);
-        var minValue = graphData.reduce((a, b) => a < b ? a : b);
-        var sumValue = graphData.reduce((a, b) => a + b).toDouble();
-        var avgValue = sumValue / graphData.length;
-        print('최고 점수: $maxValue');
-        print('최소 점수: $minValue');
-        print('평균 점수: $avgValue');
-      }
-    }
-
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 300,
       child: Padding(
-          padding: EdgeInsets.all(8), child: LineChart(_getLineChartData())),
+        padding: EdgeInsets.all(8),
+        child: LineChart(_getLineChartData()),
+      ),
     );
   }
   void onSearchPressed() async {
@@ -357,7 +340,41 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     // }
     fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
   }
+  Map<String, String> nameDeepPng = {};
+  Map<String, String> nameLightPng = {};
 
+  void makeButtonNameList() {
+    // "avg_att": "평균\n집중도",
+    // "avg_med": "평균\n안정감",
+    // "con_score": "주의력",
+    // "spacetime_score": "시공간",
+    // "exec_score": "집행기능",
+    // "mem_score": "기억력",
+    // "ling_score": "언어기능",
+    // "cal_score": "계산력",
+    // "reac_score": "반응속도",
+    // "orient_score": "지남력",
+    nameDeepPng['avg_att'] = 'image/report (23).png';
+    nameDeepPng['avg_med'] = 'image/report (10).png';
+    nameDeepPng['con_score'] = 'image/report (27).png';
+    nameDeepPng['spacetime_score'] = 'image/report (28).png';
+    nameDeepPng['exec_score'] = 'image/report (29).png';
+    nameDeepPng['mem_score'] = 'image/report (30).png';
+    nameDeepPng['ling_score'] = 'image/report (31).png';
+    nameDeepPng['cal_score'] = 'image/report (32).png';
+    nameDeepPng['reac_score'] = 'image/report (33).png';
+    nameDeepPng['orient_score'] = 'image/report (26).png';
+    nameLightPng['avg_att'] = 'image/report (13).png';
+    nameLightPng['avg_med'] = 'image/report (14).png';
+    nameLightPng['con_score'] = 'image/report (35).png';
+    nameLightPng['spacetime_score'] = 'image/report (36).png';
+    nameLightPng['exec_score'] = 'image/report (37).png';
+    nameLightPng['mem_score'] = 'image/report (38).png';
+    nameLightPng['ling_score'] = 'image/report (39).png';
+    nameLightPng['cal_score'] = 'image/report (40).png';
+    nameLightPng['reac_score'] = 'image/report (41).png';
+    nameLightPng['orient_score'] = 'image/report (34).png';
+  }
 
   //그래프 위에 버튼을 구성하는 위젯입니다.
   //그리드를 통해 버튼을 2행으로 구성해서 총 10개를 보여주게 됩니다. 그래서 1행당 5개의 버튼이 존재하게 됩니다.
@@ -368,67 +385,159 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(1.0),
-      mainAxisSpacing: 4.0,  // 메인 축 간격 설정
-      crossAxisSpacing: 4.0,  // 교차 축 간격 설정
-      children: buttonLabels.keys.map((label) => ElevatedButton(
+      mainAxisSpacing: 30,
+      // 메인 축 간격 설정
+      crossAxisSpacing: 4.0,
+      childAspectRatio: 0.7,
+      // 가로 세로 비율 조절
+      // 교차 축 간격 설정
+      children: buttonLabels.keys
+          .map((label) => Column(
+        children: [
+          Container(
+            height: 60,
+            width: 60,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(selectedLabel == label
+                    ? nameDeepPng[label]!
+                    : nameLightPng[label]!), // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: InkWell(
+                onTap: () {
+                  for (var result in results) {
+                    String? month = result?.month.substring(4, 6);
+                    var value;
+                    switch (label) {
+                      case "avg_att":
+                        value = result?.avg_att;
+                        break;
+                      case "avg_med":
+                        value = result?.avg_med;
+                        break;
+                      case "con_score":
+                        value = result?.con_score;
+                        break;
+                      case "spacetime_score":
+                        value = result?.spacetime_score;
+                        break;
+                      case "exec_score":
+                        value = result?.exec_score;
+                        break;
+                      case "mem_score":
+                        value = result?.mem_score;
+                        break;
+                      case "ling_score":
+                        value = result?.ling_score;
+                        break;
+                      case "cal_score":
+                        value = result?.cal_score;
+                        break;
+                      case "reac_score":
+                        value = result?.reac_score;
+                        break;
+                      case "orient_score":
+                        value = result?.orient_score;
+                        break;
+                      default:
+                        value = null;
+                    }
+                    setState(() {
+                      selectedLabel = label;
+                    });
+                    print("Month: $month, $label: $value");
+                  }
+                },
+                child: Image.asset(selectedLabel == label
+                    ? nameDeepPng[label]!
+                    : nameLightPng[label]!)),
 
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 1),
-          shape: CircleBorder(),
-          fixedSize: Size(10.0, 5.0),
-          primary: selectedLabel == label ? Color(0xFF2B3FF0) : null,  // 선택된 라벨에 따라 색상 변경
-
-        ),
-        onPressed: () {
-          for (var result in results) {
-            String? month = result?.month.substring(4, 6);
-            var value;
-            switch (label) {
-              case "avg_att":
-                value = result?.avg_att;
-                break;
-              case "avg_med":
-                value = result?.avg_med;
-                break;
-              case "con_score":
-                value = result?.con_score;
-                break;
-              case "spacetime_score":
-                value = result?.spacetime_score;
-                break;
-              case "exec_score":
-                value = result?.exec_score;
-                break;
-              case "mem_score":
-                value = result?.mem_score;
-                break;
-              case "ling_score":
-                value = result?.ling_score;
-                break;
-              case "cal_score":
-                value = result?.cal_score;
-                break;
-              case "reac_score":
-                value = result?.reac_score;
-                break;
-              case "orient_score":
-                value = result?.orient_score;
-                break;
-              default:
-                value = null;
-            }
-            setState(() {
-              selectedLabel = label;
-            });
-            print("Month: $month, $label: $value");
-          }
-        },
-        child: Text(
-          buttonLabels[label]!,
-          style: TextStyle(fontSize: 16.0, height: 1.3, fontWeight: FontWeight.w500,color: selectedLabel == label ? Colors.white : Color(0xFF2B3FF0), ),
-
-        ),
-      )).toList(),
+            // ElevatedButton(
+            //   style: ElevatedButton.styleFrom(
+            //     padding: EdgeInsets.symmetric(horizontal: 1),
+            //     shape: CircleBorder(),
+            //     fixedSize: Size(10.0, 5.0),
+            //     // primary: selectedLabel == label
+            //     //     ? Color(0xFF2B3FF0)
+            //     //     : null, // 선택된 라벨에 따라 색상 변경
+            //     backgroundColor: Colors.transparent
+            //   ),
+            //   onPressed: () {
+            //     for (var result in results) {
+            //       String? month = result?.month.substring(4, 6);
+            //       var value;
+            //       switch (label) {
+            //         case "avg_att":
+            //           value = result?.avg_att;
+            //           break;
+            //         case "avg_med":
+            //           value = result?.avg_med;
+            //           break;
+            //         case "con_score":
+            //           value = result?.con_score;
+            //           break;
+            //         case "spacetime_score":
+            //           value = result?.spacetime_score;
+            //           break;
+            //         case "exec_score":
+            //           value = result?.exec_score;
+            //           break;
+            //         case "mem_score":
+            //           value = result?.mem_score;
+            //           break;
+            //         case "ling_score":
+            //           value = result?.ling_score;
+            //           break;
+            //         case "cal_score":
+            //           value = result?.cal_score;
+            //           break;
+            //         case "reac_score":
+            //           value = result?.reac_score;
+            //           break;
+            //         case "orient_score":
+            //           value = result?.orient_score;
+            //           break;
+            //         default:
+            //           value = null;
+            //       }
+            //       setState(() {
+            //         selectedLabel = label;
+            //       });
+            //       print("Month: $month, $label: $value");
+            //     }
+            //   },
+            //   child: Text(
+            //     buttonLabels[label]!,
+            //     style: TextStyle(
+            //       fontSize: 16.0,
+            //       height: 1.3,
+            //       fontWeight: FontWeight.w500,
+            //       color: selectedLabel == label
+            //           ? Colors.white
+            //           : Color(0xFF2B3FF0),
+            //     ),
+            //   ),
+            // ),
+          ),
+          Expanded(
+            child: Text(
+              buttonLabels[label]!,
+              style: TextStyle(
+                  fontSize: 16.0,
+                  height: 1.3,
+                  fontWeight: FontWeight.w500,
+                  color: selectedLabel == label
+                      ? Colors.black
+                      : Colors.grey
+                // : Color(0xFF2B3FF0),
+              ),
+            ),
+          ),
+        ],
+      ))
+          .toList(),
     );
   }
 
@@ -475,7 +584,8 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
             print("null");
           }
         }
-
+        makeButtonNameList();
+        selectedLabel = "avg_att";
         setState(() {
           for (var i in data) {
             results.add(i);
@@ -626,69 +736,133 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      height: 50, // Or any other specific height
-                      padding: EdgeInsets.symmetric(horizontal: 15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: CustomDropDown(
-                              selected: startYear ?? '---',
-                              items: years,
-                              onChanged: (value) {
-                                setState(() {
-                                  startYear = value;
-                                });
-                              },
+                  Container(
+                  height: 50, // Or any other specific height
+                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height / 30,
+                        width: MediaQuery.of(context).size.width / 5,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage("image/report (20).png"),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Center(
+                          child: CustomDropDown(
+                            selected: startYear ?? '---',
+                            items: years,
+                            onChanged: (value) {
+                              setState(() {
+                                startYear = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 2),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 30,
+                        width: MediaQuery.of(context).size.width / 7,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage("image/report (20).png"),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Center(
+                          child: CustomDropDown(
+                            selected: startMonth ?? '---',
+                            items: months,
+                            onChanged: (value) {
+                              setState(() {
+                                startMonth = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 5),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 30,
+                        width: MediaQuery.of(context).size.width /5,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage("image/report (20).png"),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Center(
+                          child: CustomDropDown(
+                            selected: endYear ?? '---',
+                            items: years,
+                            onChanged: (value) {
+                              setState(() {
+                                endYear = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 2),
+                      Container(
+                        height: MediaQuery.of(context).size.height / 30,
+                        width: MediaQuery.of(context).size.width / 7,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage("image/report (20).png"),
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        child: Center(
+                          child: CustomDropDown(
+                            selected: endMonth ?? '---',
+                            items: months,
+                            onChanged: (value) {
+                              setState(() {
+                                endMonth = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: EdgeInsets.all(2.0), // 원하는 패딩값으로 변경 가능
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(width: 70, height: 35),
+                          child: ElevatedButton(
+
+                            onPressed: onSearchPressed,
+                            child: Text(
+                              '검색',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff1f43f3)
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                              padding: EdgeInsets.zero,
                             ),
                           ),
-                          SizedBox(width: 5),
-                          Expanded(
-                            child: CustomDropDown(
-                              selected: startMonth ?? '---',
-                              items: months,
-                              onChanged: (value) {
-                                setState(() {
-                                  startMonth = value;
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: CustomDropDown(
-                              selected: endYear ?? '---',
-                              items: years,
-                              onChanged: (value) {
-                                setState(() {
-                                  endYear = value;
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          Expanded(
-                            child: CustomDropDown(
-                              selected: endMonth ?? '---',
-                              items: months,
-                              onChanged: (value) {
-                                setState(() {
-                                  endMonth = value;
-                                });
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          ElevatedButton(onPressed: onSearchPressed, child: Text('검색',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white), ),style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xff1f43f3),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                              )),),
-                        ],
+                        ),
                       )
 
-                    ),
-                    _buildButtons(),
+                    ],
+                  )
+              ),
+
+                _buildButtons(),
                     AspectRatio(
                       aspectRatio: 6 / 5,
                       child: Container(
@@ -741,12 +915,13 @@ class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-      dropdownColor: Colors.indigoAccent,
+
       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       icon: Icon(
         Icons.arrow_drop_down,
         color: Colors.white,
       ),
+      dropdownColor: Colors.indigoAccent,
       value: selectedValue,
       items: widget.items.map((String value) {
         return DropdownMenuItem(
