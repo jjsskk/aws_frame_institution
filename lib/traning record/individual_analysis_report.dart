@@ -780,7 +780,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
   Future<void> fetchData() async {
     try {
-      final userName = await gql.queryListUsers(institutionId: "123");
+      final userName = await gql.queryListUsers(institutionId: "1234");
       {
         List<String> tempNameList = [];
         for (var data in userName) {
