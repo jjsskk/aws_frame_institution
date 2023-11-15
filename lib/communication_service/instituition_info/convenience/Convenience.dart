@@ -118,19 +118,19 @@ class _ConveniencePageState extends State<ConveniencePage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 26),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           '식단정보',
-                          style: Theme.of(context).textTheme.headline5,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.create),
+                              icon: const Icon(Icons.create, size: 20),
                               color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 var result = await Navigator.push(
@@ -151,7 +151,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                               },
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete),
+                              icon: const Icon(Icons.delete, size: 20),
                               color: Color(0xFF2B3FF0),
                               onPressed: () async {
                                 // Show confirmation dialog
@@ -201,19 +201,36 @@ class _ConveniencePageState extends State<ConveniencePage> {
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: CustomDropDown(
-                            Items: dateItems,
-                            selected: date,
-                            onChanged: _onDateSelected,
+
+                     Padding(
+                       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                       child: Row(
+                        children: [
+                          Container(
+                            height: MediaQuery.of(context).size.height / 25,
+                            width: MediaQuery.of(context).size.width / 3.8,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                image: AssetImage("image/report (20).png"),
+                                // 여기에 배경 이미지 경로를 지정합니다.
+                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                              ),
+                            ),
+                            child: Center(
+                              child: CustomDropDown(
+                                Items: dateItems,
+                                selected: date,
+                                onChanged: _onDateSelected,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+
+                  ),
+                     ),
+                  SizedBox(
+                    height: 10,
                   ),
 
                   FOOD_IMAGE_URL != 'loading'
@@ -225,9 +242,13 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                   AsyncSnapshot<String> snapshot) {
                                 if (snapshot.hasData) {
                                   String foodImageUrl = snapshot.data!;
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                                    child: Image.network(foodImageUrl),
+                                  return Container(
+                                    width: 350,
+
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                      child: Image.network(foodImageUrl, fit: BoxFit.contain,),
+                                    ),
                                   );
 
                                 } else if (snapshot.hasError) {
@@ -252,15 +273,18 @@ class _ConveniencePageState extends State<ConveniencePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '셔틀시간표',
-                              style: Theme.of(context).textTheme.headline5,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              child: Text(
+                                '셔틀시간표',
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.create),
+                                  icon: const Icon(Icons.create, size: 20),
                                   color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     var result = await Navigator.push(
@@ -280,7 +304,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                   }, // 기능 구현
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete, size: 20,),
                                   color: Color(0xFF2B3FF0),
                                   onPressed: () async {
                                     // Show confirmation dialog
@@ -340,9 +364,12 @@ class _ConveniencePageState extends State<ConveniencePage> {
                                         AsyncSnapshot<String> snapshot) {
                                       if (snapshot.hasData) {
                                         String imageUrl = snapshot.data!;
-                                        return ClipRRect(
-                                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                                          child: Image.network(imageUrl),
+                                        return Container(
+                                          width: 350,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                            child: Image.network(imageUrl),
+                                          ),
                                         );
                                       } else if (snapshot.hasError) {
                                         return Text('이미지를 불러올 수 없습니다.');

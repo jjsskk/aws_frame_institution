@@ -17,6 +17,12 @@
       },
       "storage": {
         "s3awsamplifyinstitutionstorage1b2ce37e": {}
+      },
+      "function": {
+        "S3Trigger2b10c86b": {
+          "deploymentBucketName": "amplify-awsamplifyinstitutio-staging-92050-deployment",
+          "s3Key": "amplify-builds/S3Trigger2b10c86b-646a4e716d374c42756e-build.zip"
+        }
       }
     }
   }

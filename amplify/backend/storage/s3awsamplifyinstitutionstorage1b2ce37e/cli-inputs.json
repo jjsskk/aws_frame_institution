@@ -2,11 +2,14 @@
   "resourceName": "s3awsamplifyinstitutionstorage1b2ce37e",
   "bucketName": "awsamplifyinstitutionstorage1b2ce37e",
   "policyUUID": "91d964be",
-  "storageAccess": "auth",
-  "guestAccess": [],
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
   "authAccess": [
     "CREATE_AND_UPDATE",
     "READ",
     "DELETE"
-  ]
+  ],
+  "triggerFunction": "S3Trigger2b10c86b"
 }
