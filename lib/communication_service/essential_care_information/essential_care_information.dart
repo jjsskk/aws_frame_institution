@@ -68,7 +68,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
         for (var care in value) {
           if (care.NAME != null) {
             // NAME이 null이 아닌 경우에만 추가
-            String tempName = "${care.NAME!}";
+            String tempName = "${care.NAME!} (${care.BIRTH!})";
             tempNameList.add(tempName);
           }
         }
@@ -227,9 +227,10 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           nameList.isNotEmpty
               ? Row(
                 children: [
+
                   Container(
             height: MediaQuery.of(context).size.height / 23,
-            width: MediaQuery.of(context).size.width / 3.5,
+            width: MediaQuery.of(context).size.width / 2.1,
             decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
@@ -249,6 +250,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                 ],
               )
               : Container(),
+          SizedBox(height: 10,),
           imageUrl != ""
               ? FutureBuilder<String>(
               future: storageService.getImageUrlFromS3(imageUrl),
@@ -256,17 +258,34 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                   (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.hasData) {
                   String careImageUrl = snapshot.data!;
-                  return Container(
-                    width: 150,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        fit: BoxFit.contain,
-                        image: NetworkImage(careImageUrl),
-                      ),
+                  return
+                  Center(
+
+                      child: ClipOval(
+                        child: Container(
+                          width: 200, // 원하는 폭
+                          height: 200, // 원하는 높이. 폭과 높이를 동일하게 설정해야 원형이 됩니다.
+                          child: FittedBox(
+                            child: Image.network(
+                              careImageUrl,
+                            ),
+                            fit: BoxFit.cover, // 이미지가 Container 안에 맞게 조절됩니다.
+                          ),
+                        ),
+
+
                     ),
                   );
+
+
+
+
+
+
+
+
+
+
                 } else if (snapshot.hasError) {
                   return Text('이미지를 불러올 수 없습니다.');
                 }

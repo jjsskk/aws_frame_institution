@@ -158,17 +158,22 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
                   return ElevatedButton(
                     onPressed: _pickImage,
                     child: ClipOval(
-                      child: SizedBox(
-                        width: 150,
-                        height: 150,
-                        child: Image.network(
-                          careImageUrl,
+                      child: Container(
+                        width: 200, // 원하는 폭
+                        height: 200, // 원하는 높이. 폭과 높이를 동일하게 설정해야 원형이 됩니다.
+                        child: FittedBox(
+                          child: Image.network(
+                            careImageUrl,
+                          ),
+                          fit:
+                          BoxFit.cover, // 이미지가 Container 안에 맞게 조절됩니다.
                         ),
                       ),
                     ),
+
                     style: ElevatedButton.styleFrom(
-                      minimumSize: Size(150, 150),
-                      maximumSize: Size(150, 150),
+                      minimumSize: Size(200, 200),
+                      maximumSize: Size(200, 200),
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(0),
                     ),
@@ -192,8 +197,8 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
             onPressed: _pickImage,
             child: ClipOval(
               child: SizedBox(
-                width: 150,
-                height: 150,
+                width: 200,
+                height: 200,
                 child: Image.file(
                   _image!,
                   fit: BoxFit.cover,
@@ -201,8 +206,8 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
               ),
             ),
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(150, 150),
-              maximumSize: Size(150, 150),
+              minimumSize: Size(200, 200),
+              maximumSize: Size(200, 200),
               shape: CircleBorder(),
               padding: EdgeInsets.all(0),
             ),

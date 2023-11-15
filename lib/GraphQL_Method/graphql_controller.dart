@@ -2053,6 +2053,7 @@ class GraphQLController {
               institutionId: institutionId, nextToken: newNextToken);
           Users.addAll(nextUsers);
         }
+        print(Users);
 
         return Users;
       }

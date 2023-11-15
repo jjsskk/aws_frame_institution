@@ -82,8 +82,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
-    await gql.queryListUsers(institutionId: "123").then((value) {
+    await gql.queryListUsers(institutionId: "1234").then((value) {
       if (value != null) {
+
         List<String> tempNameList = [];
         for (var care in value) {
           if (care.NAME != null) {
@@ -96,7 +97,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
         setState(() {
           _essentialCare = value;
           for(var i in widget.nameList){
+            int idx = tempNameList.indexOf(i);
             tempNameList.remove(i);
+            _essentialCare.removeAt(idx);
           }
           nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
 
@@ -128,6 +131,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
         });
       } else {
         setState(() {
+          print('object');
           _essentialCare = []; // 데이터가 없는 경우 이미지 URL을 빈 문자열로 설정
         });
       }
@@ -155,10 +159,13 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   void _NameSelected(String selectedName) {
     setState(() {
       print(nameList);
-      name = selectedName;
+      // name = selectedName;
       index = nameList.indexOf(selectedName);
       print(name);
       if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
+        _essentialCare[index].NAME != null
+            ? essentialName = _essentialCare[index].NAME!
+            : "";
         _essentialCare[index].BIRTH != null
             ? birth = _essentialCare[index].BIRTH!
             : "";
@@ -245,8 +252,8 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
             onPressed: _pickImage,
             child: ClipOval(
               child: SizedBox(
-                width: 150,
-                height: 150,
+                width: 200,
+                height: 200,
                 child: Image.file(
                   _image!,
                   fit: BoxFit.cover,
@@ -254,8 +261,8 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
               ),
             ),
             style: ElevatedButton.styleFrom(
-              minimumSize: Size(150, 150),
-              maximumSize: Size(150, 150),
+              minimumSize: Size(200, 200),
+              maximumSize: Size(200, 200),
               shape: CircleBorder(),
               padding: EdgeInsets.all(0),
             ),
