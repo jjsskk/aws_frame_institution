@@ -32,7 +32,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     if (mounted) {
       // 해당 State 객체가 현재 트리에 마운트되어 있는지 확인
       setState(() {
-        _announcements = getAnnouncements(gql._institutionNumber);
+        _announcements = getAnnouncements(gql.institutionNumber);
       });
     }
   }
@@ -49,7 +49,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
     super.initState();
 
     // 초기 데이터 로딩
-    _announcements = getAnnouncements(gql._institutionNumber);
+    _announcements = getAnnouncements(gql.institutionNumber);
 
     // Provider 구독 설정
     announcementProvider = Provider.of<LoginState>(context, listen: false);

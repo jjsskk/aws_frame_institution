@@ -154,7 +154,7 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
               var result = await gql.createFood(
                   date,
                   imageUrl,
-                gql._institutionNumber,
+                gql.institutionNumber,
               );
 
               if(result == true){

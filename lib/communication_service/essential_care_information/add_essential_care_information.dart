@@ -58,6 +58,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   File? _image;
   String institutionId = "";
   String institution = '';
+  String userId = '';
   final ImagePicker _picker = ImagePicker();
     Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -82,7 +83,8 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
-    await gql.queryListUsers(institutionId: gql._institutionNumber).then((value) {
+      print(gql.institutionNumber);
+    await gql.queryListUsers().then((value) {
       if (value != null) {
 
         List<String> tempNameList = [];
@@ -125,6 +127,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                 ? _essentialCare[index].INSTITUTION_ID!
                 : "";
             institution = _essentialCare[index].INSTITUTION != null
+                ? _essentialCare[index].INSTITUTION!
+                : "";
+            userId = _essentialCare[index].ID != null
                 ? _essentialCare[index].INSTITUTION!
                 : "";
           }
@@ -401,10 +406,10 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                           _phoneNumberController.text,
                           imageUrl,
                           // 그냥 일단 institution으로 이미지를 보낼거임
-                          gql._institutionNumber,
+                          gql.institutionNumber,
                           _medicationController.text,
                           _medicationWayController.text,
-                          "${dt}"
+                          userId
                       )){
                         ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
                           SnackBar(content: Text('필수돌봄정보가 생성되었습니다.')),
@@ -418,7 +423,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                   },
                   child: Text('완료',
                       style:
-                      TextStyle(fontWeight: FontWeight.bold)))
+                      TextStyle(fontWeight: FontWeight.bold, color: Colors.white)))
             ],
           ),
         ],

@@ -77,6 +77,7 @@ class _MyAppState extends State<MyApp> {
         // colorScheme: ColorScheme(brightness: brightness, primary: primary, onPrimary: onPrimary, secondary: secondary, onSecondary: onSecondary, error: error, onError: onError, background: background, onBackground: onBackground, surface: surface, onSurface: onSurface),
           // dividerColor: Colors.white,
           // scaffoldBackgroundColor: Colors.black87,
+          colorScheme: ThemeData().colorScheme.copyWith(primary: Color(0xFF1F2EAE)),
         primaryColorLight: const Color(0xff2b3fee),
           primarySwatch: Colors.indigo,
           snackBarTheme: SnackBarThemeData(

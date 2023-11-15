@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
     year = DateTime.now().year;
     month = DateTime.now().month;
     gql
-        .listInstitutionCommentBoard('INSTITUTION_ID', gql._institutionNumber, '$year',
+        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber, '$year',
             month < 10 ? '0${month}' : '$month',
             nextToken: null) //institution_id
         .then((result) {
@@ -141,6 +141,7 @@ class _HomePageState extends State<HomePage> {
               "custom:institutionNumber".toLowerCase()) {
             // useremail = element.value;
             gql.institutionNumber = (element.value) ?? "no result";
+
           }
         });
         setState(() {

@@ -27,7 +27,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
   String SHUTTLE_INSTITUTION_ID = '';
 
   void getFood() {
-    gql.queryFoodByInstitutionIdAndDate(gql._institutionNumber, date).then((value) {
+    gql.queryFoodByInstitutionIdAndDate(gql.institutionNumber, date).then((value) {
       if (value != null) {
         setState(() {
           FOOD_IMAGE_URL = value.IMAGE_URL;
@@ -48,7 +48,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
   }
 
   void getShuttleTime() {
-    gql.queryShuttleTimeByInstitutionId(gql._institutionNumber).then((value) {
+    gql.queryShuttleTimeByInstitutionId(gql.institutionNumber).then((value) {
       if (value != null) {
         setState(() {
           SHUTTLE_IMAGE_URL = value.IMAGE_URL;

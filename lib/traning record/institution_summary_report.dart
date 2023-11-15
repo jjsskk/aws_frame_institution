@@ -71,22 +71,25 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
 
 
 
-  Widget buildDropdown(String selectedValue, List<String> items,
-      ValueChanged<String?> onChanged) {
-    return DropdownButtonFormField(
-      decoration: InputDecoration(
-        border: InputBorder.none, // 이 부분을 추가하여 밑줄을 제거합니다.
-      ),
-      value: selectedValue,
-      items: items.map((String value) {
-        return new DropdownMenuItem(
-          value: value,
-          child: new Text(value, style: TextStyle(color: Colors.black),),
-        );
-      }).toList(),
-      onChanged: onChanged,
-    );
-  }
+  // Widget buildDropdown(String selectedValue, List<String> items, ValueChanged<String?> onChanged) {
+  //   return DropdownButton<String>(
+  //     dropdownColor: Colors.indigoAccent,
+  //     style: TextStyle(color: Colors.white),
+  //     icon: Icon(
+  //       Icons.arrow_drop_down,
+  //       color: Colors.white,
+  //     ),
+  //     value: selectedValue,
+  //     items: items.map((String value) {
+  //       return DropdownMenuItem(
+  //         value: value,
+  //         child: Text(value, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+  //       );
+  //     }).toList(),
+  //     onChanged: onChanged,
+  //   );
+  // }
+
 
 
   //이 위젯은 그래프의 각 y축의 값을 나타내는 위젯입니다.
@@ -441,7 +444,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Future<void> fetchData(String startYear, String startMonth,String endYear,String endMonth,String day,) async {
     try {
       averagesByMonth = {};
-      final users = await gql.queryListUsers(institutionId: gql._institutionNumber);
+      final users = await gql.queryListUsers();
       final dataStartStr=startYear+startMonth!+day;
       final dataEndStr=endYear!+endMonth!+day;
       results = [];
@@ -580,8 +583,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
-    var theme = Theme.of(context);
+
 
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
@@ -609,46 +611,155 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       ),
       body:  isLoading
         ? Center(child: CircularProgressIndicator()) :
-      SingleChildScrollView(
-        child: Center(
-          child: Container(
-            color: Colors.white,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 50, // Or any other specific height
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Row(
-                      children: [
-                        Expanded(child: buildDropdown(startYear??'---',years,(value){setState((){startYear=value;});} )),
-                        Expanded(child: buildDropdown(startMonth??'---',months,(value){setState((){startMonth=value;});})),
-                        Expanded(child: buildDropdown(endYear??'---',years,(value){setState((){endYear=value;});})),
-                        Expanded(child: buildDropdown(endMonth??'---',months,(value){setState((){endMonth=value;});})),
-                        ElevatedButton(onPressed:onSearchPressed,child:Text('검색'),),
-                      ],
-                    ),
-                  ),
-                  _buildButtons(),
-                  AspectRatio(
-                    aspectRatio: 6 / 5,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+      Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('image/ui (2).png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              // color: Colors.white,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      height: 50, // Or any other specific height
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomDropDown(
+                              selected: startYear ?? '---',
+                              items: years,
+                              onChanged: (value) {
+                                setState(() {
+                                  startYear = value;
+                                });
+                              },
+                            ),
                           ),
-                          color: Colors.white.withOpacity(0.5)),
-                      child: Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                        child: _buildLineChart(),
+                          SizedBox(width: 5),
+                          Expanded(
+                            child: CustomDropDown(
+                              selected: startMonth ?? '---',
+                              items: months,
+                              onChanged: (value) {
+                                setState(() {
+                                  startMonth = value;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: CustomDropDown(
+                              selected: endYear ?? '---',
+                              items: years,
+                              onChanged: (value) {
+                                setState(() {
+                                  endYear = value;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Expanded(
+                            child: CustomDropDown(
+                              selected: endMonth ?? '---',
+                              items: months,
+                              onChanged: (value) {
+                                setState(() {
+                                  endMonth = value;
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          ElevatedButton(onPressed: onSearchPressed, child: Text('검색',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white), ),style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xff1f43f3),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              )),),
+                        ],
+                      )
+
+                    ),
+                    _buildButtons(),
+                    AspectRatio(
+                      aspectRatio: 6 / 5,
+                      child: Container(
+
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            color: Colors.white.withOpacity(0.6)),
+                        child: Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child: _buildLineChart(),
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ]),
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+class CustomDropDown extends StatefulWidget {
+  final List<String> items;
+  final String selected;
+  final Function(String?) onChanged;
+
+  const CustomDropDown(
+      {Key? key,
+        required this.items,
+        required this.onChanged,
+        required this.selected})
+      : super(key: key);
+
+  @override
+  _CustomDropDownState createState() => _CustomDropDownState();
+}
+
+class _CustomDropDownState extends State<CustomDropDown> {
+  String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.selected;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      dropdownColor: Colors.indigoAccent,
+      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      icon: Icon(
+        Icons.arrow_drop_down,
+        color: Colors.white,
+      ),
+      value: selectedValue,
+      items: widget.items.map((String value) {
+        return DropdownMenuItem(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          selectedValue = value;
+        });
+        widget.onChanged(value);
+      },
     );
   }
 }

@@ -295,7 +295,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
     gql.queryListUsers().then((users) {
       selectedName = '전체';
       dropdownValueForUser = selectedName;
-      selectedId = gql._institutionNumber; //institution_id
+      selectedId = gql.institutionNumber; //institution_id
       _userData['전체'] = selectedName;
       users.forEach((value) {
         // if(index == 0){

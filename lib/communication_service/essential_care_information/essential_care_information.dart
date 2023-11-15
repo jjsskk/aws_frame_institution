@@ -55,7 +55,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     _essentialCare = [];
     await gql
         .queryEssentialCareInformationByInstitutionId(
-            institutionId: gql._institutionNumber)
+            institutionId: gql.institutionNumber)
         .then((value) {
       if (value != null) {
         List<String> tempNameList = [];
@@ -211,7 +211,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     Navigator.pop(context);
     },
     ),
-        title: Text('필수 돌봄 정보', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: Text('이용인 정보', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -578,7 +578,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
   Widget build(BuildContext context) {
     return DropdownButton<String>(
       dropdownColor: Colors.indigoAccent,
-      style: TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.white),
       icon: Icon(
         // Add this
         Icons.arrow_drop_down, // Add this

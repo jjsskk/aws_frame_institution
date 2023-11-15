@@ -565,16 +565,18 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       colorIndex = buttonLabels.keys.toList().indexOf(selectedLabel!);
       graphData = _getGraphData(selectedLabel!, colorIndex);
     }
-    List<Color> selectedGradientColors = [
-      buttomColors[colorIndex],
+    List<Color> selectedGradientColors = [      buttomColors[colorIndex],
       buttomColors[colorIndex].withOpacity(0.8),
     ];
+
 
     return LineChartData(
         lineTouchData: LineTouchData(enabled: true),
         gridData: FlGridData(
-          show: true,
+          show: false,
           drawVerticalLine: true,
+
+
         ),
         titlesData: FlTitlesData(
             show: true,
@@ -595,9 +597,15 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                 // margin: 12,
               ),
             ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false, // 이 부분을 false로 설정하여 상단 x축의 숫자를 숨깁니다.
+              ),
+            ),
+
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false))),
         borderData: FlBorderData(
-            show: true,
+            show: false,
             border: Border.all(color: const Color(0xff37434d), width: 1)),
         minX: 0,
         maxX: (graphData.length - 1).toDouble(),
@@ -611,6 +619,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                 .values
                 .toList(),
             isCurved: true,
+
             gradient: LinearGradient(colors: selectedGradientColors),
             barWidth: 5,
             isStrokeCapRound: true,
@@ -652,7 +661,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       width: MediaQuery.of(context).size.width,
       height: 300,
       child: Padding(
-          padding: EdgeInsets.all(16), child: LineChart(_getLineChartData())),
+          padding: EdgeInsets.all(8), child: LineChart(_getLineChartData())),
     );
   }
 
@@ -1347,7 +1356,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(10),
                                 ),
-                                color: Color(0xff232d37)),
+                                color: Colors.white.withOpacity(0.7)),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),

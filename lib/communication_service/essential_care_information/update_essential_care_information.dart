@@ -300,41 +300,49 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
             maxLines: 4,
           ),
           SizedBox(height: 16),
-          ElevatedButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white),),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff1f43f3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    )),
+                onPressed: () async {
 
-            onPressed: () async {
-
-              // TODO: AWS S3에 이미지 업로드
+                  // TODO: AWS S3에 이미지 업로드
 
 
-                if (_formKey.currentState!.validate()) {
-                  if (isImageSelected == true) {
-                    imageUrl = await uploadImageToS3(_image);
-                  }
+                    if (_formKey.currentState!.validate()) {
+                      if (isImageSelected == true) {
+                        imageUrl = await uploadImageToS3(_image);
+                      }
 
-                  if(await gql.updateEssentialCare(
-                      birth,
-                      name,
-                      imageUrl,
-                      _phoneNumberController.text,
-                      institution,
-                      institutionId,
-                      _medicationController.text,
-                      _medicationWayController.text,
-                      userid)){
-                    ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
-                      SnackBar(content: Text('필수 돌봄 정보가 수정되었습니다.')),
-                    );
-                  }
-                }
+                      if(await gql.updateEssentialCare(
+                          birth,
+                          name,
+                          imageUrl,
+                          _phoneNumberController.text,
+                          institution,
+                          institutionId,
+                          _medicationController.text,
+                          _medicationWayController.text,
+                          userid)){
+                        ScaffoldMessenger.of(context).showSnackBar(  // SnackBar 표시
+                          SnackBar(content: Text('필수 돌봄 정보가 수정되었습니다.')),
+                        );
+                      }
+                    }
 
-                print(_phoneNumberController.text);
+                    print(_phoneNumberController.text);
 
-                Navigator.pop(context, true);
+                    Navigator.pop(context, true);
 
-            },
-            child: Text('완료', style: TextStyle(color: Color(0xFF2B3FF0))),
+                },
+                child: Text('완료', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              ),
+            ],
           ),
         ],
       ),

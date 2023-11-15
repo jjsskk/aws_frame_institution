@@ -128,7 +128,7 @@ class _AddAnnouncementPageState extends State<AddAnnouncementPage> {
                 _contentController.text,
                 imageUrl,
                 "INSTITUTION_NAME",
-                  gql._institutionNumber,
+                  gql.institutionNumber,
                 _titleController.text,
                   _urlController.text,
                 "${dt}"
