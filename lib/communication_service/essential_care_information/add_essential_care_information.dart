@@ -82,7 +82,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
-    await gql.queryListUsers(institutionId: "1234").then((value) {
+    await gql.queryListUsers(institutionId: gql._institutionNumber).then((value) {
       if (value != null) {
 
         List<String> tempNameList = [];
@@ -282,7 +282,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
             children: [
               Row(
                 children: [
-                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),
@@ -300,7 +300,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
               ),
               Row(
                 children: [
-                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),
@@ -401,7 +401,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                           _phoneNumberController.text,
                           imageUrl,
                           // 그냥 일단 institution으로 이미지를 보낼거임
-                          "INST_ID_123",
+                          gql._institutionNumber,
                           _medicationController.text,
                           _medicationWayController.text,
                           "${dt}"

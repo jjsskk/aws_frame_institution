@@ -441,7 +441,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Future<void> fetchData(String startYear, String startMonth,String endYear,String endMonth,String day,) async {
     try {
       averagesByMonth = {};
-      final users = await gql.queryListUsers(institutionId: "1234");
+      final users = await gql.queryListUsers(institutionId: gql._institutionNumber);
       final dataStartStr=startYear+startMonth!+day;
       final dataEndStr=endYear!+endMonth!+day;
       results = [];

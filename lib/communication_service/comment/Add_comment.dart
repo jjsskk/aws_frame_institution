@@ -27,7 +27,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
   void initState() {
     super.initState();
     int index = 0;
-    gql.queryListUsers(institutionId: "123").then((users) {
+    gql.queryListUsers(institutionId: gql._institutionNumber).then((users) {
       users.forEach((value) {
         if (index == 0) {
           selectedUserName = '${value.NAME}(${value.BIRTH})';
@@ -165,7 +165,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                                 '김한동',
                                 _contentController.text.trim(),
                                 selectedUserName,
-                                '1234');
+                                gql._institutionNumber);
                             if (check) {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(

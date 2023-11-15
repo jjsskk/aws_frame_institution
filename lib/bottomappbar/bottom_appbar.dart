@@ -21,7 +21,7 @@ class GlobalBottomAppBar extends StatelessWidget {
         child: Row(
           children: <Widget>[
             const SizedBox(
-              width: 65,
+              width: 25,
             ),
             IconButton(
               onPressed: () {

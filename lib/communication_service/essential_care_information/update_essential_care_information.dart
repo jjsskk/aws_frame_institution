@@ -227,7 +227,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
             children: [
               Row(
                 children: [
-                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),
@@ -245,7 +245,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
               ),
               Row(
                 children: [
-                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),

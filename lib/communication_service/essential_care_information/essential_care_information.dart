@@ -24,16 +24,10 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   final StorageService storageService = StorageService();
   late final gql;
   int index = 0;
-
+  var buttonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
   String imageUrl = '';
   late CustomDropDown customDropDown;
   final StorageService _storageService = StorageService();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _birthController = TextEditingController();
-  final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _medicationController = TextEditingController();
-  final TextEditingController _medicationWayController =
-      TextEditingController();
   String _userid = "";
   List<String> nameList = [];
   String name = '';
@@ -61,7 +55,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     _essentialCare = [];
     await gql
         .queryEssentialCareInformationByInstitutionId(
-            institutionId: "INST_ID_123")
+            institutionId: gql._institutionNumber)
         .then((value) {
       if (value != null) {
         List<String> tempNameList = [];
@@ -210,7 +204,14 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('필수 돌봄 정보'),
+
+        leading:IconButton(
+        icon: Icon(Icons.arrow_circle_left_outlined, color: Colors.white, size: 35),
+    onPressed: (){
+    Navigator.pop(context);
+    },
+    ),
+        title: Text('필수 돌봄 정보', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -308,7 +309,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             children: [
               Row(
                 children: [
-                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("이름: ", style: TextStyle(fontSize: 16, fontWeight:FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),
@@ -326,7 +327,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               ),
               Row(
                 children: [
-                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+                  Text("생년월일: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   Container(
                     decoration: BoxDecoration(
                       color:Color(0xFFD3D8EA),
@@ -346,7 +347,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           SizedBox(height: 30),
           Row(
             children: [
-              Text("전화번호: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Text("휴대폰: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
               Container(
                 decoration: BoxDecoration(
                   color:Color(0xFFD3D8EA),
@@ -365,7 +366,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               ? Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("복용약: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Text("복용약: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
               Container(
                 decoration: BoxDecoration(
                   color:Color(0xFFD3D8EA),
@@ -385,7 +386,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
               ? Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("복용법: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+              Text("복용법: ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
               SizedBox(width: 5,),
               Container(
                 decoration: BoxDecoration(
@@ -402,7 +403,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           )
               : Text(""),
 
-          SizedBox(height: 16),
+          SizedBox(height: 40),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -455,7 +456,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                   },
                   child: Text('수정',
                       style:
-                      TextStyle(fontWeight: FontWeight.bold))),
+                      buttonTextStyle)),
          const SizedBox(width: 10,),
               ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -519,7 +520,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                   },
                   child: Text('삭제',
                       style:
-                      TextStyle(fontWeight: FontWeight.bold))),
+                      buttonTextStyle)),
               const SizedBox(width: 10,),
 
               ElevatedButton(
@@ -543,9 +544,9 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
                       });
                     }
                   },
-                  child: Text('추가+',
+                  child: Text('추가',
                       style:
-                      TextStyle(fontWeight: FontWeight.bold))),
+                      buttonTextStyle)),
 
             ],
           ),

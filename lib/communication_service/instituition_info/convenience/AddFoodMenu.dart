@@ -98,11 +98,35 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: Row(
               children: [
-                Expanded(
-                  child: CustomDropDown(
-                    Items: widget.month,
-                    selected: date,
-                    onChanged: _onDateSelected,
+                Text(
+                    '일자 선택',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height / 30,
+                        width: MediaQuery.of(context).size.width / 3.8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          image: DecorationImage(
+                            image: AssetImage("image/report (20).png"),
+                            // 여기에 배경 이미지 경로를 지정합니다.
+                            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                          ),
+                        ),
+                        child: Center(
+                          child: CustomDropDown(
+                            Items: widget.month,
+                            selected: date,
+                            onChanged: _onDateSelected,
+                          ),
+                        ),
+                      ),
+                    ],
+
                   ),
                 ),
               ],
@@ -130,7 +154,7 @@ class _AddFoodMenuPageState extends State<AddFoodMenuPage> {
               var result = await gql.createFood(
                   date,
                   imageUrl,
-                  "INST_ID_123",
+                gql._institutionNumber,
               );
 
               if(result == true){

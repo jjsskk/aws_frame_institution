@@ -127,7 +127,7 @@ class _AddInstitutionNewsPageState extends State<AddInstitutionNewsPage> {
                   _contentController.text,
                   imageUrl,
                   "INSTITUTION_NAME",
-                  "INST_ID_123",
+                  gql._institutionNumber,
                   _titleController.text,
                   _urlController.text
               );

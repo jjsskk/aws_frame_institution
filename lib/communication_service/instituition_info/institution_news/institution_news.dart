@@ -27,7 +27,7 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
       // 해당 State 객체가 현재 트리에 마운트되어 있는지 확인
       setState(() {
         _news = gql.queryInstitutionNewsByInstitutionId(
-            institutionId: "INST_ID_123");
+            institutionId: gql._institutionNumber);
       });
     }
   }
@@ -43,7 +43,7 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
   void initState() {
     super.initState();
     _news =
-        gql.queryInstitutionNewsByInstitutionId(institutionId: "INST_ID_123");
+        gql.queryInstitutionNewsByInstitutionId(institutionId: gql._institutionNumber);
     // Provider 구독 설정
     newsProvider = Provider.of<LoginState>(context, listen: false);
 
