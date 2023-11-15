@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
         primaryColorLight: const Color(0xff2b3fee),
           primarySwatch: Colors.indigo,
           snackBarTheme: SnackBarThemeData(
-            backgroundColor: Colors.white,
+            backgroundColor: const Color(0xff2b3fee),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -90,6 +91,26 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   int ageEra = 0;
   var month = 1; // for DropdownDatePicker
   var year = 2023; // for DropdownDatePicker
+  List<String> monthList = [
+    '1월',
+    '2월',
+    '3월',
+    '4월',
+    '5월',
+    '6월',
+    '7월',
+    '8월',
+    '9월',
+    '10월',
+    '11월',
+    '12월',
+  ];
+  List<String> yearList = [];
+
+  String dropdownYear = '';
+  String dropdownMonth = '';
+
+  var selectedBirth = ''; //selected user birth
 
   int numberForonedata = 1; // for extractRequiredUserData()
 
@@ -100,6 +121,16 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   String? selectedLabel;
   bool useSides = false;
   List<String> nameList = [];
+
+  void makeYearDropdownValues() {
+    month = DateTime.now().month;
+    year = DateTime.now().year;
+    var tempYear = year - 3;
+    for (; tempYear < year + 4; tempYear++) yearList.add('$tempYear년');
+
+    dropdownMonth = '$month월';
+    dropdownYear = '$year년';
+  }
 
   void extractLatestBrainData(String ID) {
     gql.queryMonthlyDBLatestItem(ID: ID).then((values) {
@@ -138,6 +169,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     numberForonedata = 0;
     Future<dynamic> future =
         gql.queryMonthlyDBRequiredItem(id, changeddate).then((values) {
+      // 해당 id 유저(훈련인)의 데이터 불러오기
       if (values.isNotEmpty) {
         values.sort((a, b) {
           String aa = a.month;
@@ -167,10 +199,10 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
   void extractSimilarAge() {
     users = [];
-    String birth = "19651008";
-    int year = int.parse(birth.substring(0, 4));
-    int month = int.parse(birth.substring(4, 6));
-    int day = int.parse(birth.substring(6, 8));
+    // String selectedBirth = "19651008";
+    int year = int.parse(selectedBirth.substring(0, 4));
+    int month = int.parse(selectedBirth.substring(4, 6));
+    int day = int.parse(selectedBirth.substring(6, 8));
     DateTime birthday = DateTime(year, month, day);
 
     DateDuration duration;
@@ -778,9 +810,9 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     }
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchUserLists() async {
     try {
-      final userName = await gql.queryListUsers(institutionId: "123");
+      final userName = await gql.queryListUsers();
       {
         List<String> tempNameList = [];
         for (var data in userName) {
@@ -794,6 +826,8 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
         }
         nameList = tempNameList;
         name = nameList[index];
+        selectedBirth = name.substring(name.length - 9, name.length - 1);
+        print('생년월일 : $selectedBirth');
         print('nametoid ' + nameToId[name]!);
         // extractLatestBrainData(nameToId.values.first);
         extractLatestBrainData(nameToId[name]!);
@@ -818,6 +852,10 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     setState(() {
       loadingForAverage = true;
     });
+
+    selectedBirth = selectedName.substring(
+        selectedName.length - 9, selectedName.length - 1);
+    print('생일: ${selectedBirth}');
     futuresList = [];
     futuresList.add(extractRequiredBrainMonthData(nameToId[name]!));
 
@@ -856,12 +894,12 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
   @override
   void initState() {
-    gql = GraphQLController.Obj;
     super.initState();
+    gql = GraphQLController.Obj;
+    makeYearDropdownValues();
     // fetchLatestOneBrainData('1');
     index = 0;
-    fetchData();
-    // extractLatestBrainData('1');
+    fetchUserLists();
   }
 
   @override
@@ -900,185 +938,326 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
       appBar: AppBar(
-        title: Text('뇌 신호 그래프'),
+        title: Text('개별 분석 보고서',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+              fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
+            ),
+          ),
+        ),
       ),
       body: (loadingForGraph || loadingForAverage)
-          ? Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+          ? LoadingPage()
+          : Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image:
+            AssetImage("image/ui (2).png"), // 여기에 배경 이미지 경로를 지정합니다.
+            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+          ),
+        ),
+            child: SingleChildScrollView(
               child: Center(
-                child: Container(
-                  color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         nameList.isNotEmpty
-                            ? CustomDropDown(
-                                Items: nameList,
-                                selected: name,
-                                onChanged: _NameSelected,
-                              )
+                            ? Container(
+                          height: MediaQuery.of(context).size.height / 25,
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: AssetImage("image/report (20).png"),
+                              // 여기에 배경 이미지 경로를 지정합니다.
+                              fit:
+                              BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                            ),
+                          ),
+                              child: Center(
+                                child: CustomDropDown(
+                                    Items: nameList,
+                                    selected: name,
+                                    onChanged: _NameSelected,
+                                  ),
+                              ),
+                            )
                             : Container(),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Expanded(
-                              child: DropdownDatePicker(
-                                inputDecoration: InputDecoration(
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.grey, width: 1.0),
-                                    ),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10))),
-                                // optional
-                                isDropdownHideUnderline: true,
-                                // optional
-                                isFormValidator: true,
-                                // optional
-                                startYear: 2022,
-                                // optional
-                                endYear: 2030,
-                                // optional
-                                width: 10,
-                                // optional
-                                locale: "zh_CN",
-                                // selectedDay: 14, // optional
-                                showDay: false,
-                                selectedMonth: month,
-                                // optional
-                                selectedYear: year,
-                                // optional
-                                // onChangedDay: (value) => print('onChangedDay: $value'),
-                                onChangedMonth: (value) {
-                                  print('onChangedMonth: $value');
-                                  month = int.parse(value!);
-                                },
-                                onChangedYear: (value) {
-                                  print('onChangedYear: $value');
-                                  year = int.parse(value!);
-                                },
-                                //boxDecoration: BoxDecoration(
-                                // border: Border.all(color: Colors.grey, width: 1.0)), // optional
-                                // showDay: false,// optional
-                                // dayFlex: 2,// optional
-                                // locale: "zh_CN",// optional
-                                // hintDay: 'Day', // optional
-                                // hintMonth: 'Month', // optional
-                                // hintYear: 'Year', // optional
-                                // hintTextStyle: TextStyle(color: Colors.grey), // optional
+                            Container(
+                              height: MediaQuery.of(context).size.height / 25,
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  image: AssetImage("image/report (20).png"),
+                                  // 여기에 배경 이미지 경로를 지정합니다.
+                                  fit:
+                                      BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                ),
+                              ),
+                              child: Center(
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.indigoAccent,
+                                  value: dropdownYear,
+                                  icon: Icon(
+                                    // Add this
+                                    Icons.arrow_drop_down, // Add this
+                                    color: Colors.white, // Add this
+                                  ),
+                                  onChanged: (String? value) {
+                                    setState(
+                                      () {
+                                        dropdownYear = value!;
+                                        year =
+                                            int.parse(value!.substring(0, 4));
+                                      },
+                                    );
+                                    print(year);
+                                  },
+                                  items: yearList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ),
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    loadingForAverage = true;
-                                  });
-                                  futuresList = [];
-                                  futuresList.add(extractRequiredBrainMonthData(
-                                      nameToId[name]!));
+                            Container(
+                              height: MediaQuery.of(context).size.height / 25,
+                              width: MediaQuery.of(context).size.width / 4,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                image: DecorationImage(
+                                  image: AssetImage("image/report (20).png"),
+                                  // 여기에 배경 이미지 경로를 지정합니다.
+                                  fit:
+                                      BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                ),
+                              ),
+                              child: Center(
+                                child: DropdownButton<String>(
+                                  dropdownColor: Colors.indigoAccent,
+                                  value: dropdownMonth,
+                                  icon: Icon(
+                                    // Add this
+                                    Icons.arrow_drop_down, // Add this
+                                    color: Colors.white, // Add this
+                                  ),
+                                  onChanged: (String? value) {
+                                    setState(
+                                      () {
+                                        dropdownMonth = value!;
+                                        int len = value!.length;
+                                        month = int.parse(value!
+                                            .substring(0, len > 2 ? 2 : 1));
+                                      },
+                                    );
+                                    print(month);
+                                  },
+                                  items: monthList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(
+                                        value,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                            // Expanded(
+                            //   child: DropdownDatePicker(
+                            //     inputDecoration: InputDecoration(
+                            //         enabledBorder: const OutlineInputBorder(
+                            //           borderSide: BorderSide(
+                            //               color: Colors.grey, width: 1.0),
+                            //         ),
+                            //         border: OutlineInputBorder(
+                            //             borderRadius:
+                            //                 BorderRadius.circular(10))),
+                            //     // optional
+                            //     isDropdownHideUnderline: true,
+                            //     // optional
+                            //     isFormValidator: true,
+                            //     // optional
+                            //     startYear: 2022,
+                            //     // optional
+                            //     endYear: 2030,
+                            //     // optional
+                            //     width: 10,
+                            //     // optional
+                            //     locale: "zh_CN",
+                            //     // selectedDay: 14, // optional
+                            //     showDay: false,
+                            //     selectedMonth: month,
+                            //     // optional
+                            //     selectedYear: year,
+                            //     // optional
+                            //     // onChangedDay: (value) => print('onChangedDay: $value'),
+                            //     onChangedMonth: (value) {
+                            //       print('onChangedMonth: $value');
+                            //       month = int.parse(value!);
+                            //     },
+                            //     onChangedYear: (value) {
+                            //       print('onChangedYear: $value');
+                            //       year = int.parse(value!);
+                            //     },
+                            //     //boxDecoration: BoxDecoration(
+                            //     // border: Border.all(color: Colors.grey, width: 1.0)), // optional
+                            //     // showDay: false,// optional
+                            //     // dayFlex: 2,// optional
+                            //     // locale: "zh_CN",// optional
+                            //     // hintDay: 'Day', // optional
+                            //     // hintMonth: 'Month', // optional
+                            //     // hintYear: 'Year', // optional
+                            //     // hintTextStyle: TextStyle(color: Colors.grey), // optional
+                            //   ),
+                            // ),
+                            Container(
+                              height: 40,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        loadingForAverage = true;
+                                      });
+                                      futuresList = [];
+                                      futuresList.add(
+                                          extractRequiredBrainMonthData(nameToId[
+                                              name]!)); //맨위 유저 dropdown에 선택된 유저 id의 뇌파그래프 불러옴
 
-                                  calculateAverageSignal();
-                                },
-                                icon: Icon(Icons.search))
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("$name님의 두뇌나이"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              width: 130,
-                              height: 130,
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage('image/brain.jpg'),
+                                      calculateAverageSignal();
+                                    },
+                                    icon: Icon(
+                                      Icons.search,
+                                      color: const Color(0xff1f43f3),
+                                    )),
                               ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Text('$name의 두뇌 \n나이는 10세!')
-                          ],
-                        ),
-                        Divider(
-                          thickness: 2.0,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("최근 훈련 참여도"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('영역별 성취도'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top1')],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top2')],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top3')],
-                                )
-                              ],
-                            ),
-                            Container(
-                                height: MediaQuery.of(context).size.height / 5,
-                                child: VerticalDivider(
-                                  thickness: 2.0,
-                                  width: 20,
-                                  endIndent: 0,
-                                  indent: 20,
-                                )),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('영역별 수행도'),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top1')],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top2')],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [Text('Top3')],
-                                )
-                              ],
                             )
                           ],
                         ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text("$name님의 두뇌나이",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 320,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage('image/report (25).png'),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text('$name님의 두뇌 \n나이는 27세!',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
+                        // Divider(
+                        //   thickness: 2.0,
+                        // ),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                        // Text("최근 훈련 참여도"),
+                        // const SizedBox(
+                        //   height: 10,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //   children: [
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       children: [
+                        //         Text('영역별 성취도'),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top1')],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top2')],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top3')],
+                        //         )
+                        //       ],
+                        //     ),
+                        //     Container(
+                        //         height:
+                        //             MediaQuery.of(context).size.height / 5,
+                        //         child: VerticalDivider(
+                        //           thickness: 2.0,
+                        //           width: 20,
+                        //           endIndent: 0,
+                        //           indent: 20,
+                        //         )),
+                        //     Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       children: [
+                        //         Text('영역별 수행도'),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top1')],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top2')],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Row(
+                        //           children: [Text('Top3')],
+                        //         )
+                        //       ],
+                        //     )
+                        //   ],
+                        // ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -1134,7 +1313,10 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(nameForLinechart,style: TextStyle(color: Colors.black),),
+                              Text(
+                                nameForLinechart,
+                                style: TextStyle(color: Colors.black),
+                              ),
                               Expanded(
                                 child: LinearPercentIndicator(
                                   animation: true,
@@ -1177,7 +1359,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                 ),
               ),
             ),
+          ),
     );
   }
-
 }

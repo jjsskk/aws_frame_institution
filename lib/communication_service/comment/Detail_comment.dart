@@ -531,9 +531,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                     value['date'].substring(0, 10) ==
                             DateTime.now().toString().substring(0, 10)
                         ? value['date'].substring(11, 19)
-                        : value['date'].substring(0, 10) +
-                            ' ' +
-                            value['date'].substring(11, 19),
+                        : value['date'].substring(0, 10)
                   ),
                 ],
               ),

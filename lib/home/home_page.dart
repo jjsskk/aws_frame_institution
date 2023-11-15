@@ -46,6 +46,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // final GlobalKey<ScaffoldState> _key = GlobalKey();
 
+  var buttonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+  var iconColor = Colors.white;
   late final bottomappbar;
   late final keyObj;
   late var appState;
@@ -176,18 +178,20 @@ class _HomePageState extends State<HomePage> {
             key: keyObj.key,
             appBar: AppBar(
               title: Text(' ${gql.managerName} 담당자님 안녕하세요!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: iconColor)),
               flexibleSpace: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
+                    image:
+                        AssetImage('image/ui (5).png'), // 여기에 원하는 이미지 경로를 써주세요.
                     fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
                   ),
                 ),
               ),
               actions: [
                 IconButton(
-                  icon: const Icon(
+                  icon:  Icon(
+                    color:iconColor,
                     Icons.logout,
                     semanticLabel: 'logout',
                   ),
@@ -240,82 +244,81 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff1f43f3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  )),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InstitutionInfoPage(
-                                            initialIndex: 0,
-                                          )),
-                                );
-                              },
-                              child: Text(
-                                '공지사항',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              )),
-
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff1f43f3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  )),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InstitutionInfoPage(
-                                            initialIndex: 1,
-                                          )),
-                                );
-                              },
-                              child: Text('기관 소식',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff1f43f3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  )),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InstitutionInfoPage(
-                                            initialIndex: 2,
-                                          )),
-                                );
-                              },
-                              child: Text('시간표',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
-
-                          ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xff1f43f3),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  )),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => InstitutionInfoPage(
-                                            initialIndex: 3,
-                                          )),
-                                );
-                              },
-                              child: Text('편의사항',
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold))),
+                          Flexible(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff1f43f3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    )),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => InstitutionInfoPage(
+                                              initialIndex: 0,
+                                            )),
+                                  );
+                                },
+                                child: Text(
+                                  '공지사항',
+                                  style: buttonTextStyle,
+                                )),
+                          ),
+                          Flexible(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff1f43f3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    )),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => InstitutionInfoPage(
+                                              initialIndex: 1,
+                                            )),
+                                  );
+                                },
+                                child: Text('기관 소식', style: buttonTextStyle)),
+                          ),
+                          Flexible(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff1f43f3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    )),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => InstitutionInfoPage(
+                                              initialIndex: 2,
+                                            )),
+                                  );
+                                },
+                                child: Text('시간표', style: buttonTextStyle)),
+                          ),
+                          Flexible(
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xff1f43f3),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    )),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => InstitutionInfoPage(
+                                              initialIndex: 3,
+                                            )),
+                                  );
+                                },
+                                child: Text('편의사항', style: buttonTextStyle)),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -349,8 +352,8 @@ class _HomePageState extends State<HomePage> {
                                   children: <Widget>[
                                     Image.asset(
                                       'image/community (8).png',
-                                      width: 120,
-                                      height: 120,
+                                      width: MediaQuery.of(context).size.width/4,
+                                      height: MediaQuery.of(context).size.width/4,
                                     ),
                                     // 아이콘
                                     Text('이용자 돌봄 정보',
@@ -389,8 +392,8 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Image.asset(
                                   'image/report (10).png',
-                                  width: 100,
-                                  height: 100,
+                                  width: MediaQuery.of(context).size.width/4,
+                                  height: MediaQuery.of(context).size.width/4,
                                 ),
                                 // 아이콘
                                 Text('기관 요약 보고서',
@@ -444,8 +447,8 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Image.asset(
                                   'image/community (14).png',
-                                  width: 100,
-                                  height: 100,
+                                  width: MediaQuery.of(context).size.width/4,
+                                  height: MediaQuery.of(context).size.width/4,
                                 ),
                                 // 아이콘
                                 Text('개별 분석 보고서',
@@ -504,8 +507,7 @@ class _HomePageState extends State<HomePage> {
                                       onPressed: () {},
                                       child: Text(
                                         '한달 간 최근 코멘트',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        style: buttonTextStyle,
                                       )),
                                   ElevatedButton(
                                       style: ElevatedButton.styleFrom(
@@ -525,8 +527,7 @@ class _HomePageState extends State<HomePage> {
                                       },
                                       child: Text(
                                         '더 보기 >>',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
+                                        style: buttonTextStyle,
                                       )),
                                 ],
                               ),
@@ -550,12 +551,10 @@ class _HomePageState extends State<HomePage> {
               tooltip: 'Create',
               backgroundColor: Colors.transparent,
               elevation: 0,
-
               child: CircleAvatar(
                 radius: 30,
                 backgroundImage: AssetImage('image/ui (14).png'),
                 backgroundColor: Colors.transparent,
-
               ),
             ),
             floatingActionButtonLocation:
@@ -612,12 +611,10 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(comment['title'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold)),
+                            style: buttonTextStyle),
                         Text(
                           comment['date'],
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: iconColor),
                         ),
                       ],
                     ),
@@ -625,8 +622,7 @@ class _HomePageState extends State<HomePage> {
                       height: 5,
                     ),
                     Text(comment['username'] + ' 훈련자님',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold)),
+                        style: buttonTextStyle),
                   ],
                 ),
               ),

@@ -54,8 +54,8 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String dropdownValue = _emaillist.first;
 
-  final iconColor = Colors.white;
-  final dividerColor = Colors.white;
+  final iconColor = const Color(0xff2b3fee);
+  final dividerColor = const Color(0xff2b3fee);
 
   @override
   void initState() {
@@ -98,45 +98,58 @@ class _SignUpPageState extends State<SignUpPage> {
     final textColor = Theme.of(context).textTheme;
     final ThemeData theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.black87,
-      body: ModalProgressHUD(
-        inAsyncCall: showspiner,
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SafeArea(
-            child: ListView(children: [
-              const SizedBox(
-                height: 50,
-              ),
-              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage('image/frame.png'),
-                  ),
-                ),
-              ]),
-              const SizedBox(
-                height: 20,
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 4),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+            fit: BoxFit.cover, // 이미지가 전체 화면을 커버하도록 설정합니다.
+          ),
+        ),
+        child: ModalProgressHUD(
+          inAsyncCall: showspiner,
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SafeArea(
+              child: ListView(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
                   children: [
-                    Text('약관동의', style: textColor.subtitle2),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width / 3,
+                            height: MediaQuery.of(context).size.width / 3,
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('image/ui (6).png'),
+                            ),
+                          ),
+                        ]),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Row(
                       children: [
-                        Checkbox(
-                            checkColor: iconColor,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            value: isChecked_personal,
-                            onChanged: null),
+                        Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(isChecked_personal
+                                    ? "image/login (10).png"
+                                    : "image/login (1).png"),
+                                // 여기에 배경 이미지 경로를 지정합니다.
+                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                              ),
+                            ),
+                            child: Text('')),
+                        const SizedBox(
+                          width: 5,
+                        ),
                         TextButton(
                             onPressed: () {
                               _showDialog(
@@ -159,12 +172,22 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     Row(
                       children: [
-                        Checkbox(
-                            checkColor: iconColor,
-                            fillColor:
-                                MaterialStateProperty.resolveWith(getColor),
-                            value: isChecked_market,
-                            onChanged: null),
+                        Container(
+                            height: 35,
+                            width: 35,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(isChecked_market
+                                    ? "image/login (10).png"
+                                    : "image/login (1).png"),
+                                // 여기에 배경 이미지 경로를 지정합니다.
+                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                              ),
+                            ),
+                            child: Text('')),
+                        const SizedBox(
+                          width: 5,
+                        ),
                         TextButton(
                             onPressed: () {
                               _showDialog(
@@ -185,34 +208,34 @@ class _SignUpPageState extends State<SignUpPage> {
                             )),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              // Sign Up Form
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                  child: _signUpForm(textColor)),
+                    // Sign Up Form
+                    _signUpForm(textColor),
 
-              // Login Button
-              Container(
-                height: MediaQuery.of(context).size.height / 6,
-                alignment: Alignment.center,
-                child: TextButton.icon(
-                  onPressed: widget.shouldShowLogin,
-                  label: Text(
-                    'Already have an account? Login.',
-                    style: textColor.subtitle2,
-                  ),
-                  style: TextButton.styleFrom(
-                      primary: iconColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                    // Login Button
+                    Container(
+                      height: MediaQuery.of(context).size.height / 6,
+                      alignment: Alignment.center,
+                      child: TextButton.icon(
+                        onPressed: widget.shouldShowLogin,
+                        label: Text(
+                          '로그인 페이지로 돌아가기',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                        style: TextButton.styleFrom(
+                            primary: iconColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            backgroundColor: theme.primaryColorLight),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: Colors.white,
+                        ),
                       ),
-                      backgroundColor: theme.primaryColorLight),
-                  icon: Icon(Icons.arrow_forward),
-                ),
-              )
-            ]),
+                    )
+                  ]),
+            ),
           ),
         ),
       ),
@@ -232,77 +255,137 @@ class _SignUpPageState extends State<SignUpPage> {
           const SizedBox(
             height: 10,
           ),
-          Text(
-            '대표 담당자 정보',
-            style: textColor.subtitle2,
+          Text('대표 담당자 정보',
+              style: TextStyle(
+                  color: Colors.indigoAccent, fontWeight: FontWeight.bold)),
+          const SizedBox(
+            height: 10,
           ),
           // Email TextField
           Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '이메일을 입력해주세요';
-                    }
-                    // RegExp emailRegex = RegExp(r'@');
-                    // if (!emailRegex.hasMatch(value!))
-                    //   return '올바른 이메일 형식을 입력해주세요';
-                    return null;
-                  },
-                  style: textColor.subtitle2,
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                      hintStyle: textColor.subtitle2,
-                      icon: Icon(Icons.mail, color: iconColor),
-                      labelText: '이메일',
-                      labelStyle: textColor.subtitle2,
-                      enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: iconColor, width: 2))),
+                flex: 5,
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight:
+                        double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+                  ),
+                  // height: MediaQuery.of(context).size.height / 10,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("image/ui (18).png"),
+                      // 여기에 배경 이미지 경로를 지정합니다.
+                      fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 0.0, horizontal: 20),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '이메일을 입력해주세요';
+                        }
+                        // RegExp emailRegex = RegExp(r'@');
+                        // if (!emailRegex.hasMatch(value!))
+                        //   return '올바른 이메일 형식을 입력해주세요';
+                        return null;
+                      },
+                      style: textColor.subtitle2,
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                          hintStyle: textColor.subtitle2,
+                          labelText: '이메일',
+                          labelStyle: textColor.subtitle2,
+                          enabledBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: iconColor, width: 2))),
+                    ),
+                  ),
                 ),
               ),
               Text(
                 '@',
                 style: textColor.subtitle2,
               ),
-              DropdownButton<String>(
-                dropdownColor: Colors.black,
-                value: dropdownValue,
-                onChanged: (String? value) {
-                  setState(
-                    () {
-                      dropdownValue = value!;
-                    },
-                  );
-                },
-                items: _emaillist.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: textColor.subtitle2,
+              Expanded(
+                flex: 5,
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxHeight:
+                        double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+                  ),
+                  // height: MediaQuery.of(context).size.height / 10,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("image/ui (18).png"),
+                      // 여기에 배경 이미지 경로를 지정합니다.
+                      fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
                     ),
-                  );
-                }).toList(),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 3.0, horizontal: 0),
+                    child: Center(
+                      child: DropdownButton<String>(
+                        value: dropdownValue,
+                        onChanged: (String? value) {
+                          setState(
+                            () {
+                              dropdownValue = value!;
+                            },
+                          );
+                        },
+                        items: _emaillist
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: textColor.subtitle2,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(
-                width: 10,
+                width: 5,
               ),
-              ElevatedButton(
-                  onPressed: () async {
-                    final email =
-                        '${_emailController.text.trim()}@$dropdownValue';
-                    isChecked_email =
-                        await widget.resendConfirmCode(email, context);
-                    setState(() {
-                      isChecked_email = isChecked_email;
-                    });
-                  },
-                  child: Text(
-                    '인증',
-                    style: textColor.subtitle2,
-                  ))
+              Expanded(
+                flex: 3,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: iconColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        )),
+                    onPressed: () async {
+                      if (_emailController.text.trim() == '') {
+                        return;
+                      }
+                      final email =
+                          '${_emailController.text.trim()}@$dropdownValue';
+                      isChecked_email =
+                          await widget.resendConfirmCode(email, context);
+
+                      setState(() {
+                        isChecked_email = isChecked_email;
+                      });
+                    },
+                    child: Text(
+                      '인증',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    )),
+              )
             ],
+          ),
+          const SizedBox(
+            height: 5,
           ),
           isChecked_email
               ? Center(
@@ -311,107 +394,186 @@ class _SignUpPageState extends State<SignUpPage> {
                   style: textColor.subtitle2,
                 ))
               : const SizedBox(),
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '이름을 입력해주세요';
-              }
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _usernameController,
-            decoration: InputDecoration(
-                icon: Icon(
-                  Icons.person,
-                  color: iconColor,
-                ),
-                labelText: '이름',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
+          const SizedBox(
+            height: 5,
           ),
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '전화번호를 입력해주세요';
-              }
-              RegExp numberRegex = RegExp(r'^[0-9]+$');
-              ;
-              if (!numberRegex.hasMatch(value!)) return '숫자만 입력해주세요';
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _phonenumberController,
-            decoration: InputDecoration(
-                hintStyle: textColor.subtitle2,
-                hintText: 'ex: 01012345678',
-                icon: Icon(Icons.phone, color: iconColor),
-                labelText: '전화번호',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '이름을 입력해주세요';
+                  }
+                  return null;
+                },
+                style: textColor.subtitle2,
+                controller: _usernameController,
+                decoration: InputDecoration(
+                    icon: Icon(Icons.person, color: iconColor),
+                    labelText: '이름',
+                    labelStyle: textColor.subtitle2,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '전화번호를 입력해주세요';
+                  }
+                  RegExp numberRegex = RegExp(r'^[0-9]+$');
+                  ;
+                  if (!numberRegex.hasMatch(value!)) return '숫자만 입력해주세요';
+                  return null;
+                },
+                style: textColor.subtitle2,
+                controller: _phonenumberController,
+                decoration: InputDecoration(
+                    hintStyle: textColor.subtitle2,
+                    hintText: 'ex: 01012345678',
+                    icon: Icon(Icons.phone, color: iconColor),
+                    labelText: '전화번호',
+                    labelStyle: textColor.subtitle2,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
           ),
 
           // Password TextField
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호을 입력해주세요';
-              }
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '비밀번호을 입력해주세요';
+                  }
 
-              RegExp passwordRegex =
-                  RegExp(r'^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$');
+                  RegExp passwordRegex =
+                      RegExp(r'^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$');
 
-              if (!passwordRegex.hasMatch(value!))
-                return '반드시 소문자와 숫자를 포함해서 최소 8글자 이상 입력해주세요';
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _passwordController,
-            decoration: InputDecoration(
-                errorMaxLines: 2,
-                icon: Icon(
-                  Icons.lock_open,
-                  color: iconColor,
-                ),
-                labelText: '비밀번호',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
+                  if (!passwordRegex.hasMatch(value!))
+                    return '반드시 소문자와 숫자를 포함해서 최소 8글자 이상 입력해주세요';
+                  return null;
+                },
+                style: textColor.subtitle2,
+                controller: _passwordController,
+                decoration: InputDecoration(
+                    errorMaxLines: 2,
+                    icon: Icon(
+                      Icons.lock_open,
+                      color: iconColor,
+                    ),
+                    labelText: '비밀번호',
+                    labelStyle: textColor.subtitle2,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+                obscureText: true,
+                keyboardType: TextInputType.visiblePassword,
+              ),
+            ),
           ),
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호 확인을 입력해주세요';
-              }
-              if (value != _passwordController.text) {
-                return '비밀번호와 일치하지 않습니다';
-              }
+          const SizedBox(
+            height: 10,
+          ),
 
-              RegExp passwordRegex =
-                  RegExp(r'^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$');
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '비밀번호 확인을 입력해주세요';
+                  }
+                  if (value != _passwordController.text) {
+                    return '비밀번호와 일치하지 않습니다';
+                  }
 
-              if (!passwordRegex.hasMatch(value!))
-                return '반드시 소문자와 숫자를 포함해서 최소 8글자 이상 입력해주세요';
+                  RegExp passwordRegex =
+                      RegExp(r'^(?=.*[a-z])(?=.*\d)[a-z\d]{8,}$');
 
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _passwordconfirmController,
-            decoration: InputDecoration(
-                errorMaxLines: 2,
-                icon: Icon(
-                  Icons.lock_open,
-                  color: iconColor,
-                ),
-                labelText: '비밀번호 확인',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
+                  if (!passwordRegex.hasMatch(value!))
+                    return '반드시 소문자와 숫자를 포함해서 최소 8글자 이상 입력해주세요';
+
+                  return null;
+                },
+                style: textColor.subtitle2,
+                controller: _passwordconfirmController,
+                decoration: InputDecoration(
+                    errorMaxLines: 2,
+                    icon: Icon(
+                      Icons.lock_open,
+                      color: iconColor,
+                    ),
+                    labelText: '비밀번호 확인',
+                    labelStyle: textColor.subtitle2,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+                obscureText: true,
+                keyboardType: TextInputType.visiblePassword,
+              ),
+            ),
           ),
           const SizedBox(
             height: 10,
@@ -423,64 +585,63 @@ class _SignUpPageState extends State<SignUpPage> {
           const SizedBox(
             height: 10,
           ),
-          Text('기관 정보', style: textColor.subtitle2),
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '기관번호를 입력해주세요';
-              }
-              // RegExp numberRegex = RegExp(r'^[0-9]+$');
-              //
-              // if (!numberRegex.hasMatch(value!)) return '숫자만 입력해주세요';
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _institutionnumberController,
-            decoration: InputDecoration(
-                hintStyle: textColor.subtitle2,
-                icon: Icon(Icons.account_balance, color: iconColor),
-                labelText: '기관 번호',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
+          Text('기관 정보',
+              style: TextStyle(
+                  color: Colors.indigoAccent, fontWeight: FontWeight.bold)),
+          const SizedBox(
+            height: 10,
+          ),
+
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '기관번호를 입력해주세요';
+                  }
+                  // RegExp numberRegex = RegExp(r'^[0-9]+$');
+                  //
+                  // if (!numberRegex.hasMatch(value!)) return '숫자만 입력해주세요';
+                  return null;
+                },
+                style: textColor.subtitle2,
+                controller: _institutionnumberController,
+                decoration: InputDecoration(
+                    hintStyle: textColor.subtitle2,
+                    icon: Icon(Icons.account_balance, color: iconColor),
+                    labelText: '기관 번호',
+                    labelStyle: textColor.subtitle2,
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+              ),
+            ),
           ),
           SizedBox(
             height: 50,
           ),
           // Sign Up Button
           Center(
-            child: Container(
-              padding: EdgeInsets.all(15),
-              height: MediaQuery.of(context).size.width / 4.5,
-              width: MediaQuery.of(context).size.width / 4.5,
-              decoration: BoxDecoration(
-                  color: iconColor, borderRadius: BorderRadius.circular(50)),
-              child: GestureDetector(
-                onTap: () {
-                  _signUp(textColor);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.deepPurple, Colors.indigo],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 1,
-                            offset: Offset(0, 1))
-                      ]),
-                  child: Center(
-                    child: Text(
-                      '회원가입',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+            child: InkWell(
+              onTap: () {
+                _signUp(textColor);
+              },
+              child: Container(
+                height: MediaQuery.of(context).size.height / 10,
+                width: MediaQuery.of(context).size.width / 3,
+                child: Image.asset("image/community (18).png"),
               ),
             ),
           )

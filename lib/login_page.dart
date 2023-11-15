@@ -14,21 +14,18 @@ import 'package:provider/provider.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 class LoginPage extends StatefulWidget {
-
-
   final VoidCallback shouldShowSignUp;
   final VoidCallback shouldShowsresetpassword;
   final Future<void> Function(LoginCredentials value, BuildContext context)
-      didProvideCredentials;
-  //todo 이 친구처럼 function을 보낼 수 있음 이걸 활용할 것
+  didProvideCredentials;
 
   // final ValueChanged<LoginCredentials> didProvideCredentials;
 
   LoginPage(
       {Key? key,
-      required this.didProvideCredentials,
-      required this.shouldShowSignUp,
-      required this.shouldShowsresetpassword})
+        required this.didProvideCredentials,
+        required this.shouldShowSignUp,
+        required this.shouldShowsresetpassword})
       : super(key: key);
 
   @override
@@ -45,24 +42,22 @@ class _LoginPageState extends State<LoginPage> {
   late SharedPreferences _prefs;
   bool isChecked_id = true;
   bool isChecked_autologin = true;
-  bool providerReset = false;
 
-  final iconColor = Colors.white;
+  // bool providerReset = false;
+
+  final iconColor = Colors.black;
 
   late var appState;
 
-  var gql = GraphQLController.Obj;
+  final gql = GraphQLController.Obj;
 
   @override
   void initState() {
     super.initState();
     // Get.deleteAll();
-    if (!providerReset) {
-      gql.resetVariables();
-      providerReset = true;
-    }
     BackButtonInterceptor.add(backKeyInterceptor, context: context);
     _loadId();
+    gql.resetVariables();
   }
 
   @override
@@ -122,75 +117,69 @@ class _LoginPageState extends State<LoginPage> {
     final textColor = Theme.of(context).textTheme;
     final theme = Theme.of(context);
     appState = context.watch<LoginState>();
+
     // display_cacheId();
     // 2
     return Scaffold(
-
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
-            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-          ),
-        ),
-        child: ModalProgressHUD(
-          // loading image on entire screen
-          inAsyncCall: showSpinner,
-          child: GestureDetector(
-            // if you touch any point on screen, keyboard is automatically down
-            onTap: () {
-              FocusScope.of(context).unfocus();
-            },
-            child: SafeArea(
-              child: ListView(
-                  children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: MediaQuery.of(context).size.width / 3,
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage('image/frame.png'),
-                    ),
-                  ),
-                ]),
-                // Login Form
-                const SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0),
-                  child: _loginForm(textColor),
-                ),
-                // 6
-                // Sign Up Button
-                // Expanded(
-                //   child: Align(
-                //     alignment: Alignment.bottomCenter,
-                Container(
-                    height: MediaQuery.of(context).size.height / 6,
-                    alignment: Alignment.center,
-                    child: TextButton.icon(
-                      onPressed: widget.shouldShowSignUp,
-                      label: Text(
-                        'Don\'t have an account? Sign up.',
-                        style: textColor.subtitle2,
-                      ),
-                      style: TextButton.styleFrom(
-                          primary: iconColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          backgroundColor: theme.primaryColorLight),
-                      icon: Icon(Icons.arrow_forward),
-                    ))
-              ]),
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+              fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
             ),
           ),
-        ),
-      ),
-    );
+          child: ModalProgressHUD(
+            inAsyncCall: showSpinner,
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: SafeArea(
+                child: ListView(children: [
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.width / 1.5,
+                      child: Image.asset('image/ui (7).png'),
+                    ),
+                  ]),
+                  // Login Form
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40.0),
+                    child: _loginForm(textColor),
+                  ),
+                  // 6
+                  // Sign Up Button
+                  // Expanded(
+                  //   child: Align(
+                  //     alignment: Alignment.bottomCenter,
+                  Container(
+                      height: MediaQuery.of(context).size.height / 6,
+                      alignment: Alignment.center,
+                      child: TextButton.icon(
+                        onPressed: widget.shouldShowSignUp,
+                        label: Text(
+                          '회원가입 ',
+                          style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+                        ),
+                        style: TextButton.styleFrom(
+                            primary: iconColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            backgroundColor: theme.primaryColorLight),
+                        icon: Icon(Icons.arrow_forward,color: Colors.white,),
+                      ))
+                ]),
+              ),
+            ),
+          ),
+        ));
   }
 
   // 5
@@ -202,79 +191,174 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           Row(
             children: [
-              Checkbox(
-                checkColor: iconColor,
-                fillColor: MaterialStateProperty.resolveWith(getColor),
-                value: isChecked_autologin,
-                onChanged: (bool? value) {
+              InkWell(
+                onTap: () {
                   setState(() {
-                    isChecked_autologin = value!;
+                    isChecked_autologin = !isChecked_autologin;
                   });
                 },
+                child: Container(
+                    height: 35,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(isChecked_autologin
+                            ? "image/login (10).png"
+                            : "image/login (1).png"),
+                        // 여기에 배경 이미지 경로를 지정합니다.
+                        fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                      ),
+                    ),
+                    child: Text('')),
               ),
               Text(
                 '자동 로그인',
-                style: textColor.subtitle2,
+                style: TextStyle(color: Colors.black),
               ),
-              Checkbox(
-                checkColor: iconColor,
-                fillColor: MaterialStateProperty.resolveWith(getColor),
-                value: isChecked_id,
-                onChanged: (bool? value) {
+              const SizedBox(
+                width: 10,
+              ),
+              InkWell(
+                onTap: () {
                   setState(() {
-                    isChecked_id = value!;
+                    isChecked_id = !isChecked_id;
                   });
                 },
+                child: Container(
+                    height: 35,
+                    width: 35,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(isChecked_id
+                            ? "image/login (10).png"
+                            : "image/login (1).png"),
+                        // 여기에 배경 이미지 경로를 지정합니다.
+                        fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                      ),
+                    ),
+                    child: Text('')),
               ),
               Text(
                 '아이디 저장',
-                style: textColor.subtitle2,
+                style: TextStyle(color: Colors.black),
               ),
             ],
           ),
           // Username TextField
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '이메일을 입력해주세요';
-              }
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _emailController,
-            decoration: InputDecoration(
-                icon: Icon(
-                  Icons.mail,
-                  color: iconColor,
-                ),
-                labelText: '이메일',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '이메일',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (8).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+              const EdgeInsets.symmetric(vertical: 2.0, horizontal: 15.0),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '이메일을 입력해주세요';
+                  }
+                  return null;
+                },
+                style: TextStyle(color: Colors.black),
+                controller: _emailController,
+                decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                '비밀번호',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          // Password TextField
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+            ),
+            // height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("image/ui (9).png"),
+                // 여기에 배경 이미지 경로를 지정합니다.
+                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+              ),
+            ),
+            child: Padding(
+              padding:
+              const EdgeInsets.symmetric(vertical: 2.0, horizontal: 15.0),
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '비밀번호를 입력해주세요';
+                  }
+                  return null;
+                },
+                style: TextStyle(color: Colors.black),
+                controller: _passwordController,
+                decoration: InputDecoration(
+                    labelStyle: TextStyle(color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: iconColor, width: 2))),
+                obscureText: true,
+                keyboardType: TextInputType.visiblePassword,
+              ),
+            ),
           ),
 
-          // Password TextField
-          TextFormField(
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '비밀번호를 입력해주세요';
-              }
-              return null;
-            },
-            style: textColor.subtitle2,
-            controller: _passwordController,
-            decoration: InputDecoration(
-                icon: Icon(
-                  Icons.lock_open,
-                  color: iconColor,
-                ),
-                labelText: '비밀번호',
-                labelStyle: textColor.subtitle2,
-                enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: iconColor, width: 2))),
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
+          SizedBox(
+            height: 30,
           ),
+
+          // Login Button
+          Align(
+            alignment: Alignment.centerRight,
+            child: GestureDetector(
+              onTap: _login,
+              child: Container(
+                height: MediaQuery.of(context).size.width / 4.5,
+                width: MediaQuery.of(context).size.width / 4.5,
+                decoration: BoxDecoration(
+                  color: null,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'image/login (3).png', // 이미지 파일의 경로로 변경
+                    fit: BoxFit.fitWidth, // 이미지가 버튼에 맞게 맞춰지도록 설정
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -282,58 +366,25 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {},
                   child: Text(
                     '아이디 찾기',
-                    style: textColor.subtitle2,
+                    style: TextStyle(
+                        color: Colors.indigoAccent,
+                        fontWeight: FontWeight.bold),
                   )),
               Text(
                 ' / ',
-                style: textColor.subtitle2,
+                style: TextStyle(
+                    color: Colors.indigoAccent, fontWeight: FontWeight.bold),
               ),
               TextButton(
                   onPressed: widget.shouldShowsresetpassword,
                   child: Text(
                     '비밀번호 찾기',
-                    style: textColor.subtitle2,
+                    style: TextStyle(
+                        color: Colors.indigoAccent,
+                        fontWeight: FontWeight.bold),
                   )),
             ],
           ),
-          SizedBox(
-            height: 30,
-          ),
-
-          // Login Button
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(15),
-              height: MediaQuery.of(context).size.width / 4.5,
-              width: MediaQuery.of(context).size.width / 4.5,
-              decoration: BoxDecoration(
-                  color: iconColor, borderRadius: BorderRadius.circular(50)),
-              child: GestureDetector(
-                onTap: _login,
-                child: Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [Colors.deepPurple, Colors.indigo],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 1,
-                            offset: Offset(0, 1))
-                      ]),
-                  child: Center(
-                    child: Text(
-                      '로그인',
-                      style: textColor.subtitle1,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          )
         ],
       ),
     );
@@ -362,7 +413,6 @@ class _LoginPageState extends State<LoginPage> {
       _prefs.remove('autologin');
 
     print('username: $Email');
-    print('password: $password');
     final credentials = LoginCredentials(username: Email, password: password);
     await widget.didProvideCredentials(credentials, context);
     // AnalyticsService.log(LoginEvent());

@@ -7,7 +7,7 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 class VerificationPage extends StatefulWidget {
   // final ValueChanged<String> didProvideVerificationCode;
   final Future<bool> Function(String value, BuildContext context)
-      didProvideVerificationCode;
+  didProvideVerificationCode;
   final VoidCallback shouldShowSignUp;
 
   VerificationPage({
@@ -48,7 +48,7 @@ class _VerificationPageState extends State<VerificationPage> {
     return Future(() => true);
   }
 
-  final iconColor = Colors.white;
+  final iconColor = const Color(0xff2b3fee);
   final dividerColor = Colors.white;
 
   @override
@@ -56,15 +56,23 @@ class _VerificationPageState extends State<VerificationPage> {
     final textColor = Theme.of(context).textTheme;
     return Scaffold(
       backgroundColor: Colors.black87,
-      body: ModalProgressHUD(
-        inAsyncCall: showspiner,
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
-          },
-          child: SafeArea(
-            minimum: EdgeInsets.symmetric(horizontal: 40),
-            child: _verificationForm(textColor),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("image/ui (3).png"), // 여기에 배경 이미지 경로를 지정합니다.
+            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+          ),
+        ),
+        child: ModalProgressHUD(
+          inAsyncCall: showspiner,
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus();
+            },
+            child: SafeArea(
+              minimum: EdgeInsets.symmetric(horizontal: 40),
+              child: _verificationForm(textColor),
+            ),
           ),
         ),
       ),
@@ -76,31 +84,66 @@ class _VerificationPageState extends State<VerificationPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Verification Code TextField
-        TextField(
-          style: textColor.subtitle2,
-          controller: _verificationCodeController,
-          decoration: InputDecoration(
-              icon: Icon(
-                Icons.confirmation_number,
-                color: iconColor,
-              ),
-              labelText: '인증코드',
-              labelStyle: textColor.subtitle2,
-              enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: iconColor, width: 2))),
+
+        Text(
+          '이메일로 받은 인증 코드를 입력해주세요.',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+        ),
+        const SizedBox(height: 100,),
+        Container(
+          constraints: BoxConstraints(
+            maxHeight: double.infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+          ),
+          // height: MediaQuery.of(context).size.height / 10,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("image/ui (9).png"),
+              // 여기에 배경 이미지 경로를 지정합니다.
+              fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 15),
+            child: TextField(
+              style: textColor.subtitle2,
+              controller: _verificationCodeController,
+              decoration: InputDecoration(
+                  icon: Icon(
+                    Icons.confirmation_number,
+                    color: iconColor,
+                  ),
+                  labelText: '인증코드',
+                  labelStyle: textColor.subtitle2,
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: iconColor, width: 2))),
+            ),
+          ),
         ),
         SizedBox(
-          height: 20,
+          height: 40,
         ),
         // Verify Button
-        ElevatedButton(
-            onPressed: _verify,
-            child: Text(
-              '인증',
-              style: textColor.subtitle1,
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            InkWell(
+              onTap: _verify,
+              child: Container(
+                height: MediaQuery.of(context).size.height / 16,
+                width: MediaQuery.of(context).size.width / 3.5,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("image/login (4).png"),
+                    // 여기에 배경 이미지 경로를 지정합니다.
+                    fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                  ),
+                ),
+                child: Text(''),
+              ),
             ),
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor))
+          ],
+        ),
       ],
     );
   }

@@ -292,7 +292,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
     current_year = year;
     current_month = month;
 
-    gql.queryListUsers(institutionId: "123").then((users) {
+    gql.queryListUsers().then((users) {
       selectedName = '전체';
       dropdownValueForUser = selectedName;
       selectedId = '1234'; //institution_id

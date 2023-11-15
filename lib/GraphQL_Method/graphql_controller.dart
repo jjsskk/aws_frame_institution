@@ -2000,7 +2000,7 @@ class GraphQLController {
   }
 
   Future<List<UserTable?>> queryListUsers(
-      {required String institutionId, String? nextToken}) async {
+      { String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2027,7 +2027,7 @@ class GraphQLController {
           }
         """,
           variables: {
-            "INSTITUTION_ID": institutionId,
+            "INSTITUTION_ID": institutionNumber,
             "limit": 1000,
             "nextToken": nextToken,
           },
@@ -2050,7 +2050,7 @@ class GraphQLController {
         if (newNextToken != null) {
           // recursive call for next page's data
           var nextUsers = await queryListUsers(
-              institutionId: institutionId, nextToken: newNextToken);
+             nextToken: newNextToken);
           Users.addAll(nextUsers);
         }
 

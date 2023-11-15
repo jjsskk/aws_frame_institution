@@ -1,4 +1,3 @@
-import 'package:aws_frame_institution/communication_service/instituition_info/schedule/AddSchedule.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/schedule/schedule.dart';
 import 'package:flutter/material.dart';
 
@@ -116,17 +115,6 @@ class _InstitutionInfoPageState extends State<InstitutionInfoPage>
                   ),
                 ]
               : [
-                  _tabController.index == 2
-                      ? IconButton(
-                          icon: Icon(Icons.add_box_rounded),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AddSchedulePage()),
-                            );
-                          },
-                        )
-                      : SizedBox()
                 ],
           bottom:PreferredSize(
             preferredSize: Size.fromHeight(50.0),
