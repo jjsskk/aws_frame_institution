@@ -82,7 +82,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
   }
 
   Future<void> getEssentialCare() async {
-    await gql.queryListUsers(institutionId: "1234").then((value) {
+    await gql.queryListUsers().then((value) {
       if (value != null) {
 
         List<String> tempNameList = [];

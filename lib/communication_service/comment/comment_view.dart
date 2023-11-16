@@ -310,7 +310,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
       });
     });
     gql
-        .listInstitutionCommentBoard('INSTITUTION_ID', '1234', '$year',
+        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber, '$year',
             month < 10 ? '0${month}' : '$month',
             nextToken: null) //institution_id
         .then((result) {

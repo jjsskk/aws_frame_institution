@@ -27,7 +27,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
   void initState() {
     super.initState();
     int index = 0;
-    gql.queryListUsers(institutionId: "123").then((users) {
+    gql.queryListUsers().then((users) {
       users.forEach((value) {
         if (index == 0) {
           selectedUserName = '${value.NAME}(${value.BIRTH})';

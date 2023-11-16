@@ -24,6 +24,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
   final TextEditingController _titleController = TextEditingController();
 
   final TextEditingController _contentController = TextEditingController();
+  var blue = const Color(0xff1f43f3);
 
   List<Map<String, dynamic>> _conversations = [];
 
@@ -256,7 +257,8 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
+                    image:
+                        AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
                     fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
                   ),
                 ),
@@ -332,7 +334,8 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                             ),
                             Container(
                               constraints: BoxConstraints(
-                                minHeight: MediaQuery.of(context).size.height / 3,
+                                minHeight:
+                                    MediaQuery.of(context).size.height / 3,
                                 maxHeight: double.infinity,
                               ),
                               decoration: BoxDecoration(
@@ -357,14 +360,16 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                                             Text(commentTitle,
                                                 style: TextStyle(
                                                     fontSize: 25,
-                                                    fontWeight: FontWeight.bold)),
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                             Divider(
                                               thickness: 2.0,
                                             ),
                                             Text(commentContent,
                                                 style: TextStyle(
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold)),
+                                                    fontWeight:
+                                                        FontWeight.bold)),
                                             const SizedBox(
                                               height: 10,
                                             )
@@ -452,13 +457,11 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                       ),
                       gql.managerEmail == value['email']
                           ? Container(
-                              width: MediaQuery.of(context).size.width / 8,
+                              width: 20,
+                              height: 20,
                               decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage("image/ui (18).png"),
-                                  // 여기에 배경 이미지 경로를 지정합니다.
-                                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                                ),
+                                borderRadius: BorderRadius.circular(50),
+                                color: blue,
                               ),
                               child: Center(
                                   child: InkWell(
@@ -511,11 +514,14 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                                         );
                                       });
                                 },
-                                child: Text(
-                                  '삭제',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                child: Center(
+                                  child: Text(
+                                    'x',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               )),
                             )
@@ -527,12 +533,10 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                   ),
                   Text(value['content'],
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(
-                    value['date'].substring(0, 10) ==
-                            DateTime.now().toString().substring(0, 10)
-                        ? value['date'].substring(11, 19)
-                        : value['date'].substring(0, 10)
-                  ),
+                  Text(value['date'].substring(0, 10) ==
+                          DateTime.now().toString().substring(0, 10)
+                      ? value['date'].substring(11, 19)
+                      : value['date'].substring(0, 10)),
                 ],
               ),
             ),

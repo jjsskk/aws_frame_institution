@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aws_frame_institution">
     <application
-        android:label="aws_frame_institution"
+        android:label="파도(기관)"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

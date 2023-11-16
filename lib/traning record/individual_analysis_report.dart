@@ -83,6 +83,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   int AVG = 0; //for linechart
   int SCORE = 0; //for linechart
   String nameForLinechart = '';
+  int indexLineChart = 0;
 
   List<String> users = []; // storing user Ids having similar ageEra
 
@@ -116,9 +117,45 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
   Map<String, List<int>> allData = {}; // variable for _getBars()
 
-  int index = 0;
+  int indexDropdown = 0;
+  Map<String, String> nameDeepPng = {};
+  Map<String, String> nameLightPng = {};
+
+  void makeButtonNameList() {
+    // "avg_att": "평균\n집중도",
+    // "avg_med": "평균\n안정감",
+    // "con_score": "주의력",
+    // "spacetime_score": "시공간",
+    // "exec_score": "집행기능",
+    // "mem_score": "기억력",
+    // "ling_score": "언어기능",
+    // "cal_score": "계산력",
+    // "reac_score": "반응속도",
+    // "orient_score": "지남력",
+    nameDeepPng['avg_att'] = 'image/report (23).png';
+    nameDeepPng['avg_med'] = 'image/report (10).png';
+    nameDeepPng['con_score'] = 'image/report (27).png';
+    nameDeepPng['spacetime_score'] = 'image/report (28).png';
+    nameDeepPng['exec_score'] = 'image/report (29).png';
+    nameDeepPng['mem_score'] = 'image/report (30).png';
+    nameDeepPng['ling_score'] = 'image/report (31).png';
+    nameDeepPng['cal_score'] = 'image/report (32).png';
+    nameDeepPng['reac_score'] = 'image/report (33).png';
+    nameDeepPng['orient_score'] = 'image/report (26).png';
+    nameLightPng['avg_att'] = 'image/report (13).png';
+    nameLightPng['avg_med'] = 'image/report (14).png';
+    nameLightPng['con_score'] = 'image/report (35).png';
+    nameLightPng['spacetime_score'] = 'image/report (36).png';
+    nameLightPng['exec_score'] = 'image/report (37).png';
+    nameLightPng['mem_score'] = 'image/report (38).png';
+    nameLightPng['ling_score'] = 'image/report (39).png';
+    nameLightPng['cal_score'] = 'image/report (40).png';
+    nameLightPng['reac_score'] = 'image/report (41).png';
+    nameLightPng['orient_score'] = 'image/report (34).png';
+  }
+
   String name = "";
-  String? selectedLabel;
+  String selectedLabel = '';
   bool useSides = false;
   List<String> nameList = [];
 
@@ -478,8 +515,8 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
 // 버튼의 각 라벨들을 매핑해주는 것들입니다. 왼쪽에 있는 것은 db를 통해서 불러온 값이고 오른쪽이 보여주고자 하는 값입니다.
   Map<String, String> buttonLabels = {
-    "avg_att": "평균\n집중도",
-    "avg_med": "평균\n안정감",
+    "avg_att": "집중도",
+    "avg_med": "안정감",
     "con_score": "주의력",
     "spacetime_score": "시공간",
     "exec_score": "집행기능",
@@ -577,6 +614,11 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
           drawVerticalLine: true,
         ),
         titlesData: FlTitlesData(
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false, // 이 부분을 false로 설정하여 상단 x축의 숫자를 숨깁니다.
+              ),
+            ),
             show: true,
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
@@ -598,7 +640,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false))),
         borderData: FlBorderData(
             show: true,
-            border: Border.all(color: const Color(0xff37434d), width: 1)),
+            border: Border.all(color: const Color(0xffffff), width: 1)),
         minX: 0,
         maxX: (graphData.length - 1).toDouble(),
         minY: 0,
@@ -662,96 +704,190 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   Widget _buildButtons() {
     return GridView.count(
       crossAxisCount: 5,
-      // 2행을 만듦
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      // 스크롤을 막음
       padding: EdgeInsets.all(1.0),
+      mainAxisSpacing: 30,
+      // 메인 축 간격 설정
+      crossAxisSpacing: 4.0,
+      childAspectRatio: 0.7,
+      // 가로 세로 비율 조절
+      // 교차 축 간격 설정
       children: buttonLabels.keys
-          .map((label) => ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: CircleBorder(), // 이 부분을 통해서 원형으로 구성하게 됩니다.
+          .map((label) => Column(
+                children: [
+                  Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(selectedLabel == label
+                            ? nameDeepPng[label]!
+                            : nameLightPng[label]!), // 여기에 배경 이미지 경로를 지정합니다.
+                        fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                      ),
+                    ),
+                    child: InkWell(
+                        onTap: () {
+                          for (var result in results) {
+                            String? month = result?.month.substring(4, 6);
+                            var value;
+                            switch (label) {
+                              case "avg_att":
+                                value = result?.avg_att;
+                                SCORE = AVG_ATT;
+                                AVG = AVG_ATT_AVG;
+                                nameForLinechart = '집중도';
+                                break;
+                              case "avg_med":
+                                value = result?.avg_med;
+                                SCORE = AVG_MED;
+                                AVG = AVG_MED_AVG;
+                                nameForLinechart = '안정감';
+                                break;
+                              case "con_score":
+                                value = result?.con_score;
+                                SCORE = CON_SCORE;
+                                AVG = CON_SCORE_AVG;
+                                nameForLinechart = '주의려';
+                                break;
+                              case "spacetime_score":
+                                value = result?.spacetime_score;
+                                SCORE = SPACETIME_SCORE;
+                                AVG = SPACETIME_SCORE_AVG;
+                                nameForLinechart = '시공간';
+                                break;
+                              case "exec_score":
+                                value = result?.exec_score;
+                                SCORE = EXEC_SCORE;
+                                AVG = EXEC_SCORE_AVG;
+                                nameForLinechart = '집행기능';
+                                break;
+                              case "mem_score":
+                                value = result?.mem_score;
+                                SCORE = MEM_SCORE;
+                                AVG = MEM_SCORE_AVG;
+                                nameForLinechart = '기억력';
+                                break;
+                              case "ling_score":
+                                value = result?.ling_score;
+                                SCORE = LING_SCORE;
+                                AVG = LING_SCORE_AVG;
+                                nameForLinechart = '언어기능';
+                                break;
+                              case "cal_score":
+                                value = result?.cal_score;
+                                SCORE = CAL_SCORE;
+                                AVG = CAL_SCORE_AVG;
+                                nameForLinechart = '계산력';
+                                break;
+                              case "reac_score":
+                                value = result?.reac_score;
+                                SCORE = REAC_SCORE;
+                                AVG = REAC_SCORE_AVG;
+                                nameForLinechart = '반응속도';
+                                break;
+                              case "orient_score":
+                                value = result?.orient_score;
+                                SCORE = ORIENT_SCORE;
+                                AVG = ORIENT_SCORE_AVG;
+                                nameForLinechart = '지남력';
+                                break;
+                              default:
+                                value = null;
+                            }
+                            setState(() {
+                              selectedLabel = label;
+                            });
+                            print("Month: $month, $label: $value");
+                          }
+                        },
+                        child: Image.asset(selectedLabel == label
+                            ? nameDeepPng[label]!
+                            : nameLightPng[label]!)),
 
-                  fixedSize: Size(10.0, 5.0), // 원하는 버튼 width와 height를 설
-                ),
-                onPressed: () {
-                  for (var result in results) {
-                    String? month = result?.month.substring(4, 6);
-                    var value;
-                    switch (label) {
-                      case "avg_att":
-                        value = result?.avg_att;
-                        SCORE = AVG_ATT;
-                        AVG = AVG_ATT_AVG;
-                        nameForLinechart = '집중도';
-                        break;
-                      case "avg_med":
-                        value = result?.avg_med;
-                        SCORE = AVG_MED;
-                        AVG = AVG_MED_AVG;
-                        nameForLinechart = '안정감';
-                        break;
-                      case "con_score":
-                        value = result?.con_score;
-                        SCORE = CON_SCORE;
-                        AVG = CON_SCORE_AVG;
-                        nameForLinechart = '주의려';
-                        break;
-                      case "spacetime_score":
-                        value = result?.spacetime_score;
-                        SCORE = SPACETIME_SCORE;
-                        AVG = SPACETIME_SCORE_AVG;
-                        nameForLinechart = '시공간';
-                        break;
-                      case "exec_score":
-                        value = result?.exec_score;
-                        SCORE = EXEC_SCORE;
-                        AVG = EXEC_SCORE_AVG;
-                        nameForLinechart = '집행기능';
-                        break;
-                      case "mem_score":
-                        value = result?.mem_score;
-                        SCORE = MEM_SCORE;
-                        AVG = MEM_SCORE_AVG;
-                        nameForLinechart = '기억력';
-                        break;
-                      case "ling_score":
-                        value = result?.ling_score;
-                        SCORE = LING_SCORE;
-                        AVG = LING_SCORE_AVG;
-                        nameForLinechart = '언어기능';
-                        break;
-                      case "cal_score":
-                        value = result?.cal_score;
-                        SCORE = CAL_SCORE;
-                        AVG = CAL_SCORE_AVG;
-                        nameForLinechart = '계산력';
-                        break;
-                      case "reac_score":
-                        value = result?.reac_score;
-                        SCORE = REAC_SCORE;
-                        AVG = REAC_SCORE_AVG;
-                        nameForLinechart = '반응속도';
-                        break;
-                      case "orient_score":
-                        value = result?.orient_score;
-                        SCORE = ORIENT_SCORE;
-                        AVG = ORIENT_SCORE_AVG;
-                        nameForLinechart = '지남력';
-                        break;
-                      default:
-                        value = null;
-                    }
-                    setState(() {
-                      selectedLabel = label;
-                    });
-                    print("Month: $month, $label: $value");
-                  }
-                },
-                child: Text(
-                  buttonLabels[label]!,
-                  style: TextStyle(fontSize: 13.0, height: 1.3), // 버튼 텍스트 크기 조절
-                ),
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //     padding: EdgeInsets.symmetric(horizontal: 1),
+                    //     shape: CircleBorder(),
+                    //     fixedSize: Size(10.0, 5.0),
+                    //     // primary: selectedLabel == label
+                    //     //     ? Color(0xFF2B3FF0)
+                    //     //     : null, // 선택된 라벨에 따라 색상 변경
+                    //     backgroundColor: Colors.transparent
+                    //   ),
+                    //   onPressed: () {
+                    //     for (var result in results) {
+                    //       String? month = result?.month.substring(4, 6);
+                    //       var value;
+                    //       switch (label) {
+                    //         case "avg_att":
+                    //           value = result?.avg_att;
+                    //           break;
+                    //         case "avg_med":
+                    //           value = result?.avg_med;
+                    //           break;
+                    //         case "con_score":
+                    //           value = result?.con_score;
+                    //           break;
+                    //         case "spacetime_score":
+                    //           value = result?.spacetime_score;
+                    //           break;
+                    //         case "exec_score":
+                    //           value = result?.exec_score;
+                    //           break;
+                    //         case "mem_score":
+                    //           value = result?.mem_score;
+                    //           break;
+                    //         case "ling_score":
+                    //           value = result?.ling_score;
+                    //           break;
+                    //         case "cal_score":
+                    //           value = result?.cal_score;
+                    //           break;
+                    //         case "reac_score":
+                    //           value = result?.reac_score;
+                    //           break;
+                    //         case "orient_score":
+                    //           value = result?.orient_score;
+                    //           break;
+                    //         default:
+                    //           value = null;
+                    //       }
+                    //       setState(() {
+                    //         selectedLabel = label;
+                    //       });
+                    //       print("Month: $month, $label: $value");
+                    //     }
+                    //   },
+                    //   child: Text(
+                    //     buttonLabels[label]!,
+                    //     style: TextStyle(
+                    //       fontSize: 16.0,
+                    //       height: 1.3,
+                    //       fontWeight: FontWeight.w500,
+                    //       color: selectedLabel == label
+                    //           ? Colors.white
+                    //           : Color(0xFF2B3FF0),
+                    //     ),
+                    //   ),
+                    // ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      buttonLabels[label]!,
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          height: 1.3,
+                          fontWeight: FontWeight.w500,
+                          color: selectedLabel == label
+                              ? Colors.black
+                              : Colors.grey
+                          // : Color(0xFF2B3FF0),
+                          ),
+                    ),
+                  ),
+                ],
               ))
           .toList(),
     );
@@ -825,7 +961,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
           }
         }
         nameList = tempNameList;
-        name = nameList[index];
+        name = nameList[indexDropdown];
         selectedBirth = name.substring(name.length - 9, name.length - 1);
         print('생년월일 : $selectedBirth');
         print('nametoid ' + nameToId[name]!);
@@ -843,7 +979,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   Future<void> _NameSelected(String selectedName) async {
     // setState(() {
     name = selectedName;
-    index = nameList.indexOf(selectedName);
+    indexDropdown = nameList.indexOf(selectedName);
     print(name);
     print(nameToId[name]);
     // });
@@ -896,9 +1032,10 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   void initState() {
     super.initState();
     gql = GraphQLController.Obj;
+    makeButtonNameList();
     makeYearDropdownValues();
     // fetchLatestOneBrainData('1');
-    index = 0;
+    indexDropdown = 0;
     fetchUserLists();
   }
 
@@ -909,6 +1046,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
 
     const ticks = [20, 40, 60, 80, 100];
     var features = [
+      "지남력($ORIENT_SCORE)",
       "주의력($CON_SCORE)",
       "시공간($SPACETIME_SCORE)",
       "집행기능($EXEC_SCORE)",
@@ -916,12 +1054,12 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       "언어기능($LING_SCORE)",
       "계산력($CAL_SCORE)",
       "반응속도($REAC_SCORE)",
-      "지남력($ORIENT_SCORE)",
-      "집중력($AVG_ATT)",
-      "안정감($AVG_MED)",
+      // "집중력($AVG_ATT)",
+      // "안정감($AVG_MED)",
     ];
     var data = [
       [
+        ORIENT_SCORE,
         CON_SCORE,
         SPACETIME_SCORE,
         EXEC_SCORE,
@@ -929,9 +1067,9 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
         LING_SCORE,
         CAL_SCORE,
         REAC_SCORE,
-        ORIENT_SCORE,
-        AVG_ATT,
-        AVG_MED,
+
+        // AVG_ATT,
+        // AVG_MED,
       ]
     ];
 
@@ -953,413 +1091,514 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       body: (loadingForGraph || loadingForAverage)
           ? LoadingPage()
           : Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image:
-            AssetImage("image/ui (2).png"), // 여기에 배경 이미지 경로를 지정합니다.
-            fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-          ),
-        ),
-            child: SingleChildScrollView(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        nameList.isNotEmpty
-                            ? Container(
-                          height: MediaQuery.of(context).size.height / 25,
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: AssetImage("image/report (20).png"),
-                              // 여기에 배경 이미지 경로를 지정합니다.
-                              fit:
-                              BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                            ),
-                          ),
-                              child: Center(
-                                child: CustomDropDown(
-                                    Items: nameList,
-                                    selected: name,
-                                    onChanged: _NameSelected,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image:
+                      AssetImage("image/ui (2).png"), // 여기에 배경 이미지 경로를 지정합니다.
+                  fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          nameList.isNotEmpty
+                              ? Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 25,
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      image:
+                                          AssetImage("image/report (20).png"),
+                                      // 여기에 배경 이미지 경로를 지정합니다.
+                                      fit: BoxFit
+                                          .fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                    ),
                                   ),
-                              ),
-                            )
-                            : Container(),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height / 25,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                  image: AssetImage("image/report (20).png"),
-                                  // 여기에 배경 이미지 경로를 지정합니다.
-                                  fit:
-                                      BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                                ),
-                              ),
-                              child: Center(
-                                child: DropdownButton<String>(
-                                  dropdownColor: Colors.indigoAccent,
-                                  value: dropdownYear,
-                                  icon: Icon(
-                                    // Add this
-                                    Icons.arrow_drop_down, // Add this
-                                    color: Colors.white, // Add this
+                                  child: Center(
+                                    child: CustomDropDown(
+                                      Items: nameList,
+                                      selected: name,
+                                      onChanged: _NameSelected,
+                                    ),
                                   ),
-                                  onChanged: (String? value) {
-                                    setState(
-                                      () {
-                                        dropdownYear = value!;
-                                        year =
-                                            int.parse(value!.substring(0, 4));
-                                      },
-                                    );
-                                    print(year);
-                                  },
-                                  items: yearList
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height / 25,
-                              width: MediaQuery.of(context).size.width / 4,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                image: DecorationImage(
-                                  image: AssetImage("image/report (20).png"),
-                                  // 여기에 배경 이미지 경로를 지정합니다.
-                                  fit:
-                                      BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-                                ),
-                              ),
-                              child: Center(
-                                child: DropdownButton<String>(
-                                  dropdownColor: Colors.indigoAccent,
-                                  value: dropdownMonth,
-                                  icon: Icon(
-                                    // Add this
-                                    Icons.arrow_drop_down, // Add this
-                                    color: Colors.white, // Add this
-                                  ),
-                                  onChanged: (String? value) {
-                                    setState(
-                                      () {
-                                        dropdownMonth = value!;
-                                        int len = value!.length;
-                                        month = int.parse(value!
-                                            .substring(0, len > 2 ? 2 : 1));
-                                      },
-                                    );
-                                    print(month);
-                                  },
-                                  items: monthList
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                            // Expanded(
-                            //   child: DropdownDatePicker(
-                            //     inputDecoration: InputDecoration(
-                            //         enabledBorder: const OutlineInputBorder(
-                            //           borderSide: BorderSide(
-                            //               color: Colors.grey, width: 1.0),
-                            //         ),
-                            //         border: OutlineInputBorder(
-                            //             borderRadius:
-                            //                 BorderRadius.circular(10))),
-                            //     // optional
-                            //     isDropdownHideUnderline: true,
-                            //     // optional
-                            //     isFormValidator: true,
-                            //     // optional
-                            //     startYear: 2022,
-                            //     // optional
-                            //     endYear: 2030,
-                            //     // optional
-                            //     width: 10,
-                            //     // optional
-                            //     locale: "zh_CN",
-                            //     // selectedDay: 14, // optional
-                            //     showDay: false,
-                            //     selectedMonth: month,
-                            //     // optional
-                            //     selectedYear: year,
-                            //     // optional
-                            //     // onChangedDay: (value) => print('onChangedDay: $value'),
-                            //     onChangedMonth: (value) {
-                            //       print('onChangedMonth: $value');
-                            //       month = int.parse(value!);
-                            //     },
-                            //     onChangedYear: (value) {
-                            //       print('onChangedYear: $value');
-                            //       year = int.parse(value!);
-                            //     },
-                            //     //boxDecoration: BoxDecoration(
-                            //     // border: Border.all(color: Colors.grey, width: 1.0)), // optional
-                            //     // showDay: false,// optional
-                            //     // dayFlex: 2,// optional
-                            //     // locale: "zh_CN",// optional
-                            //     // hintDay: 'Day', // optional
-                            //     // hintMonth: 'Month', // optional
-                            //     // hintYear: 'Year', // optional
-                            //     // hintTextStyle: TextStyle(color: Colors.grey), // optional
-                            //   ),
-                            // ),
-                            Container(
-                              height: 40,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.white,
-                              ),
-                              child: Center(
-                                child: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        loadingForAverage = true;
-                                      });
-                                      futuresList = [];
-                                      futuresList.add(
-                                          extractRequiredBrainMonthData(nameToId[
-                                              name]!)); //맨위 유저 dropdown에 선택된 유저 id의 뇌파그래프 불러옴
-
-                                      calculateAverageSignal();
-                                    },
-                                    icon: Icon(
-                                      Icons.search,
-                                      color: const Color(0xff1f43f3),
-                                    )),
-                              ),
-                            )
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("$name님의 두뇌나이",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 320,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: AssetImage('image/report (25).png'),
-                            ),
+                                )
+                              : Container(),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text('$name님의 두뇌 \n나이는 27세!',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-                        // Divider(
-                        //   thickness: 2.0,
-                        // ),
-                        // const SizedBox(
-                        //   height: 10,
-                        // ),
-                        // Text("최근 훈련 참여도"),
-                        // const SizedBox(
-                        //   height: 10,
-                        // ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //   children: [
-                        //     Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       mainAxisAlignment: MainAxisAlignment.start,
-                        //       children: [
-                        //         Text('영역별 성취도'),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top1')],
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top2')],
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top3')],
-                        //         )
-                        //       ],
-                        //     ),
-                        //     Container(
-                        //         height:
-                        //             MediaQuery.of(context).size.height / 5,
-                        //         child: VerticalDivider(
-                        //           thickness: 2.0,
-                        //           width: 20,
-                        //           endIndent: 0,
-                        //           indent: 20,
-                        //         )),
-                        //     Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       mainAxisAlignment: MainAxisAlignment.start,
-                        //       children: [
-                        //         Text('영역별 수행도'),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top1')],
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top2')],
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Row(
-                        //           children: [Text('Top3')],
-                        //         )
-                        //       ],
-                        //     )
-                        //   ],
-                        // ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Divider(
-                          thickness: 2.0,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("영역별 평균 점수"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 3.5,
-                            child: radar_chart.RadarChart.light(
-                              ticks: ticks,
-                              features: features,
-                              data: data,
-                              reverseAxis: false,
-                              useSides: true,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Divider(
-                          thickness: 2.0,
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("세부 결과 그래프"),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        _buildButtons(),
-                        TextButton(
-                          onPressed: () async {
-                            await gql.createMonthlyData();
-                            setState(() {
-                              braincount++;
-                              brainbutton = "$braincount번 추가";
-                            });
-                          },
-                          child: Text(brainbutton),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(vertical: 15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Text(
-                                nameForLinechart,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Expanded(
-                                child: LinearPercentIndicator(
-                                  animation: true,
-                                  lineHeight: 20.0,
-                                  animationDuration: 2000,
-                                  percent: SCORE / 100,
-                                  animateFromLastPercent: true,
-                                  center: Text("$SCORE"),
-                                  isRTL: false,
-                                  barRadius: Radius.elliptical(5, 15),
-                                  progressColor: Colors.greenAccent,
-                                  maskFilter:
-                                      MaskFilter.blur(BlurStyle.solid, 3),
+                              Container(
+                                height: MediaQuery.of(context).size.height / 25,
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    image: AssetImage("image/report (20).png"),
+                                    // 여기에 배경 이미지 경로를 지정합니다.
+                                    fit:
+                                        BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                  ),
+                                ),
+                                child: Center(
+                                  child: DropdownButton<String>(
+                                    dropdownColor: Colors.indigoAccent,
+                                    value: dropdownYear,
+                                    icon: Icon(
+                                      // Add this
+                                      Icons.arrow_drop_down, // Add this
+                                      color: Colors.white, // Add this
+                                    ),
+                                    onChanged: (String? value) {
+                                      setState(
+                                        () {
+                                          dropdownYear = value!;
+                                          year =
+                                              int.parse(value!.substring(0, 4));
+                                        },
+                                      );
+                                      print(year);
+                                    },
+                                    items: yearList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
-                              Text("$AVG"),
-                              Text('(평균연령 $ageEra)'),
+                              Container(
+                                height: MediaQuery.of(context).size.height / 25,
+                                width: MediaQuery.of(context).size.width / 4,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  image: DecorationImage(
+                                    image: AssetImage("image/report (20).png"),
+                                    // 여기에 배경 이미지 경로를 지정합니다.
+                                    fit:
+                                        BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                  ),
+                                ),
+                                child: Center(
+                                  child: DropdownButton<String>(
+                                    dropdownColor: Colors.indigoAccent,
+                                    value: dropdownMonth,
+                                    icon: Icon(
+                                      // Add this
+                                      Icons.arrow_drop_down, // Add this
+                                      color: Colors.white, // Add this
+                                    ),
+                                    onChanged: (String? value) {
+                                      setState(
+                                        () {
+                                          dropdownMonth = value!;
+                                          int len = value!.length;
+                                          month = int.parse(value!
+                                              .substring(0, len > 2 ? 2 : 1));
+                                        },
+                                      );
+                                      print(month);
+                                    },
+                                    items: monthList
+                                        .map<DropdownMenuItem<String>>(
+                                            (String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                ),
+                              ),
+                              // Expanded(
+                              //   child: DropdownDatePicker(
+                              //     inputDecoration: InputDecoration(
+                              //         enabledBorder: const OutlineInputBorder(
+                              //           borderSide: BorderSide(
+                              //               color: Colors.grey, width: 1.0),
+                              //         ),
+                              //         border: OutlineInputBorder(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(10))),
+                              //     // optional
+                              //     isDropdownHideUnderline: true,
+                              //     // optional
+                              //     isFormValidator: true,
+                              //     // optional
+                              //     startYear: 2022,
+                              //     // optional
+                              //     endYear: 2030,
+                              //     // optional
+                              //     width: 10,
+                              //     // optional
+                              //     locale: "zh_CN",
+                              //     // selectedDay: 14, // optional
+                              //     showDay: false,
+                              //     selectedMonth: month,
+                              //     // optional
+                              //     selectedYear: year,
+                              //     // optional
+                              //     // onChangedDay: (value) => print('onChangedDay: $value'),
+                              //     onChangedMonth: (value) {
+                              //       print('onChangedMonth: $value');
+                              //       month = int.parse(value!);
+                              //     },
+                              //     onChangedYear: (value) {
+                              //       print('onChangedYear: $value');
+                              //       year = int.parse(value!);
+                              //     },
+                              //     //boxDecoration: BoxDecoration(
+                              //     // border: Border.all(color: Colors.grey, width: 1.0)), // optional
+                              //     // showDay: false,// optional
+                              //     // dayFlex: 2,// optional
+                              //     // locale: "zh_CN",// optional
+                              //     // hintDay: 'Day', // optional
+                              //     // hintMonth: 'Month', // optional
+                              //     // hintYear: 'Year', // optional
+                              //     // hintTextStyle: TextStyle(color: Colors.grey), // optional
+                              //   ),
+                              // ),
+                              Container(
+                                height: 40,
+                                width: 40,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.white,
+                                ),
+                                child: Center(
+                                  child: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          loadingForAverage = true;
+                                        });
+                                        futuresList = [];
+                                        futuresList.add(
+                                            extractRequiredBrainMonthData(nameToId[
+                                                name]!)); //맨위 유저 dropdown에 선택된 유저 id의 뇌파그래프 불러옴
+
+                                        calculateAverageSignal();
+                                      },
+                                      icon: Icon(
+                                        Icons.search,
+                                        color: const Color(0xff1f43f3),
+                                      )),
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        AVG <= SCORE
-                            ? Text('평균보다 점수가 높으시군요. 훌륭합니다!')
-                            : Text('평균보다 점수가부족합니다. 강해지세요!'),
-                        AspectRatio(
-                          aspectRatio: 6 / 5,
-                          child: Container(
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text("$name님의 두뇌나이",
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 320,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                                color: Color(0xff232d37)),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 10),
-                              child: _buildLineChart(),
+                              image: DecorationImage(
+                                image: AssetImage('image/report (25).png'),
+                              ),
                             ),
                           ),
-                        ),
-                      ]),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Text('$name님의 두뇌 \n나이는 27세!',
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                          // Divider(
+                          //   thickness: 2.0,
+                          // ),
+                          // const SizedBox(
+                          //   height: 10,
+                          // ),
+                          // Text("최근 훈련 참여도"),
+                          // const SizedBox(
+                          //   height: 10,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //   children: [
+                          //     Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       mainAxisAlignment: MainAxisAlignment.start,
+                          //       children: [
+                          //         Text('영역별 성취도'),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top1')],
+                          //         ),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top2')],
+                          //         ),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top3')],
+                          //         )
+                          //       ],
+                          //     ),
+                          //     Container(
+                          //         height:
+                          //             MediaQuery.of(context).size.height / 5,
+                          //         child: VerticalDivider(
+                          //           thickness: 2.0,
+                          //           width: 20,
+                          //           endIndent: 0,
+                          //           indent: 20,
+                          //         )),
+                          //     Column(
+                          //       crossAxisAlignment: CrossAxisAlignment.start,
+                          //       mainAxisAlignment: MainAxisAlignment.start,
+                          //       children: [
+                          //         Text('영역별 수행도'),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top1')],
+                          //         ),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top2')],
+                          //         ),
+                          //         const SizedBox(
+                          //           height: 10,
+                          //         ),
+                          //         Row(
+                          //           children: [Text('Top3')],
+                          //         )
+                          //       ],
+                          //     )
+                          //   ],
+                          // ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Divider(
+                            thickness: 2.0,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "영역별 한달 평균 점수",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+
+                          Stack(
+                            children: [
+                              Container(
+                                height: MediaQuery.of(context).size.height / 2,
+                                child: Image.asset("image/report (18).png"),
+                              ),
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 64,
+                                  ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height /
+                                        2.935,
+                                    child: radar_chart.RadarChart(
+                                      data: data,
+                                      ticks: ticks,
+                                      features: features,
+                                      reverseAxis: false,
+                                      outlineColor: Colors.black,
+                                      axisColor: Colors.transparent,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          // Padding(
+                          //   padding: EdgeInsets.zero,
+                          //   child: Container(
+                          //     height: MediaQuery.of(context).size.height / 3.5,
+                          //     child: radar_chart.RadarChart.light(
+                          //       ticks: ticks,
+                          //       features: features,
+                          //       data: data,
+                          //       reverseAxis: false,
+                          //       useSides: true,
+                          //     ),
+                          //   ),
+                          // ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Divider(
+                            thickness: 2.0,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "세부 결과 그래프",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          _buildButtons(),
+                          // TextButton(
+                          //   onPressed: () async {
+                          //     await gql.createMonthlyData();
+                          //     setState(() {
+                          //       braincount++;
+                          //       brainbutton = "$braincount번 추가";
+                          //     });
+                          //   },
+                          //   child: Text(brainbutton),
+                          // ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            constraints: BoxConstraints(
+                              maxHeight: double
+                                  .infinity, // container 길이를 text에 맞게 유연하게 늘릴수 있다.
+                            ),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("image/community (20).png"),
+                                // 여기에 배경 이미지 경로를 지정합니다.
+                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                              ),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 15.0, horizontal: 15.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              7,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              7,
+                                          child: Image.asset(
+                                              nameDeepPng[selectedLabel]!)),
+                                      Expanded(
+                                        child: LinearPercentIndicator(
+                                          animation: true,
+                                          lineHeight: 20.0,
+                                          animationDuration: 2000,
+                                          percent: SCORE / 100,
+                                          animateFromLastPercent: true,
+                                          center: Text("$SCORE"),
+                                          isRTL: false,
+                                          barRadius: Radius.elliptical(5, 15),
+                                          progressColor: Colors.greenAccent,
+                                          maskFilter: MaskFilter.blur(
+                                              BlurStyle.solid, 3),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '  $nameForLinechart',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text("$AVG (평균연령 $ageEra)",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text('자세한 평가는 전문가가 직접 적어줄거에요',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                  Text(
+                                      AVG <= SCORE
+                                          ? '평균보다 점수가 높으시군요. 훌륭합니다!'
+                                          : '평균보다 점수가부족합니다. 강해지세요!',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          AspectRatio(
+                            aspectRatio: 6 / 5,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  color: Colors.white.withOpacity(0.5)),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 10),
+                                child: _buildLineChart(),
+                              ),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ),
               ),
             ),
-          ),
     );
   }
 }

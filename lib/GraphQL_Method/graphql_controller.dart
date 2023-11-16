@@ -1648,9 +1648,13 @@ class GraphQLController {
       safePrint('Mutation failed: $e');
     }
   }
+
   //BETWEEN
   Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItemsBetween(
-      {required String ID, required String startMonth, required String endMonth, String? nextToken}) async {
+      {required String ID,
+      required String startMonth,
+      required String endMonth,
+      String? nextToken}) async {
     try {
       print("??");
       print(startMonth);
@@ -1693,7 +1697,9 @@ class GraphQLController {
           variables: {
             "filter": {
               "id": {"eq": ID},
-              "month": {"between": [startMonth, endMonth]},
+              "month": {
+                "between": [startMonth, endMonth]
+              },
             },
             "limit": 1000,
             "nextToken": nextToken,
@@ -1719,8 +1725,11 @@ class GraphQLController {
 
       if (newNextToken != null) {
         // recursive call for next page's data
-        var additionalItems =
-        await queryListMonthlyDBItemsBetween(ID: ID, startMonth:startMonth,endMonth:endMonth,nextToken:newNextToken);
+        var additionalItems = await queryListMonthlyDBItemsBetween(
+            ID: ID,
+            startMonth: startMonth,
+            endMonth: endMonth,
+            nextToken: newNextToken);
         monthlyDBTests.addAll(additionalItems);
       }
 
@@ -1733,12 +1742,12 @@ class GraphQLController {
 
 /*  ----------- jinsu method ------------------        */
 
-  Future<bool?> createScheduledata(String inst_id, String schedule_id,
-      String content, List<String> tag, String classtime, String date) async {
+  Future<bool?> createScheduledata(String schedule_id, String content,
+      List<String> tag, String classtime, String date) async {
     var time = '${TemporalDateTime.now()}';
     var row = {
       'SCHEDULE_ID': time,
-      'INSTITUTION_ID': inst_id,
+      'INSTITUTION_ID': institutionNumber,
       'CONTENT': content,
       'TAG': tag,
       'TIME': classtime,
@@ -1791,9 +1800,8 @@ class GraphQLController {
   }
 
   Future<List<InstitutionEventScheduleTable?>>
-      queryInstitutionScheduleByInstitutionId(String institutionId, String date,
+      queryInstitutionScheduleByInstitutionId(String date,
           {String? nextToken}) async {
-    String inst_id = 'aaa';
     int dateNext = int.parse(date);
     dateNext += 40;
     try {
@@ -1823,7 +1831,7 @@ class GraphQLController {
         """,
           variables: {
             "filter": {
-              "INSTITUTION_ID": {"eq": institutionId},
+              "INSTITUTION_ID": {"eq": institutionNumber},
               "DATE": {
                 "between": [date, '$dateNext']
               },
@@ -1852,7 +1860,7 @@ class GraphQLController {
         if (newNextToken != null) {
           // recursive call for next page's data
           var nextSchedules = await queryInstitutionScheduleByInstitutionId(
-              institutionId, date,
+              date,
               nextToken: newNextToken);
           schedules.addAll(nextSchedules);
         }
@@ -1902,11 +1910,11 @@ class GraphQLController {
     }
   }
 
-  Future<bool?> updateScheduledata(String inst_id, String sche_id,
-      String content, List<String> tag, String time, String date) async {
+  Future<bool?> updateScheduledata(String sche_id, String content,
+      List<String> tag, String time, String date) async {
     final row = {
       'SCHEDULE_ID': sche_id,
-      'INSTITUTION_ID': inst_id,
+      'INSTITUTION_ID': institutionNumber,
       'CONTENT': content,
       'TAG': tag,
       'TIME': time,
@@ -1958,10 +1966,12 @@ class GraphQLController {
   }
 
   Future<bool?> deleteScheduledata(
-    String inst_id,
     String schedule_id,
   ) async {
-    final row = {'INSTITUTION_ID': inst_id, 'SCHEDULE_ID': schedule_id};
+    final row = {
+      'INSTITUTION_ID': institutionNumber,
+      'SCHEDULE_ID': schedule_id
+    };
     try {
       final response = await Amplify.API
           .mutate(
@@ -1999,8 +2009,7 @@ class GraphQLController {
     }
   }
 
-  Future<List<UserTable?>> queryListUsers(
-      { String? nextToken}) async {
+  Future<List<UserTable?>> queryListUsers({String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2049,8 +2058,7 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var nextUsers = await queryListUsers(
-             nextToken: newNextToken);
+          var nextUsers = await queryListUsers(nextToken: newNextToken);
           Users.addAll(nextUsers);
         }
         print(Users);
@@ -3085,7 +3093,8 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var additionalItems = await queryMonthlyDBRequiredItem(selectedAgeUserId, yearMonth,
+          var additionalItems = await queryMonthlyDBRequiredItem(
+              selectedAgeUserId, yearMonth,
               nextToken: newNextToken);
           monthlyDBTests.addAll(additionalItems);
         }
@@ -3231,8 +3240,6 @@ class GraphQLController {
 // //   }
 // // }
 //
-
-
 
 //
 // // Future<List<MonthlyDBTest?>> queryMonthlyDBTwoItems(int yearMonth) async {

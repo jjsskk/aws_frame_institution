@@ -155,7 +155,7 @@ class _SchedulePageState extends State<SchedulePage> {
     monthStr = month > 9 ? '${month}' : '0${month}';
     gql
         .queryInstitutionScheduleByInstitutionId(
-            "1", '${_selectedDay!.year}${monthStr}00')
+            '${_selectedDay!.year}${monthStr}00')
         .then((result) {
       //       gql.queryInstitutionScheduleByInstitutionId("1").then((result) {
       print(result);
@@ -309,7 +309,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                     setState(
                                       () {
                                         dropdownYear = value!;
-                                        year = int.parse(value!.substring(0, 4));
+                                        year =
+                                            int.parse(value!.substring(0, 4));
                                       },
                                     );
                                     print(year);
@@ -354,14 +355,15 @@ class _SchedulePageState extends State<SchedulePage> {
                                       () {
                                         dropdownMonth = value!;
                                         int len = value!.length;
-                                        month = int.parse(
-                                            value!.substring(0, len > 2 ? 2 : 1));
+                                        month = int.parse(value!
+                                            .substring(0, len > 2 ? 2 : 1));
                                       },
                                     );
                                     print(month);
                                   },
-                                  items: monthList.map<DropdownMenuItem<String>>(
-                                      (String value) {
+                                  items: monthList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(
@@ -565,11 +567,17 @@ class _SchedulePageState extends State<SchedulePage> {
                                                         endMin = endHour = 0;
                                                   });
                                                 },
-                                                icon: Icon(Icons.arrow_circle_left,size: 35,color: blue,),
+                                                icon: Icon(
+                                                  Icons.arrow_circle_left,
+                                                  size: 35,
+                                                  color: blue,
+                                                ),
                                               )
                                             : const SizedBox(),
                                         Text(
-                                            '${_selectedDay!.year}년 ${_selectedDay!.month}월 ${_selectedDay!.day}일',style: textStyleBlack,),
+                                          '${_selectedDay!.year}년 ${_selectedDay!.month}월 ${_selectedDay!.day}일',
+                                          style: textStyleBlack,
+                                        ),
                                         Row(
                                           children: [
                                             isCheckedEdit
@@ -609,7 +617,6 @@ class _SchedulePageState extends State<SchedulePage> {
 
                                                       bool isChecked = isCheckedAddOrUpdate
                                                           ? await gql.updateScheduledata(
-                                                              '$inst_id',
                                                               saveScheduleId,
                                                               _programController
                                                                   .text
@@ -620,7 +627,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                                               '$start ~ $end',
                                                               '${_selectedDay!.year}$monthStr$dateStr')
                                                           : await gql.createScheduledata(
-                                                              '$inst_id',
                                                               SCHE_ID,
                                                               _programController
                                                                   .text
@@ -698,12 +704,13 @@ class _SchedulePageState extends State<SchedulePage> {
                                                         }
                                                       }
                                                     },
-                                                child: Container(
-                                                  height: 40,
-                                                  width: 40,
-                                                  child: Image.asset("image/community (3).png"),
-                                                ),
-                                            )
+                                                    child: Container(
+                                                      height: 40,
+                                                      width: 40,
+                                                      child: Image.asset(
+                                                          "image/community (3).png"),
+                                                    ),
+                                                  )
                                                 : IconButton(
                                                     onPressed: () {
                                                       setState(() {
@@ -711,7 +718,11 @@ class _SchedulePageState extends State<SchedulePage> {
                                                             !isCheckedEdit;
                                                       });
                                                     },
-                                                    icon: Icon(Icons.add_circle_outlined),color: blue,iconSize: 30,),
+                                                    icon: Icon(Icons
+                                                        .add_circle_outlined),
+                                                    color: blue,
+                                                    iconSize: 30,
+                                                  ),
                                           ],
                                         )
                                       ],
@@ -880,7 +891,8 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                           10.0),
                                                                   child:
                                                                       TextField(
-                                                                        maxLength: 10,
+                                                                    maxLength:
+                                                                        10,
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .black),
@@ -1102,17 +1114,24 @@ class _SchedulePageState extends State<SchedulePage> {
                                                           children: [
                                                             Container(
                                                               height: 15,
-                                                              width: 15, // Width of the vertical divider
-                                                              decoration: const BoxDecoration(
-                                                                  borderRadius: BorderRadius.all(
-                                                                    Radius.circular(20.0),
-                                                                  ),
-                                                                  color: Color(0xff1f43f3)
-                                                                // Color.fromARGB(255, 74, 137, 92),
-                                                              ),
+                                                              width: 15,
+                                                              // Width of the vertical divider
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius
+                                                                              .all(
+                                                                        Radius.circular(
+                                                                            20.0),
+                                                                      ),
+                                                                      color: Color(
+                                                                          0xff1f43f3)
+                                                                      // Color.fromARGB(255, 74, 137, 92),
+                                                                      ),
                                                             ),
-
-                                                            const SizedBox(width: 5,),
+                                                            const SizedBox(
+                                                              width: 5,
+                                                            ),
                                                             Expanded(
                                                               child: InkWell(
                                                                 onTap: () {
@@ -1125,58 +1144,57 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                       !isCheckedAddOrUpdate;
                                                                   _programController =
                                                                       TextEditingController(
-                                                                          text: value[
-                                                                                  index]
-                                                                              .title);
+                                                                          text:
+                                                                              value[index].title);
                                                                   tagsFromDB =
                                                                       value[index]
                                                                           .tags;
-                                                                  startHour =
-                                                                      int.parse(value[
-                                                                              index]
-                                                                          .time
-                                                                          .substring(
-                                                                              0, 2));
-                                                                  startMin =
-                                                                      int.parse(value[
-                                                                              index]
-                                                                          .time
-                                                                          .substring(
-                                                                              4, 6));
-                                                                  endHour = int.parse(
-                                                                      value[index]
-                                                                          .time
-                                                                          .substring(
-                                                                              10,
-                                                                              12));
-                                                                  endMin = int.parse(
-                                                                      value[index]
-                                                                          .time
-                                                                          .substring(
-                                                                              14,
-                                                                              16));
+                                                                  startHour = int.parse(value[
+                                                                          index]
+                                                                      .time
+                                                                      .substring(
+                                                                          0,
+                                                                          2));
+                                                                  startMin = int.parse(value[
+                                                                          index]
+                                                                      .time
+                                                                      .substring(
+                                                                          4,
+                                                                          6));
+                                                                  endHour = int.parse(value[
+                                                                          index]
+                                                                      .time
+                                                                      .substring(
+                                                                          10,
+                                                                          12));
+                                                                  endMin = int.parse(value[
+                                                                          index]
+                                                                      .time
+                                                                      .substring(
+                                                                          14,
+                                                                          16));
 
                                                                   setState(() {
                                                                     isCheckedEdit =
                                                                         !isCheckedEdit;
                                                                   });
                                                                 },
-                                                                child: Container(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              15,
-                                                                          horizontal:
-                                                                              10),
+                                                                child:
+                                                                    Container(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          15,
+                                                                      horizontal:
+                                                                          10),
                                                                   constraints:
                                                                       BoxConstraints(
-                                                                    maxWidth:
-                                                                        MediaQuery.of(
-                                                                                context)
-                                                                            .size
-                                                                            .width,
-                                                                    maxHeight: double
-                                                                        .infinity,
+                                                                    maxWidth: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width,
+                                                                    maxHeight:
+                                                                        double
+                                                                            .infinity,
                                                                   ),
                                                                   decoration:
                                                                       BoxDecoration(
@@ -1196,12 +1214,10 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                           Column(
                                                                             children: [
                                                                               Container(
-                                                                                  constraints:
-                                                                                      BoxConstraints(
+                                                                                  constraints: BoxConstraints(
                                                                                     maxHeight: double.infinity,
                                                                                   ),
-                                                                                  width:
-                                                                                      MediaQuery.of(context).size.width / 4.5,
+                                                                                  width: MediaQuery.of(context).size.width / 4.5,
                                                                                   decoration: const BoxDecoration(
                                                                                       borderRadius: BorderRadius.all(
                                                                                         Radius.circular(20.0),
@@ -1213,13 +1229,13 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                             ],
                                                                           ),
                                                                           const SizedBox(
-                                                                            width: 10,
+                                                                            width:
+                                                                                10,
                                                                           ),
                                                                           Expanded(
                                                                             child:
                                                                                 Column(
-                                                                              crossAxisAlignment:
-                                                                                  CrossAxisAlignment.start,
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
                                                                                 Row(
                                                                                     children: value[index].tags.map((String tag) {
@@ -1237,40 +1253,35 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                                           ),
                                                                                       margin: const EdgeInsets.only(right: 10.0),
                                                                                       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
-                                                                                      child:
-                                                                                          InkWell(
-                                                                                            child: Text(
-                                                                                              '#$tag',
-                                                                                              style: const TextStyle(fontSize: 12, color: Colors.white),
-                                                                                            ),
-                                                                                            onTap: () {
-                                                                                              print("$tag selected");
-                                                                                            },
-                                                                                          ),
-
+                                                                                      child: InkWell(
+                                                                                        child: Text(
+                                                                                          '#$tag',
+                                                                                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                                                                                        ),
+                                                                                        onTap: () {
+                                                                                          print("$tag selected");
+                                                                                        },
+                                                                                      ),
                                                                                     ),
                                                                                   );
                                                                                 }).toList()),
                                                                                 const SizedBox(
-                                                                                  height:
-                                                                                      10,
+                                                                                  height: 10,
                                                                                 ),
                                                                                 Text(
                                                                                   '${value[index].title}',
-                                                                                  style:
-                                                                                      textStyleBlack,
+                                                                                  style: textStyleBlack,
                                                                                 ),
                                                                               ],
                                                                             ),
                                                                           ),
                                                                           Column(
-                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceBetween,
                                                                             children: [
                                                                               IconButton(
-                                                                                  onPressed:
-                                                                                      () {
-                                                                                    print(
-                                                                                        'delete');
+                                                                                  onPressed: () {
+                                                                                    print('delete');
                                                                                     showDialog(
                                                                                         context: context,
                                                                                         useRootNavigator: false,
@@ -1281,7 +1292,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                                             actions: [
                                                                                               TextButton(
                                                                                                   onPressed: () async {
-                                                                                                    bool isChecked = await gql.deleteScheduledata("1", value[index].sche_id);
+                                                                                                    bool isChecked = await gql.deleteScheduledata(value[index].sche_id);
                                                                                                     {
                                                                                                       if (isChecked) {
                                                                                                         getEventDataFromDB();
@@ -1319,8 +1330,12 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                                         });
                                                                                   },
                                                                                   icon: Icon(
-                                                                                      Icons.highlight_remove_rounded,color: blue,)),
-                                                                              const SizedBox(height: 42,)
+                                                                                    Icons.highlight_remove_rounded,
+                                                                                    color: blue,
+                                                                                  )),
+                                                                              const SizedBox(
+                                                                                height: 42,
+                                                                              )
                                                                             ],
                                                                           ),
                                                                         ],
