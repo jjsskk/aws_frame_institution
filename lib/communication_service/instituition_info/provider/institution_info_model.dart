@@ -27,11 +27,11 @@ class InstitutionNewsModel extends ChangeNotifier {
 
   Future<List<InstitutionNewsTable>> getNews(String institutionId){
 
-    return gql.queryInstitutionNewsByInstitutionId(institutionId: "INST_ID_123");
+    return gql.queryInstitutionNewsByInstitutionId(institutionId: gql.institutionNumber);
   }
 
   Future<void> refresh() async {
-    _news = await getNews("INST_ID_123");
+    _news = await getNews(gql.institutionNumber);
     notifyListeners();
   }
 

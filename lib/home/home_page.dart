@@ -96,7 +96,7 @@ class _HomePageState extends State<HomePage> {
     year = DateTime.now().year;
     month = DateTime.now().month;
     gql
-        .listInstitutionCommentBoard('INSTITUTION_ID', '1234', '$year',
+        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber, '$year',
             month < 10 ? '0${month}' : '$month',
             nextToken: null) //institution_id
         .then((result) {
@@ -140,6 +140,7 @@ class _HomePageState extends State<HomePage> {
               "custom:institutionNumber".toLowerCase()) {
             // useremail = element.value;
             gql.institutionNumber = (element.value) ?? "no result";
+
           }
         });
         setState(() {
@@ -246,6 +247,7 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
@@ -261,13 +263,15 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: Text(
                                   '공지사항',
-                                  style: buttonTextStyle,
+                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                                 )),
                           ),
+                          SizedBox(width: 6),
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xff1f43f3),
+                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
                                     )),
@@ -280,11 +284,13 @@ class _HomePageState extends State<HomePage> {
                                             )),
                                   );
                                 },
-                                child: Text('기관 소식', style: buttonTextStyle)),
+                                child: Text('기관소식', style: buttonTextStyle)),
                           ),
+                          SizedBox(width: 6),
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(horizontal: 16,vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
@@ -300,9 +306,11 @@ class _HomePageState extends State<HomePage> {
                                 },
                                 child: Text('시간표', style: buttonTextStyle)),
                           ),
+                          SizedBox(width: 6),
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),

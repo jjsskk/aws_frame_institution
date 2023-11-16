@@ -27,7 +27,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
   String SHUTTLE_INSTITUTION_ID = '';
 
   void getFood() {
-    gql.queryFoodByInstitutionIdAndDate("INST_ID_123", date).then((value) {
+    gql.queryFoodByInstitutionIdAndDate(gql.institutionNumber, date).then((value) {
       if (value != null) {
         setState(() {
           FOOD_IMAGE_URL = value.IMAGE_URL;
@@ -48,7 +48,7 @@ class _ConveniencePageState extends State<ConveniencePage> {
   }
 
   void getShuttleTime() {
-    gql.queryShuttleTimeByInstitutionId("INST_ID_123").then((value) {
+    gql.queryShuttleTimeByInstitutionId(gql.institutionNumber).then((value) {
       if (value != null) {
         setState(() {
           SHUTTLE_IMAGE_URL = value.IMAGE_URL;
@@ -109,284 +109,299 @@ class _ConveniencePageState extends State<ConveniencePage> {
     final appBarColor = themeData.primaryColor;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            //this point
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 26),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '식단정보',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.create, size: 20),
-                              color: Color(0xFF2B3FF0),
-                              onPressed: () async {
-                                var result = await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => AddFoodMenuPage(
-                                      month: _generateDateItems(),
-                                      date: date,
-                                    ),
-                                  ),
-                                );
-
-                                if (result != null) {
-                                  setState(() {
-                                    getFood();
-                                  });
-                                }
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, size: 20),
-                              color: Color(0xFF2B3FF0),
-                              onPressed: () async {
-                                // Show confirmation dialog
-                                final confirmed = await showDialog<bool>(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('삭제 확인'),
-                                      content:
-                                          const Text('정말로 이 항목을 삭제하시겠습니까?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('예'),
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(true),
-                                        ),
-                                        TextButton(
-                                          child: const Text('아니오'),
-                                          onPressed: () =>
-                                              Navigator.of(context).pop(false),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-
-                                if (confirmed ?? false) {
-                                  var result = await gql.deleteFood(
-                                      dateTime: FOOD_DATETIME,
-                                      institutionId: FOOD_INSTITUTION_ID);
-
-                                  // Show snackbar after deletion
-                                  if (result != null)
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                '$FOOD_DATETIME월 식단정보가 성공적으로 삭제되었습니다.')));
-
-                                  setState(() {
-                                    getFood();
-                                  });
-                                }
-                              },
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-
-                     Padding(
-                       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                       child: Row(
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('image/ui (2).png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              //this point
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 26),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            height: MediaQuery.of(context).size.height / 25,
-                            width: MediaQuery.of(context).size.width / 3.8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              image: DecorationImage(
-                                image: AssetImage("image/report (20).png"),
-                                // 여기에 배경 이미지 경로를 지정합니다.
-                                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                          Row(
+                            children: [
+                              Text(
+                                '식단정보',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)
                               ),
-                            ),
-                            child: Center(
-                              child: CustomDropDown(
-                                Items: dateItems,
-                                selected: date,
-                                onChanged: _onDateSelected,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: MediaQuery.of(context).size.height / 30,
+                                      width: MediaQuery.of(context).size.width / 3.8,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage("image/report (20).png"),
+                                          // 여기에 배경 이미지 경로를 지정합니다.
+                                          fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CustomDropDown(
+                                          Items: dateItems,
+                                          selected: date,
+                                          onChanged: _onDateSelected,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-
-                  ),
-                     ),
-                  SizedBox(
-                    height: 10,
-                  ),
-
-                  FOOD_IMAGE_URL != 'loading'
-                      ? FOOD_IMAGE_URL != ''
-                          ? FutureBuilder<String>(
-                              future: storageService
-                                  .getImageUrlFromS3(FOOD_IMAGE_URL),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<String> snapshot) {
-                                if (snapshot.hasData) {
-                                  String foodImageUrl = snapshot.data!;
-                                  return Container(
-                                    width: 350,
-
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                                      child: Image.network(foodImageUrl, fit: BoxFit.contain,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.create, size: 20),
+                                color: Color(0xFF2B3FF0),
+                                onPressed: () async {
+                                  var result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AddFoodMenuPage(
+                                        month: _generateDateItems(),
+                                        date: date,
+                                      ),
                                     ),
                                   );
 
-                                } else if (snapshot.hasError) {
-                                  return Center(child: Text('이미지를 불러올 수 없습니다.'));
-                                }
-                                return Center(child: Text('데이터가 없습니다.'));
-                              })
-                          : Center(child: Text('데이터가 없습니다.'))
-                      : Center(child: CircularProgressIndicator()),
-
-                  //   }
-                  //   print("aasdasdas");
-                  //   print(foodMenu);
-                  //   return Center(child: Text('편의사항이 없습니다.'));
-                  // }
-                  //     ),
-
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: Text(
-                                '셔틀시간표',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                  if (result != null) {
+                                    setState(() {
+                                      getFood();
+                                    });
+                                  }
+                                },
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.create, size: 20),
-                                  color: Color(0xFF2B3FF0),
-                                  onPressed: () async {
-                                    var result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddShuttleTimePage(),
+                              IconButton(
+                                icon: const Icon(Icons.delete, size: 20),
+                                color: Color(0xFF2B3FF0),
+                                onPressed: () async {
+                                  // Show confirmation dialog
+                                  final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('삭제 확인'),
+                                        content:
+                                            const Text('정말로 이 항목을 삭제하시겠습니까?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('예'),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(true),
+                                          ),
+                                          TextButton(
+                                            child: const Text('아니오'),
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(false),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+
+                                  if (confirmed ?? false) {
+                                    var result = await gql.deleteFood(
+                                        dateTime: FOOD_DATETIME,
+                                        institutionId: FOOD_INSTITUTION_ID);
+
+                                    // Show snackbar after deletion
+                                    if (result != null)
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                              content: Text(
+                                                  '$FOOD_DATETIME월 식단정보가 성공적으로 삭제되었습니다.')));
+
+                                    setState(() {
+                                      getFood();
+                                    });
+                                  }
+                                },
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+
+
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                    FOOD_IMAGE_URL != 'loading'
+                        ? FOOD_IMAGE_URL != ''
+                            ? FutureBuilder<String>(
+                                future: storageService
+                                    .getImageUrlFromS3(FOOD_IMAGE_URL),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  if (snapshot.hasData) {
+                                    String foodImageUrl = snapshot.data!;
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      child: Container(
+                                        width: 300,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                          child: Image.network(foodImageUrl, fit: BoxFit.contain,),
+                                        ),
                                       ),
                                     );
 
-                                    if (result != null) {
-                                      setState(() {
-                                        print("qwer");
-                                        getShuttleTime();
-                                      });
-                                    }
-                                  }, // 기능 구현
+                                  } else if (snapshot.hasError) {
+                                    return Center(child: Text('이미지를 불러올 수 없습니다.'));
+                                  }
+                                  return Center(child: Text('데이터가 없습니다.'));
+                                })
+                            : Center(child: Text('데이터가 없습니다.'))
+                        : Center(child: CircularProgressIndicator()),
+
+                    //   }
+                    //   print("aasdasdas");
+                    //   print(foodMenu);
+                    //   return Center(child: Text('편의사항이 없습니다.'));
+                    // }
+                    //     ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text(
+                                  '셔틀시간표',
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                 ),
-                                IconButton(
-                                  icon: const Icon(Icons.delete, size: 20,),
-                                  color: Color(0xFF2B3FF0),
-                                  onPressed: () async {
-                                    // Show confirmation dialog
-                                    final confirmed = await showDialog<bool>(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text('삭제 확인'),
-                                          content:
-                                              const Text('정말로 이 항목을 삭제하시겠습니까?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('예'),
-                                              onPressed: () =>
-                                                  Navigator.of(context)
-                                                      .pop(true),
-                                            ),
-                                            TextButton(
-                                              child: const Text('아니오'),
-                                              onPressed: () =>
-                                                  Navigator.of(context)
-                                                      .pop(false),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.create, size: 20),
+                                    color: Color(0xFF2B3FF0),
+                                    onPressed: () async {
+                                      var result = await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddShuttleTimePage(),
+                                        ),
+                                      );
 
-                                    if (confirmed ?? false) {
-                                      var result = await gql.deleteShuttleTime(
-                                          institutionId:
-                                              SHUTTLE_INSTITUTION_ID);
-
-                                      // Show snackbar after deletion
-                                      if (result != null)
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                                content: Text(
-                                                    '셔틀시간이 성공적으로 삭제되었습니다.')));
-
-                                      setState(() {
-                                        getShuttleTime();
-                                      });
-                                    }
-                                  },
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        SHUTTLE_IMAGE_URL != 'loading'
-                            ? SHUTTLE_IMAGE_URL != ''
-                                ? FutureBuilder<String>(
-                                    future: storageService
-                                        .getImageUrlFromS3(SHUTTLE_IMAGE_URL),
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<String> snapshot) {
-                                      if (snapshot.hasData) {
-                                        String imageUrl = snapshot.data!;
-                                        return Container(
-                                          width: 350,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                                            child: Image.network(imageUrl),
-                                          ),
-                                        );
-                                      } else if (snapshot.hasError) {
-                                        return Text('이미지를 불러올 수 없습니다.');
+                                      if (result != null) {
+                                        setState(() {
+                                          print("qwer");
+                                          getShuttleTime();
+                                        });
                                       }
-                                      return Text('데이터가 없습니다');
-                                    })
-                                : Text('데이터가 없습니다.')
-                            : CircularProgressIndicator(),
-                      ],
+                                    }, // 기능 구현
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, size: 20,),
+                                    color: Color(0xFF2B3FF0),
+                                    onPressed: () async {
+                                      // Show confirmation dialog
+                                      final confirmed = await showDialog<bool>(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('삭제 확인'),
+                                            content:
+                                                const Text('정말로 이 항목을 삭제하시겠습니까?'),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text('예'),
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(true),
+                                              ),
+                                              TextButton(
+                                                child: const Text('아니오'),
+                                                onPressed: () =>
+                                                    Navigator.of(context)
+                                                        .pop(false),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+
+                                      if (confirmed ?? false) {
+                                        var result = await gql.deleteShuttleTime(
+                                            institutionId:
+                                                SHUTTLE_INSTITUTION_ID);
+
+                                        // Show snackbar after deletion
+                                        if (result != null)
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      '셔틀시간이 성공적으로 삭제되었습니다.')));
+
+                                        setState(() {
+                                          getShuttleTime();
+                                        });
+                                      }
+                                    },
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                          SHUTTLE_IMAGE_URL != 'loading'
+                              ? SHUTTLE_IMAGE_URL != ''
+                                  ? FutureBuilder<String>(
+                                      future: storageService
+                                          .getImageUrlFromS3(SHUTTLE_IMAGE_URL),
+                                      builder: (BuildContext context,
+                                          AsyncSnapshot<String> snapshot) {
+                                        if (snapshot.hasData) {
+                                          String imageUrl = snapshot.data!;
+                                          return Container(
+                                            width: 300,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
+                                              child: Image.network(imageUrl),
+                                            ),
+                                          );
+                                        } else if (snapshot.hasError) {
+                                          return Text('이미지를 불러올 수 없습니다.');
+                                        }
+                                        return Text('데이터가 없습니다');
+                                      })
+                                  : Text('데이터가 없습니다.')
+                              : CircularProgressIndicator(),
+                        ],
+                      ),
                     ),
-                  ),
-                  // 셔틀 시간표 목록 구현
-                ],
+                    // 셔틀 시간표 목록 구현
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -431,7 +446,7 @@ class _CustomDropDownState extends State<CustomDropDown> {
       items: [
         for (final date in widget.Items)
           DropdownMenuItem(
-            child: Text(date,style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+            child: Text(date,style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600, fontSize: 13),),
             value: date,
           ),
       ],

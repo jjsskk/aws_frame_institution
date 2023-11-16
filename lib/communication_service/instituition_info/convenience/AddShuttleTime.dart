@@ -102,7 +102,7 @@ class _AddShuttleTimePageState extends State<AddShuttleTimePage> {
 
               var result = await gql.createShuttleTime(
                 imageUrl,
-                "INST_ID_123",
+                gql.institutionNumber,
               );
 
               if (result != null) {
