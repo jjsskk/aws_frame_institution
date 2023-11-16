@@ -211,7 +211,7 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
     Navigator.pop(context);
     },
     ),
-        title: Text('이용인 정보', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+        title: Text('이용자 돌봄정보', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -222,7 +222,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
           ),
         ),
       ),
-      body:loading? LoadingPage(): ListView(
+      body:loading? LoadingPage():
+      name != "" ? ListView(
         padding: EdgeInsets.all(16),
         children: [
           nameList.isNotEmpty
@@ -551,7 +552,48 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
             ],
           ),
         ],
-      ),
+      ):Column(
+        mainAxisAlignment: MainAxisAlignment.center, // 세로축 중앙 정렬
+        crossAxisAlignment: CrossAxisAlignment.center, // 가로축 중앙 정렬
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("등록된 이용자가 없습니다.", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                Text("이용자를 추가해주세요", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+              ],
+            ),
+          ), // Spacer를 이용하여 버튼을 화면 하단에 위치시키는 코드
+          SizedBox(height: 20,),
+           ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff1f43f3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    )
+                ),
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AddEssentialCareInfoPage(nameList: nameList)),
+                  );
+
+                  if (result == true) {
+                    setState(() async {
+                      index = 0;
+                      await getEssentialCare();
+                    });
+                  }
+                },
+                child: Text('이용자 추가', style: buttonTextStyle)
+            ),
+
+        ],
+      )
+
+
     );
   }
 }

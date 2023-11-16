@@ -1141,8 +1141,14 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
       appBar: AppBar(
-        title: Text('개별 분석 보고서',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+
+        leading:IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined, color: Colors.white, size: 35),
+          onPressed: (){
+            Navigator.pop(context);
+          },
+        ),
+        title: Text('개별 분석 보고서', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(

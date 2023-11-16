@@ -128,7 +128,7 @@ class _UpdateEssentialCareInfoPageState extends State<UpdateEssentialCareInfoPag
           },
         ),
         title: Text(
-          '이용인 정보 수정',
+          '이용자 돌봄정보 수정',
           style: TextStyle(
               color: Colors.white,
               fontSize: 20,
