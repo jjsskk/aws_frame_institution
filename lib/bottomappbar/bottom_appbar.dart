@@ -19,9 +19,10 @@ class GlobalBottomAppBar extends StatelessWidget {
       child: IconTheme(
         data: IconThemeData(color: const Color(0xff2b3fee)),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             const SizedBox(
-              width: 25,
+              width: 40,
             ),
             IconButton(
               onPressed: () {
@@ -34,7 +35,7 @@ class GlobalBottomAppBar extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              width: 180,
+              width: 160,
             ),
             IconButton(
               onPressed: () {},
@@ -43,6 +44,10 @@ class GlobalBottomAppBar extends StatelessWidget {
                 size: 35,
               ),
             ),
+            const SizedBox(
+              width: 40,
+            ),
+
           ],
         ),
       ),

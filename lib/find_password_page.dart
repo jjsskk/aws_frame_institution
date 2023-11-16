@@ -114,7 +114,7 @@ class _Find_Password_PageState extends State<Find_Password_Page> {
                 ),
                 // Login Form
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
                   child: _verificationForm(textColor),
                 ),
 
@@ -259,7 +259,7 @@ class _Find_Password_PageState extends State<Find_Password_Page> {
                         )),
                     onPressed: _confirmemail,
                     child: Text(
-                      '보내기',
+                      '발송',
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     )),

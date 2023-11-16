@@ -164,7 +164,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                             final check = await gql.createCommentBoarddata(
                                 selectedUserId,
                                 _titleController.text.trim(),
-                                '김한동',
+
                                 _contentController.text.trim(),
                                 selectedUserName,
                                 gql.institutionNumber);

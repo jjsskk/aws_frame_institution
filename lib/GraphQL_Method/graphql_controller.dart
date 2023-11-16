@@ -2079,13 +2079,13 @@ class GraphQLController {
   }
 
   Future<bool?> createCommentBoarddata(String user_id, String title,
-      String writer, String content, String username, String inst_id) async {
+       String content, String username, String inst_id) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'USER_ID': user_id,
       'BOARD_ID': time,
       'CONTENT': content,
-      'WRITER': writer,
+      'WRITER': managerName,
       'TITLE': title,
       'USERNAME': username,
       'INSTITUTION_ID': inst_id,
@@ -2143,7 +2143,7 @@ class GraphQLController {
   }
 
   Stream<GraphQLResponse>? subscribeInstitutionCommentBoard(
-      String institutionId) {
+     ) {
     String inst_id = 'aaa';
     try {
       var operation = Amplify.API.subscribe(
@@ -2756,6 +2756,7 @@ class GraphQLController {
 	                  NEW_CONVERSATION_PROTECTOR
 	                  NEW_CONVERSATION_INST
 	                  NEW_CONVERSATION_CREATEDAT
+	                  INSTITUTION_ID
                }  
               }
             ''',

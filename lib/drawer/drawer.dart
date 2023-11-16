@@ -1,13 +1,17 @@
 
 
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
+import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
 // import 'package:aws_frame_institution/communication_service/comment_view.dart';
 import 'package:aws_frame_institution/communication_service/communication_yard.dart';
+import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/communication_service/user_activity.dart';
 // import 'package:aws_frame_institution/communication_service/user_care_information.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:aws_frame_institution/traning%20record/analyzing_report.dart';
+import 'package:aws_frame_institution/traning%20record/individual_analysis_report.dart';
+import 'package:aws_frame_institution/traning%20record/institution_summary_report.dart';
 // import 'package:aws_frame_institution/traning%20record/brain_signal_graph.dart';
 // import 'package:aws_frame_institution/traning%20record/traning_report.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +54,10 @@ class GlobalDrawer {
               GestureDetector(
                 onTap: () {
                   // 탭하면 훈련 보고서 페이지로 이동합니다.
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => TraningReportPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => IndividualAnalysisPage()),
+                  );
                 },
                 child: Container(
                   padding: EdgeInsets.all(12.0), // 버튼 주위의 패딩 설정
@@ -77,7 +81,7 @@ class GlobalDrawer {
               ),
               ListTile(
                 title: Text(
-                  '       분석 보고서',
+                  '      개별 분석 보고서',
                   style: TextStyle(
                       fontSize: 20, // 폰트 크기를 16으로 설정합니다.
                       color: Colors.white,
@@ -88,13 +92,13 @@ class GlobalDrawer {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AnalyzingReportPage()),
+                    MaterialPageRoute(builder: (context) => IndividualAnalysisPage()),
                   );
                 },
               ),
               ListTile(
                 title: Text(
-                  '       뇌신호 그래프',
+                  '      기관 요약 보고서',
                   style: TextStyle(
                       fontSize: 20, // 폰트 크기를 16으로 설정합니다.
                       color: Colors.white,
@@ -103,10 +107,10 @@ class GlobalDrawer {
                   ),
                 ),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => BrainSignalPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InstitutionSummaryPage()),
+                  );
                 },
               ),
 
@@ -155,30 +159,30 @@ class GlobalDrawer {
                   ),
                 ),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => UserCareInfoPage()),
-                  // );
-                },
-              ),
-
-              ListTile(
-                title: Text(
-                  '       이용자 활동기록',
-                  style: TextStyle(
-                      fontSize: 20, // 폰트 크기를 16으로 설정합니다.
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold// 색상을 테마의 주 색상으로 설정합니다.
-                    // 추가적인 스타일 속성을 여기에 적용할 수 있습니다.
-                  ),
-                ),
-                onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UserActivityPage()),
+                    MaterialPageRoute(builder: (context) => EssentialCareInfoPage()),
                   );
                 },
               ),
+
+              // ListTile(
+              //   title: Text(
+              //     '       이용자 활동기록',
+              //     style: TextStyle(
+              //         fontSize: 20, // 폰트 크기를 16으로 설정합니다.
+              //         color: Colors.white,
+              //         fontWeight: FontWeight.bold// 색상을 테마의 주 색상으로 설정합니다.
+              //       // 추가적인 스타일 속성을 여기에 적용할 수 있습니다.
+              //     ),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => UserActivityPage()),
+              //     );
+              //   },
+              // ),
 
 
               ListTile(
@@ -192,10 +196,10 @@ class GlobalDrawer {
                   ),
                 ),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => CommentViewPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CommentViewPage()),
+                  );
                 },
               ),
 
@@ -210,10 +214,10 @@ class GlobalDrawer {
                   ),
                 ),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => InstitutionInfoPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InstitutionInfoPage(initialIndex: 0,)),
+                  );
                 },
               ),
               // ListTile(

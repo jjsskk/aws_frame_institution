@@ -94,7 +94,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
   void subscribeCommentChange() {
     listener = stream!.listen(
       (snapshot) {
-        print('data : ${snapshot.data!}');
+        print('updatesub : ${snapshot.data!}');
         var data = jsonDecode(snapshot.data);
         var item = data['onsubscribeInstitutionCommentBoardTable'];
         if (snapshot.data == null || item == null) {
@@ -131,6 +131,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                   current_month < 10 ? '0${current_month}' : '$current_month',
                   nextToken: null)
               .then((result) {
+                print('here');
             print(result);
             storeAndSort(result);
             setCurrentDate();
@@ -328,7 +329,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
         });
       }
     });
-    stream = gql.subscribeInstitutionCommentBoard("1234");
+    stream = gql.subscribeInstitutionCommentBoard();
     print(stream);
     subscribeCommentChange();
   }
@@ -416,7 +417,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                     if (value == mapValue) {
                                       late String columnName;
                                       if (value == '전체') {
-                                        selectedId = '1234'; //institution_id
+                                        selectedId = gql.institutionNumber; //institution_id
                                         selectedName = value!;
                                         columnName = 'INSTITUTION_ID';
                                       } else {
@@ -477,15 +478,14 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                     controller: _searchController,
                                     onChanged: (value) => _runFilter(value),
                                     decoration: InputDecoration(
-                                      hintText: 'Search...',
+                                      hintText: '검색해주세요...',
                                       // Add a clear button to the search bar
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           Icons.clear,
                                           color: Colors.transparent,
                                         ),
-                                        onPressed: () =>
-                                            _searchController.clear(),
+                                        onPressed: null,
                                       ),
                                       // Add a search icon or button to the search bar
                                       prefixIcon: IconButton(

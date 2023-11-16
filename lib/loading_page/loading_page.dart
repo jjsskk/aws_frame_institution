@@ -18,8 +18,8 @@ class LoadingPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width:MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2,
+              width:MediaQuery.of(context).size.width/1.5,
+              height: MediaQuery.of(context).size.height / 3,
               child: Image.asset("image/ui (7).png"),
             ),
             SpinKitThreeBounce( // 모양 사용

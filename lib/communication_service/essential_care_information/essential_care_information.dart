@@ -264,8 +264,8 @@ class _EssentialCareInfoPageState extends State<EssentialCareInfoPage> {
 
                       child: ClipOval(
                         child: Container(
-                          width: 200, // 원하는 폭
-                          height: 200, // 원하는 높이. 폭과 높이를 동일하게 설정해야 원형이 됩니다.
+                          width: MediaQuery.of(context).size.width/2,
+                          height: MediaQuery.of(context).size.width/2,
                           child: FittedBox(
                             child: Image.network(
                               careImageUrl,
