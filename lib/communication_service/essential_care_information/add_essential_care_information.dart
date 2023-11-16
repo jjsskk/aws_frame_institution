@@ -130,7 +130,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                 ? _essentialCare[index].INSTITUTION!
                 : "";
             userId = _essentialCare[index].ID != null
-                ? _essentialCare[index].INSTITUTION!
+                ? _essentialCare[index].ID!
                 : "";
           }
         });
