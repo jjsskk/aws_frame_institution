@@ -366,10 +366,17 @@ class GraphQLController {
       String medication,
       String userId) async {
     //todo 이미지가 없넹...
+    print("asdf");
     print(age);
     print(name);
     print(phoneNumber);
     print(institution);
+    print(image);
+    print(medicationWay);
+    print(medication);
+    print(userId);
+    print("sdf");
+
 
     String convertToE164(String phoneNumber, String countryCode) {
       // 전화번호의 맨 앞자리가 0인 경우, 국가 코드로 대체
