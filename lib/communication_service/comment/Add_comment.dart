@@ -27,7 +27,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
   void initState() {
     super.initState();
     int index = 0;
-    gql.queryListUsers(institutionId: gql.institutionNumber).then((users) {
+    gql.queryListUsers().then((users) {
       users.forEach((value) {
         if (index == 0) {
           selectedUserName = '${value.NAME}(${value.BIRTH})';
@@ -81,6 +81,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
                         Container(
                           width: MediaQuery.of(context).size.width/2,
                           decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+
                             image: DecorationImage(
                               image: AssetImage("image/report (20).png"),
                               // 여기에 배경 이미지 경로를 지정합니다.
@@ -93,7 +95,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                                 Icons.arrow_drop_down,  // Add this
                                 color: Colors.white,   // Add this
                               ),
-                              dropdownColor: Colors.indigoAccent,
+                              dropdownColor: const Color(0xff1f43f3),
                               value: dropdownValue,
                               onChanged: (String? value) {
                                 setState(() {
@@ -184,7 +186,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                             }
                           },
                           child: Container(
-                            height: MediaQuery.of(context).size.height / 9,
+                            height: MediaQuery.of(context).size.height / 12,
                             width: MediaQuery.of(context).size.width / 3,
                             decoration: BoxDecoration(
                               image: DecorationImage(

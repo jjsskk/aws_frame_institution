@@ -384,9 +384,11 @@ class _CommentViewPageState extends State<CommentViewPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            height: MediaQuery.of(context).size.height / 17,
+                            height: MediaQuery.of(context).size.height / 19,
                             width: MediaQuery.of(context).size.width / 2,
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+
                               image: DecorationImage(
                                 image: AssetImage("image/report (20).png"),
                                 // 여기에 배경 이미지 경로를 지정합니다.
@@ -395,7 +397,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                             ),
                             child: Center(
                               child: DropdownButton<String>(
-                                dropdownColor: Colors.indigoAccent,
+                                dropdownColor:  const Color(0xff1f43f3),
                                 icon: Icon(
                                   // Add this
                                   Icons.arrow_drop_down, // Add this
@@ -524,10 +526,12 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                 )
                               : Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 21,
+                                      MediaQuery.of(context).size.height / 27,
                                   width:
-                                      MediaQuery.of(context).size.width / 5.5,
+                                      MediaQuery.of(context).size.width / 5,
                                   decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+
                                     image: DecorationImage(
                                       image:
                                           AssetImage("image/report (20).png"),
@@ -538,7 +542,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                   ),
                                   child: Center(
                                     child: DropdownButton<String>(
-                                      dropdownColor: Colors.indigoAccent,
+                                      dropdownColor:  const Color(0xff1f43f3),
                                       icon: Icon(
                                         // Add this
                                         Icons.arrow_drop_down, // Add this

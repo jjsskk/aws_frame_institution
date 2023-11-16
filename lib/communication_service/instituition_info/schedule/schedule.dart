@@ -101,7 +101,7 @@ class _SchedulePageState extends State<SchedulePage> {
     var tempBox = time.split("~");
     var name = time.substring(0, 2);
     var num = int.parse(name);
-    if (0 <= num && num <= 12)
+    if (0 <= num && num <= 11)
       name = "오전";
     else
       name = "오후";
@@ -905,33 +905,21 @@ class _SchedulePageState extends State<SchedulePage> {
                                                                       border:
                                                                           const UnderlineInputBorder(
                                                                         borderSide: BorderSide(
-                                                                            color: Color.fromARGB(
-                                                                                255,
-                                                                                74,
-                                                                                137,
-                                                                                92),
+                                                                            color: const Color(0xff1f43f3),
                                                                             width:
                                                                                 3.0),
                                                                       ),
                                                                       focusedBorder:
                                                                           const UnderlineInputBorder(
                                                                         borderSide: BorderSide(
-                                                                            color: Color.fromARGB(
-                                                                                255,
-                                                                                74,
-                                                                                137,
-                                                                                92),
+                                                                            color: const Color(0xff1f43f3),
                                                                             width:
                                                                                 3.0),
                                                                       ),
                                                                       // helperText: '관련 태그를 입력해주세요',
                                                                       helperStyle:
                                                                           const TextStyle(
-                                                                        color: Color.fromARGB(
-                                                                            255,
-                                                                            74,
-                                                                            137,
-                                                                            92),
+                                                                        color: Colors.black,
                                                                       ),
                                                                       hintText: _tagController
                                                                               .hasTags
@@ -1016,7 +1004,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                                       hourMinute5IntervalStart(),
                                                       Positioned(
                                                           top: 40,
-                                                          left: 58,
+                                                          left: 48,
                                                           child: Text(
                                                             ':',
                                                             style: TextStyle(
@@ -1024,7 +1012,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                                           ))
                                                     ]),
                                                     const SizedBox(
-                                                      width: 20,
+                                                      width: 10,
                                                     ),
                                                     Text(
                                                       '~',
@@ -1037,7 +1025,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                                         hourMinute5IntervalEnd(),
                                                         Positioned(
                                                             top: 40,
-                                                            left: 58,
+                                                            left: 48,
                                                             child: Text(
                                                               ':',
                                                               style: TextStyle(
@@ -1392,6 +1380,7 @@ class _SchedulePageState extends State<SchedulePage> {
           startHour, startMin),
       spacing: 20,
       itemHeight: 40,
+      itemWidth: 38,
       minutesInterval: 5,
       onTimeChange: (time) {
         setState(() {
@@ -1407,6 +1396,8 @@ class _SchedulePageState extends State<SchedulePage> {
           endHour, endMin),
       spacing: 20,
       itemHeight: 40,
+      itemWidth: 38,
+
       minutesInterval: 5,
       onTimeChange: (time) {
         setState(() {

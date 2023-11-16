@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -10,8 +11,6 @@ import '../models/MonthlyBrainSignalTable.dart';
 
 class InstitutionSummaryPage extends StatefulWidget {
   InstitutionSummaryPage({Key? key}) : super(key: key);
-
-
 
   @override
   State<InstitutionSummaryPage> createState() => _InstitutionSummaryPageState();
@@ -30,8 +29,10 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   String? endMonth = '12';
   String day = '01';
 
-  List<String> years = List<String>.generate(50, (i) => (DateTime.now().year - i).toString());
-  List<String> months = List<String>.generate(12, (i) => ((i + 1) < 10 ? '0' : '') + (i + 1).toString());
+  List<String> years =
+      List<String>.generate(50, (i) => (DateTime.now().year - i).toString());
+  List<String> months = List<String>.generate(
+      12, (i) => ((i + 1) < 10 ? '0' : '') + (i + 1).toString());
 
   //그래프 버튼마다 색상을 다르게 하기 위해 존재함 각각 그래프의 색상!
   List<Color> buttomColors = [
@@ -69,8 +70,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     }
   }
 
-
-
   // Widget buildDropdown(String selectedValue, List<String> items, ValueChanged<String?> onChanged) {
   //   return DropdownButton<String>(
   //     dropdownColor: Colors.indigoAccent,
@@ -89,8 +88,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   //     onChanged: onChanged,
   //   );
   // }
-
-
 
   //이 위젯은 그래프의 각 y축의 값을 나타내는 위젯입니다.
   Widget leftTitleWidgets(double value, TitleMeta meta) {
@@ -217,7 +214,6 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     return graphData;
   }
 
-
   //그래프 데이터를 통해서 각 값을 가져오고 보여주는 부분입니다.
   // 라인 차트의 디자인을 변경하고 싶다면 이 부분을 수정하면 될 것입니다.
   // selectedGradientColors 여기서 그라데이션 색상이 정해집니다. 두가지로 구성이 되어있는데 하나는 위에서 정한 색상으로 하고 다른 하나는
@@ -312,9 +308,17 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       ),
     );
   }
+
   void onSearchPressed() async {
-    if(startYear == null || startMonth == null || endYear == null || endMonth == null){
-      showDialog(context: context,builder:(BuildContext context)=>AlertDialog(title: Text("년도와 월을 올바르게 선택해주세요"),));
+    if (startYear == null ||
+        startMonth == null ||
+        endYear == null ||
+        endMonth == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("년도와 월을 올바르게 선택해주세요"),
+              ));
       return;
     }
     int startYr = int.parse(startYear!);
@@ -322,16 +326,18 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     int endYr = int.parse(endYear!);
     int endMth = int.parse(endMonth!);
 
-
-    if(DateTime(endYr,endMth).isBefore(DateTime(startYr,startMth))){
-      showDialog(context: context,builder:(BuildContext context)=>AlertDialog(title: Text("년도를 올바르게 선택해주세요"),));
+    if (DateTime(endYr, endMth).isBefore(DateTime(startYr, startMth))) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+                title: Text("년도를 올바르게 선택해주세요"),
+              ));
       return;
     }
 
     // Fetch data with the specified range
-    final dataStartStr=startYear!+startMonth!+day;
-    final dataEndStr=endYear!+endMonth!+day;
-
+    final dataStartStr = startYear! + startMonth! + day;
+    final dataEndStr = endYear! + endMonth! + day;
 
     // final users = await gql.queryListUsers(institutionId: "123"); // User list query here
     //
@@ -340,6 +346,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
     // }
     fetchData(startYear!, startMonth!, endYear!, endMonth!, day);
   }
+
   Map<String, String> nameDeepPng = {};
   Map<String, String> nameLightPng = {};
 
@@ -393,154 +400,153 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       // 교차 축 간격 설정
       children: buttonLabels.keys
           .map((label) => Column(
-        children: [
-          Container(
-            height: 60,
-            width: 60,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(selectedLabel == label
-                    ? nameDeepPng[label]!
-                    : nameLightPng[label]!), // 여기에 배경 이미지 경로를 지정합니다.
-                fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
-              ),
-            ),
-            child: InkWell(
-                onTap: () {
-                  for (var result in results) {
-                    String? month = result?.month.substring(4, 6);
-                    var value;
-                    switch (label) {
-                      case "avg_att":
-                        value = result?.avg_att;
-                        break;
-                      case "avg_med":
-                        value = result?.avg_med;
-                        break;
-                      case "con_score":
-                        value = result?.con_score;
-                        break;
-                      case "spacetime_score":
-                        value = result?.spacetime_score;
-                        break;
-                      case "exec_score":
-                        value = result?.exec_score;
-                        break;
-                      case "mem_score":
-                        value = result?.mem_score;
-                        break;
-                      case "ling_score":
-                        value = result?.ling_score;
-                        break;
-                      case "cal_score":
-                        value = result?.cal_score;
-                        break;
-                      case "reac_score":
-                        value = result?.reac_score;
-                        break;
-                      case "orient_score":
-                        value = result?.orient_score;
-                        break;
-                      default:
-                        value = null;
-                    }
-                    setState(() {
-                      selectedLabel = label;
-                    });
-                    print("Month: $month, $label: $value");
-                  }
-                },
-                child: Image.asset(selectedLabel == label
-                    ? nameDeepPng[label]!
-                    : nameLightPng[label]!)),
+                children: [
+                  Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(selectedLabel == label
+                            ? nameDeepPng[label]!
+                            : nameLightPng[label]!), // 여기에 배경 이미지 경로를 지정합니다.
+                        fit: BoxFit.fill, // 이미지가 전체 화면을 커버하도록 설정합니다.
+                      ),
+                    ),
+                    child: InkWell(
+                        onTap: () {
+                          for (var result in results) {
+                            String? month = result?.month.substring(4, 6);
+                            var value;
+                            switch (label) {
+                              case "avg_att":
+                                value = result?.avg_att;
+                                break;
+                              case "avg_med":
+                                value = result?.avg_med;
+                                break;
+                              case "con_score":
+                                value = result?.con_score;
+                                break;
+                              case "spacetime_score":
+                                value = result?.spacetime_score;
+                                break;
+                              case "exec_score":
+                                value = result?.exec_score;
+                                break;
+                              case "mem_score":
+                                value = result?.mem_score;
+                                break;
+                              case "ling_score":
+                                value = result?.ling_score;
+                                break;
+                              case "cal_score":
+                                value = result?.cal_score;
+                                break;
+                              case "reac_score":
+                                value = result?.reac_score;
+                                break;
+                              case "orient_score":
+                                value = result?.orient_score;
+                                break;
+                              default:
+                                value = null;
+                            }
+                            setState(() {
+                              selectedLabel = label;
+                            });
+                            print("Month: $month, $label: $value");
+                          }
+                        },
+                        child: Image.asset(selectedLabel == label
+                            ? nameDeepPng[label]!
+                            : nameLightPng[label]!)),
 
-            // ElevatedButton(
-            //   style: ElevatedButton.styleFrom(
-            //     padding: EdgeInsets.symmetric(horizontal: 1),
-            //     shape: CircleBorder(),
-            //     fixedSize: Size(10.0, 5.0),
-            //     // primary: selectedLabel == label
-            //     //     ? Color(0xFF2B3FF0)
-            //     //     : null, // 선택된 라벨에 따라 색상 변경
-            //     backgroundColor: Colors.transparent
-            //   ),
-            //   onPressed: () {
-            //     for (var result in results) {
-            //       String? month = result?.month.substring(4, 6);
-            //       var value;
-            //       switch (label) {
-            //         case "avg_att":
-            //           value = result?.avg_att;
-            //           break;
-            //         case "avg_med":
-            //           value = result?.avg_med;
-            //           break;
-            //         case "con_score":
-            //           value = result?.con_score;
-            //           break;
-            //         case "spacetime_score":
-            //           value = result?.spacetime_score;
-            //           break;
-            //         case "exec_score":
-            //           value = result?.exec_score;
-            //           break;
-            //         case "mem_score":
-            //           value = result?.mem_score;
-            //           break;
-            //         case "ling_score":
-            //           value = result?.ling_score;
-            //           break;
-            //         case "cal_score":
-            //           value = result?.cal_score;
-            //           break;
-            //         case "reac_score":
-            //           value = result?.reac_score;
-            //           break;
-            //         case "orient_score":
-            //           value = result?.orient_score;
-            //           break;
-            //         default:
-            //           value = null;
-            //       }
-            //       setState(() {
-            //         selectedLabel = label;
-            //       });
-            //       print("Month: $month, $label: $value");
-            //     }
-            //   },
-            //   child: Text(
-            //     buttonLabels[label]!,
-            //     style: TextStyle(
-            //       fontSize: 16.0,
-            //       height: 1.3,
-            //       fontWeight: FontWeight.w500,
-            //       color: selectedLabel == label
-            //           ? Colors.white
-            //           : Color(0xFF2B3FF0),
-            //     ),
-            //   ),
-            // ),
-          ),
-          Expanded(
-            child: Text(
-              buttonLabels[label]!,
-              style: TextStyle(
-                  fontSize: 16.0,
-                  height: 1.3,
-                  fontWeight: FontWeight.w500,
-                  color: selectedLabel == label
-                      ? Colors.black
-                      : Colors.grey
-                // : Color(0xFF2B3FF0),
-              ),
-            ),
-          ),
-        ],
-      ))
+                    // ElevatedButton(
+                    //   style: ElevatedButton.styleFrom(
+                    //     padding: EdgeInsets.symmetric(horizontal: 1),
+                    //     shape: CircleBorder(),
+                    //     fixedSize: Size(10.0, 5.0),
+                    //     // primary: selectedLabel == label
+                    //     //     ? Color(0xFF2B3FF0)
+                    //     //     : null, // 선택된 라벨에 따라 색상 변경
+                    //     backgroundColor: Colors.transparent
+                    //   ),
+                    //   onPressed: () {
+                    //     for (var result in results) {
+                    //       String? month = result?.month.substring(4, 6);
+                    //       var value;
+                    //       switch (label) {
+                    //         case "avg_att":
+                    //           value = result?.avg_att;
+                    //           break;
+                    //         case "avg_med":
+                    //           value = result?.avg_med;
+                    //           break;
+                    //         case "con_score":
+                    //           value = result?.con_score;
+                    //           break;
+                    //         case "spacetime_score":
+                    //           value = result?.spacetime_score;
+                    //           break;
+                    //         case "exec_score":
+                    //           value = result?.exec_score;
+                    //           break;
+                    //         case "mem_score":
+                    //           value = result?.mem_score;
+                    //           break;
+                    //         case "ling_score":
+                    //           value = result?.ling_score;
+                    //           break;
+                    //         case "cal_score":
+                    //           value = result?.cal_score;
+                    //           break;
+                    //         case "reac_score":
+                    //           value = result?.reac_score;
+                    //           break;
+                    //         case "orient_score":
+                    //           value = result?.orient_score;
+                    //           break;
+                    //         default:
+                    //           value = null;
+                    //       }
+                    //       setState(() {
+                    //         selectedLabel = label;
+                    //       });
+                    //       print("Month: $month, $label: $value");
+                    //     }
+                    //   },
+                    //   child: Text(
+                    //     buttonLabels[label]!,
+                    //     style: TextStyle(
+                    //       fontSize: 16.0,
+                    //       height: 1.3,
+                    //       fontWeight: FontWeight.w500,
+                    //       color: selectedLabel == label
+                    //           ? Colors.white
+                    //           : Color(0xFF2B3FF0),
+                    //     ),
+                    //   ),
+                    // ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      buttonLabels[label]!,
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          height: 1.3,
+                          fontWeight: FontWeight.w500,
+                          color: selectedLabel == label
+                              ? Colors.black
+                              : Colors.grey
+                          // : Color(0xFF2B3FF0),
+                          ),
+                    ),
+                  ),
+                ],
+              ))
           .toList(),
     );
   }
-
 
   double numberOfFeatures = 3;
   List<MonthlyBrainSignalTable?> results = []; //넣어 둘 친구
@@ -550,16 +556,26 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
   Map<String, String> nameToId = {};
   List<List<MonthlyBrainSignalTable?>> userList = [];
 
-  Future<void> fetchData(String startYear, String startMonth,String endYear,String endMonth,String day,) async {
+  Future<void> fetchData(
+    String startYear,
+    String startMonth,
+    String endYear,
+    String endMonth,
+    String day,
+  ) async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       averagesByMonth = {};
       final users = await gql.queryListUsers();
-      final dataStartStr=startYear+startMonth!+day;
-      final dataEndStr=endYear!+endMonth!+day;
+      final dataStartStr = startYear + startMonth! + day;
+      final dataEndStr = endYear! + endMonth! + day;
       results = [];
       for (var user in users) {
         print(user.ID);
-        final data = await gql.queryListMonthlyDBItemsBetween(ID: user.ID, startMonth: dataStartStr, endMonth: dataEndStr);
+        final data = await gql.queryListMonthlyDBItemsBetween(
+            ID: user.ID, startMonth: dataStartStr, endMonth: dataEndStr);
 
         // print("Type of myResult: ${data.runtimeType}");
 
@@ -606,48 +622,48 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
         groupedByMonth[yearMonth]?.add(item);
       }
 
-
       for (var month in groupedByMonth.keys) {
         var group = groupedByMonth[month];
 
         int? totalAvgAtt =
-        group?.map((item) => item.avg_att).reduce((a, b) => a! + b!);
+            group?.map((item) => item.avg_att).reduce((a, b) => a! + b!);
         int avgAtt = (totalAvgAtt! / group!.length).round();
 
         int? totalAvgMed =
-        group?.map((item) => item.avg_med).reduce((a, b) => a! + b!);
+            group?.map((item) => item.avg_med).reduce((a, b) => a! + b!);
         int avgMed = (totalAvgMed! / group!.length).round();
 
         int? totalConScore =
-        group?.map((item) => item.con_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.con_score).reduce((a, b) => a! + b!);
         int avgConScore = (totalConScore! / group!.length).round();
 
-        int? totalSpacetimeScore =
-        group?.map((item) => item.spacetime_score).reduce((a, b) => a! + b!);
+        int? totalSpacetimeScore = group
+            ?.map((item) => item.spacetime_score)
+            .reduce((a, b) => a! + b!);
         int avgSpacetimeScore = (totalSpacetimeScore! / group!.length).round();
 
         int? totalExecScore =
-        group?.map((item) => item.exec_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.exec_score).reduce((a, b) => a! + b!);
         int avgExecScore = (totalExecScore! / group!.length).round();
 
         int? totalMemScore =
-        group?.map((item) => item.mem_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.mem_score).reduce((a, b) => a! + b!);
         int avgMemScore = (totalMemScore! / group!.length).round();
 
         int? totalLingScore =
-        group?.map((item) => item.ling_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.ling_score).reduce((a, b) => a! + b!);
         int avgLingScore = (totalLingScore! / group!.length).round();
 
         int? totalCalScore =
-        group?.map((item) => item.cal_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.cal_score).reduce((a, b) => a! + b!);
         int avgCalScore = (totalCalScore! / group!.length).round();
 
         int? totalReacScore =
-        group?.map((item) => item.reac_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.reac_score).reduce((a, b) => a! + b!);
         int avgReacScore = (totalReacScore! / group!.length).round();
 
         int? totalOrientScore =
-        group?.map((item) => item.orient_score).reduce((a, b) => a! + b!);
+            group?.map((item) => item.orient_score).reduce((a, b) => a! + b!);
         int avgOrientScore = (totalOrientScore! / group!.length).round();
 
         averagesByMonth[month] = {
@@ -667,11 +683,13 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       print('ddd');
       print(averagesByMonth);
       print(dataStartStr);
+      setState(() {
+        isLoading = false;
+      });
     } catch (error) {
       print(error);
     }
   }
-
 
   @override
   void initState() {
@@ -688,13 +706,12 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       });
     });
   }
+
   bool isLoading = true;
   var brainbutton = '뇌파 데이터 추가';
 
   @override
   Widget build(BuildContext context) {
-
-
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
       appBar: AppBar(
@@ -707,7 +724,10 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
         ),
         title: Text(
           '기관 요약 보고서',
-          style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold), // 글자색을 하얀색으로 설정
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -719,174 +739,212 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
           ),
         ),
       ),
-      body:  isLoading
-        ? Center(child: CircularProgressIndicator()) :
-      Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('image/ui (2).png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              // color: Colors.white,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                  Container(
-                  height: 50, // Or any other specific height
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height / 30,
-                        width: MediaQuery.of(context).size.width / 5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: AssetImage("image/report (20).png"),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Center(
-                          child: CustomDropDown(
-                            selected: startYear ?? '---',
-                            items: years,
-                            onChanged: (value) {
-                              setState(() {
-                                startYear = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 2),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 30,
-                        width: MediaQuery.of(context).size.width / 7,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: AssetImage("image/report (20).png"),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Center(
-                          child: CustomDropDown(
-                            selected: startMonth ?? '---',
-                            items: months,
-                            onChanged: (value) {
-                              setState(() {
-                                startMonth = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 30,
-                        width: MediaQuery.of(context).size.width /5,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: AssetImage("image/report (20).png"),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Center(
-                          child: CustomDropDown(
-                            selected: endYear ?? '---',
-                            items: years,
-                            onChanged: (value) {
-                              setState(() {
-                                endYear = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 2),
-                      Container(
-                        height: MediaQuery.of(context).size.height / 30,
-                        width: MediaQuery.of(context).size.width / 7,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          image: DecorationImage(
-                            image: AssetImage("image/report (20).png"),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        child: Center(
-                          child: CustomDropDown(
-                            selected: endMonth ?? '---',
-                            items: months,
-                            onChanged: (value) {
-                              setState(() {
-                                endMonth = value;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: EdgeInsets.all(2.0), // 원하는 패딩값으로 변경 가능
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints.tightFor(width: 70, height: 35),
-                          child: ElevatedButton(
-
-                            onPressed: onSearchPressed,
-                            child: Text(
-                              '검색',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff1f43f3)
+      body: isLoading
+          ? LoadingPage()
+          : Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('image/ui (2).png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: SingleChildScrollView(
+                child: Center(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height,
+                    // color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                                height: 50, // Or any other specific height
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              30,
+                                      width:
+                                          MediaQuery.of(context).size.width / 5,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              "image/report (20).png"),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CustomDropDown(
+                                          selected: startYear ?? '---',
+                                          items: years,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              startYear = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              30,
+                                      width:
+                                          MediaQuery.of(context).size.width / 7,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              "image/report (20).png"),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CustomDropDown(
+                                          selected: startMonth ?? '---',
+                                          items: months,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              startMonth = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              30,
+                                      width:
+                                          MediaQuery.of(context).size.width / 5,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              "image/report (20).png"),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CustomDropDown(
+                                          selected: endYear ?? '---',
+                                          items: years,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              endYear = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              30,
+                                      width:
+                                          MediaQuery.of(context).size.width / 7,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                              "image/report (20).png"),
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: CustomDropDown(
+                                          selected: endMonth ?? '---',
+                                          items: months,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              endMonth = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Container(
+                                      height: 40,
+                                      width: 40,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        color: Colors.white,
+                                      ),
+                                      child: Center(
+                                        child: IconButton(
+                                            onPressed: onSearchPressed,
+                                            icon: Icon(
+                                              Icons.search,
+                                              color: const Color(0xff1f43f3),
+                                            )),
+                                      ),
+                                    ),
+                                    // Padding(
+                                    //   padding: EdgeInsets.all(2.0), // 원하는 패딩값으로 변경 가능
+                                    //   child: ConstrainedBox(
+                                    //     constraints: BoxConstraints.tightFor(width: 70, height: 35),
+                                    //     child: ElevatedButton(
+                                    //
+                                    //       onPressed: onSearchPressed,
+                                    //       child: Text(
+                                    //         '검색',
+                                    //         style: TextStyle(
+                                    //             fontWeight: FontWeight.bold,
+                                    //             color: Color(0xff1f43f3)
+                                    //         ),
+                                    //       ),
+                                    //       style: ElevatedButton.styleFrom(
+                                    //           backgroundColor: Colors.white,
+                                    //           shape: RoundedRectangleBorder(
+                                    //             borderRadius: BorderRadius.circular(15.0),
+                                    //           ),
+                                    //         padding: EdgeInsets.zero,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // )
+                                  ],
+                                )),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            _buildButtons(),
+                            AspectRatio(
+                              aspectRatio: 6 / 5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                    color: Colors.white.withOpacity(0.6)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  child: _buildLineChart(),
+                                ),
                               ),
                             ),
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                              padding: EdgeInsets.zero,
-                            ),
-                          ),
-                        ),
-                      )
-
-                    ],
-                  )
-              ),
-
-                _buildButtons(),
-                    AspectRatio(
-                      aspectRatio: 6 / 5,
-                      child: Container(
-
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            color: Colors.white.withOpacity(0.6)),
-                        child: Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          child: _buildLineChart(),
-                        ),
-                      ),
+                          ]),
                     ),
-                  ]),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }
+
 class CustomDropDown extends StatefulWidget {
   final List<String> items;
   final String selected;
@@ -894,9 +952,9 @@ class CustomDropDown extends StatefulWidget {
 
   const CustomDropDown(
       {Key? key,
-        required this.items,
-        required this.onChanged,
-        required this.selected})
+      required this.items,
+      required this.onChanged,
+      required this.selected})
       : super(key: key);
 
   @override
@@ -915,7 +973,6 @@ class _CustomDropDownState extends State<CustomDropDown> {
   @override
   Widget build(BuildContext context) {
     return DropdownButton<String>(
-
       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
       icon: Icon(
         Icons.arrow_drop_down,

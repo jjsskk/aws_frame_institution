@@ -45,7 +45,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   // final GlobalKey<ScaffoldState> _key = GlobalKey();
 
-  var buttonTextStyle = TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
+  var buttonTextStyle =
+      TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
   var iconColor = Colors.white;
   late final bottomappbar;
   late final keyObj;
@@ -85,19 +86,10 @@ class _HomePageState extends State<HomePage> {
     _comments = _comments.length > 5 ? _comments.sublist(0, 5) : _comments;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getInstitutionAttributes();
-    BackButtonInterceptor.add(backKeyInterceptor,
-        context: context); // for back key
-    keyObj = KeyForBottomAppbar();
-    bottomappbar = GlobalBottomAppBar(keyObj: keyObj);
-    year = DateTime.now().year;
-    month = DateTime.now().month;
+  void fetchLatestComment() {
     gql
-        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber, '$year',
-            month < 10 ? '0${month}' : '$month',
+        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber,
+            '$year', month < 10 ? '0${month}' : '$month',
             nextToken: null) //institution_id
         .then((result) {
       print(result);
@@ -111,6 +103,18 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getInstitutionAttributes();
+    BackButtonInterceptor.add(backKeyInterceptor,
+        context: context); // for back key
+    keyObj = KeyForBottomAppbar();
+    bottomappbar = GlobalBottomAppBar(keyObj: keyObj);
+    year = DateTime.now().year;
+    month = DateTime.now().month;
   }
 
   @override
@@ -140,7 +144,7 @@ class _HomePageState extends State<HomePage> {
               "custom:institutionNumber".toLowerCase()) {
             // useremail = element.value;
             gql.institutionNumber = (element.value) ?? "no result";
-
+            fetchLatestComment();
           }
         });
         setState(() {
@@ -178,7 +182,10 @@ class _HomePageState extends State<HomePage> {
             key: keyObj.key,
             appBar: AppBar(
               title: Text(' ${gql.managerName} 담당자님 안녕하세요!',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: iconColor)),
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: iconColor)),
               flexibleSpace: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -190,8 +197,8 @@ class _HomePageState extends State<HomePage> {
               ),
               actions: [
                 IconButton(
-                  icon:  Icon(
-                    color:iconColor,
+                  icon: Icon(
+                    color: iconColor,
                     Icons.logout,
                     semanticLabel: 'logout',
                   ),
@@ -247,7 +254,8 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
@@ -256,14 +264,17 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => InstitutionInfoPage(
+                                        builder: (context) =>
+                                            InstitutionInfoPage(
                                               initialIndex: 0,
                                             )),
                                   );
                                 },
                                 child: Text(
                                   '공지사항',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 )),
                           ),
                           SizedBox(width: 6),
@@ -271,7 +282,8 @@ class _HomePageState extends State<HomePage> {
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xff1f43f3),
-                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 11),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
                                     )),
@@ -279,7 +291,8 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => InstitutionInfoPage(
+                                        builder: (context) =>
+                                            InstitutionInfoPage(
                                               initialIndex: 1,
                                             )),
                                   );
@@ -290,7 +303,8 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: 16,vertical: 11),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
@@ -299,7 +313,8 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => InstitutionInfoPage(
+                                        builder: (context) =>
+                                            InstitutionInfoPage(
                                               initialIndex: 2,
                                             )),
                                   );
@@ -310,7 +325,8 @@ class _HomePageState extends State<HomePage> {
                           Flexible(
                             child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                    padding: EdgeInsets.symmetric(horizontal: 14,vertical: 11),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 11),
                                     backgroundColor: const Color(0xff1f43f3),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(15.0),
@@ -319,7 +335,8 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => InstitutionInfoPage(
+                                        builder: (context) =>
+                                            InstitutionInfoPage(
                                               initialIndex: 3,
                                             )),
                                   );
@@ -359,8 +376,10 @@ class _HomePageState extends State<HomePage> {
                                   children: <Widget>[
                                     Image.asset(
                                       'image/community (8).png',
-                                      width: MediaQuery.of(context).size.width/4,
-                                      height: MediaQuery.of(context).size.width/4,
+                                      width:
+                                          MediaQuery.of(context).size.width / 4,
+                                      height:
+                                          MediaQuery.of(context).size.width / 4,
                                     ),
                                     // 아이콘
                                     Text('이용자 돌봄 정보',
@@ -399,8 +418,8 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Image.asset(
                                   'image/report (10).png',
-                                  width: MediaQuery.of(context).size.width/4,
-                                  height: MediaQuery.of(context).size.width/4,
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  height: MediaQuery.of(context).size.width / 4,
                                 ),
                                 // 아이콘
                                 Text('기관 요약 보고서',
@@ -454,8 +473,8 @@ class _HomePageState extends State<HomePage> {
                               children: <Widget>[
                                 Image.asset(
                                   'image/community (14).png',
-                                  width: MediaQuery.of(context).size.width/4,
-                                  height: MediaQuery.of(context).size.width/4,
+                                  width: MediaQuery.of(context).size.width / 4,
+                                  height: MediaQuery.of(context).size.width / 4,
                                 ),
                                 // 아이콘
                                 Text('개별 분석 보고서',
@@ -485,7 +504,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       Container(
                         constraints: BoxConstraints(
-                          minHeight: MediaQuery.of(context).size.height / 3,
+                          minHeight: MediaQuery.of(context).size.height / 4,
                           maxHeight: double.infinity,
                         ),
                         decoration: BoxDecoration(
@@ -617,8 +636,7 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(comment['title'],
-                            style: buttonTextStyle),
+                        Text(comment['title'], style: buttonTextStyle),
                         Text(
                           comment['date'],
                           style: TextStyle(color: iconColor),
@@ -628,8 +646,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 5,
                     ),
-                    Text(comment['username'] + ' 훈련자님',
-                        style: buttonTextStyle),
+                    Text(comment['username'] + ' 훈련자님', style: buttonTextStyle),
                   ],
                 ),
               ),

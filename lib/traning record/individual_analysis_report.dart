@@ -1076,6 +1076,13 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     // 빌드하는 부분입니다. 이 곳에서는 그래프가 들어가는 box의 쉐입을 정하는 곳입니다. 그래프가 있는 곳 박스를 수정하고 싶다면 이 곳을 수정하시면 됩니다.
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('개별 분석 보고서',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -1109,7 +1116,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                               ? Container(
                                   height:
                                       MediaQuery.of(context).size.height / 25,
-                                  width: MediaQuery.of(context).size.width / 2,
+                                  width: MediaQuery.of(context).size.width / 1.9,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
@@ -1149,7 +1156,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 ),
                                 child: Center(
                                   child: DropdownButton<String>(
-                                    dropdownColor: Colors.indigoAccent,
+                                    dropdownColor: const Color(0xff1f43f3),
                                     value: dropdownYear,
                                     icon: Icon(
                                       // Add this
@@ -1196,7 +1203,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 ),
                                 child: Center(
                                   child: DropdownButton<String>(
-                                    dropdownColor: Colors.indigoAccent,
+                                    dropdownColor:  const Color(0xff1f43f3),
                                     value: dropdownMonth,
                                     icon: Icon(
                                       // Add this
@@ -1416,9 +1423,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
+
 
                           Stack(
                             children: [
@@ -1429,17 +1434,17 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                               Column(
                                 children: [
                                   SizedBox(
-                                    height: 64,
+                                    height: 70,
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height /
-                                        2.935,
+                                        3.02,
                                     child: radar_chart.RadarChart(
                                       data: data,
                                       ticks: ticks,
                                       features: features,
                                       reverseAxis: false,
-                                      outlineColor: Colors.black,
+                                      outlineColor: Colors.transparent,
                                       axisColor: Colors.transparent,
                                     ),
                                   ),
