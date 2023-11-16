@@ -97,15 +97,21 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
         }
 
         setState(() {
+          print("asdf");
+          print(tempNameList);
+          print(widget.nameList);
           _essentialCare = value;
           for(var i in widget.nameList){
             int idx = tempNameList.indexOf(i);
             tempNameList.remove(i);
             _essentialCare.removeAt(idx);
           }
-          nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
+          if(tempNameList.isNotEmpty){
+            nameList = tempNameList; // 이번에는 먼저 가공한 데이터로 setName을 수행함.
 
-          name = nameList[index]; // 가장 첫 이름으로 함
+            name = nameList[index]; // 가장 첫 이름으로 함
+          }
+
 
           if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
             String convertToE164(String phoneNumber, String countryCode) {
@@ -163,8 +169,9 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
 
   void _NameSelected(String selectedName) {
     setState(() {
-      print(nameList);
+      // print(nameList);
       // name = selectedName;
+      if(nameList.isNotEmpty)
       index = nameList.indexOf(selectedName);
       print(name);
       if (_essentialCare.isNotEmpty && index < _essentialCare.length) {
@@ -207,7 +214,7 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
           },
         ),
         title: Text(
-          '이용인 정보 추가',
+          '이용자 돌봄정보 추가',
           style: TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -405,7 +412,6 @@ class _AddEssentialCareInfoPageState extends State<AddEssentialCareInfoPage> {
                           imageUrl,
                           _phoneNumberController.text,
                           imageUrl,
-                          // 그냥 일단 institution으로 이미지를 보낼거임
                           gql.institutionNumber,
                           _medicationController.text,
                           _medicationWayController.text,
