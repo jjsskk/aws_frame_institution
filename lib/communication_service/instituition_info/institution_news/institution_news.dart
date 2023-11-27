@@ -73,8 +73,6 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
             }
 
             if (snapshot.hasData) {
-              snapshot.data!.sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
-
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {
@@ -246,8 +244,8 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                 if (shouldDelete == true) {
                   // '예' 버튼을 눌렀다면...
                   var result = gql.deleteInstitutionNews(
-                      institutionId: news.INSTITUTION_ID!,
-                      newsId: news.NEWS_ID!);
+                      institutionId: widget.news.INSTITUTION_ID!,
+                      newsId: widget.news.NEWS_ID!);
 
                   if (result != null) {
                     Provider.of<LoginState>(context, listen: false)
