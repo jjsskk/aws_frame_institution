@@ -1,4 +1,5 @@
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
+import 'package:aws_frame_institution/auth_flow/auth_service.dart';
 import 'package:aws_frame_institution/backey/backKey_dialog.dart';
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
 import 'package:aws_frame_institution/camera_gallary/graph_page.dart';
@@ -12,7 +13,6 @@ import 'package:aws_frame_institution/bottomappbar/globalkey.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
 import 'package:aws_frame_institution/login_session.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
-import 'package:aws_frame_institution/traning%20record/individual_analysis_report_old.dart';
 import 'package:aws_frame_institution/traning%20record/institution_summary_report.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +132,6 @@ class _HomePageState extends State<HomePage> {
           if (element.userAttributeKey.key == "name") {
             // username = element.value;
             gql.managerName = (element.value) ?? "no result";
-            print(appState.managerName);
           } else if (element.userAttributeKey.key == "phone_number") {
             // userphonenumber = element.value;
             gql.managerPhonenumber = (element.value) ?? " no result";
@@ -610,7 +609,7 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(
                     builder: (context) => DetailCommentPage(
                           user_id: comment['user_id'],
-                          board_id: comment['board_id'],
+                          board_id: comment['board_id']
                         )),
               );
             },

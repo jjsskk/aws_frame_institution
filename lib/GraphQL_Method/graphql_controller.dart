@@ -2191,7 +2191,6 @@ class GraphQLController {
     var remain = time.substring(12);
     var start = '$year-$month-00$remain';
     var end = '$year-$month-40$remain';
-
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2250,9 +2249,7 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var nextComments = await listInstitutionCommentBoard(
-              filterName, Id, year, month,
-              nextToken: newNextToken);
+          var nextComments = await listInstitutionCommentBoard(filterName, Id, year, month, nextToken: newNextToken);
           comments.addAll(nextComments!);
         }
 

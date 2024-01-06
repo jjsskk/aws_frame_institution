@@ -29,6 +29,7 @@ class _AnnouncementPageState extends State<AnnouncementPage> {
   }
 
   void refresh() {
+    print("announcement refresh!");
     if (mounted) {
       // 해당 State 객체가 현재 트리에 마운트되어 있는지 확인
       setState(() {

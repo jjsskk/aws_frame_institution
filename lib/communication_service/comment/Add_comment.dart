@@ -1,6 +1,9 @@
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
+import 'package:aws_frame_institution/models/InstitutionCommentBoardTable.dart';
+import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddCommentPage extends StatefulWidget {
   AddCommentPage({Key? key}) : super(key: key);
@@ -23,9 +26,12 @@ class _AddCommentPageState extends State<AddCommentPage> {
 
   bool loading = true;
 
+  late LoginState commentProvider;
+
   @override
   void initState() {
     super.initState();
+    commentProvider = Provider.of<LoginState>(context, listen: false);
     int index = 0;
     gql.queryListUsers().then((users) {
       users.forEach((value) {
@@ -47,6 +53,13 @@ class _AddCommentPageState extends State<AddCommentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('코멘트 추가',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -68,7 +81,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
               child: Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
+                    image:
+                        AssetImage('image/ui (3).png'), // 여기에 원하는 이미지 경로를 써주세요.
                     fit: BoxFit.cover, // 이미지가 AppBar를 꽉 채우도록 설정
                   ),
                 ),
@@ -79,10 +93,10 @@ class _AddCommentPageState extends State<AddCommentPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width/2,
+                          height: MediaQuery.of(context).size.height / 19,
+                          width: MediaQuery.of(context).size.width / 2,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-
                             image: DecorationImage(
                               image: AssetImage("image/report (20).png"),
                               // 여기에 배경 이미지 경로를 지정합니다.
@@ -91,9 +105,10 @@ class _AddCommentPageState extends State<AddCommentPage> {
                           ),
                           child: Center(
                             child: DropdownButton<String>(
-                              icon: Icon(                // Add this
-                                Icons.arrow_drop_down,  // Add this
-                                color: Colors.white,   // Add this
+                              icon: Icon(
+                                // Add this
+                                Icons.arrow_drop_down, // Add this
+                                color: Colors.white, // Add this
                               ),
                               dropdownColor: const Color(0xff1f43f3),
                               value: dropdownValue,
@@ -110,11 +125,14 @@ class _AddCommentPageState extends State<AddCommentPage> {
                                 });
                               },
                               items: _userData.values
-                                  .map<DropdownMenuItem<String>>((String value) {
+                                  .map<DropdownMenuItem<String>>(
+                                      (String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
-                                  child:
-                                      Text(value, style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
+                                  child: Text(value,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold)),
                                 );
                               }).toList(),
                             ),
@@ -122,7 +140,9 @@ class _AddCommentPageState extends State<AddCommentPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       constraints: BoxConstraints(
                         minHeight: MediaQuery.of(context).size.height / 3,
@@ -164,20 +184,24 @@ class _AddCommentPageState extends State<AddCommentPage> {
                             final check = await gql.createCommentBoarddata(
                                 selectedUserId,
                                 _titleController.text.trim(),
-
                                 _contentController.text.trim(),
                                 selectedUserName,
                                 gql.institutionNumber);
                             if (check) {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
                                 content: Text(
                                   '코멘트가 저장되었습니다',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ));
+                              if (commentProvider.detectCommentChange != null)
+                                commentProvider
+                                    .detectCommentChange!(selectedUserId);
                               Navigator.pop(context);
                             } else {
-                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
                                 content: Text(
                                   '코멘트가 저장되지 못했습니다. 다시 시도해주세요.',
                                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -186,7 +210,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                             }
                           },
                           child: Container(
-                            height: MediaQuery.of(context).size.height / 12,
+                            height: MediaQuery.of(context).size.height / 10,
                             width: MediaQuery.of(context).size.width / 3,
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -199,35 +223,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                           ),
                         ),
                       ],
-                    ),
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     final check = await gql.createCommentBoarddata(
-                    //         selectedUserId,
-                    //         _titleController.text.trim(),
-                    //         '김한동',
-                    //         _contentController.text.trim(),
-                    //         selectedUserName,
-                    //         '1234');
-                    //     if (check) {
-                    //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    //         content: Text(
-                    //           '코멘트가 저장되었습니다',
-                    //           style: TextStyle(fontWeight: FontWeight.bold),
-                    //         ),
-                    //       ));
-                    //       Navigator.pop(context);
-                    //     } else {
-                    //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    //         content: Text(
-                    //           '코멘트가 저장되지 못했습니다. 다시 시도해주세요.',
-                    //           style: TextStyle(fontWeight: FontWeight.bold),
-                    //         ),
-                    //       ));
-                    //     }
-                    //   },
-                    //   child: Text('완료'),
-                    // ),
+                    )
                   ],
                 ),
               ),

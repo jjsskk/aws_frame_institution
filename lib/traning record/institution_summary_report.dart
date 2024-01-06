@@ -395,7 +395,7 @@ class _InstitutionSummaryPageState extends State<InstitutionSummaryPage> {
       mainAxisSpacing: 30,
       // 메인 축 간격 설정
       crossAxisSpacing: 4.0,
-      childAspectRatio: 0.7,
+      childAspectRatio: 0.7, //s21-> 0.7
       // 가로 세로 비율 조절
       // 교차 축 간격 설정
       children: buttonLabels.keys

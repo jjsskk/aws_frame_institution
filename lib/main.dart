@@ -179,7 +179,9 @@ class _MyAppState extends State<MyApp> {
       // final analytics = AmplifyAnalyticsPinpoint();
       await _amplify.addPlugins([auth, storage, api]);
       await _amplify.configure(amplifyconfig);
-      // mutateByApiName();
+
+      await _authService.listenAuthHub();
+
       _authService.checkAuthStatus(_cacheautologin);
 
       print('Successfully configured Amplify 🎉');
@@ -188,15 +190,5 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> mutateByApiName() async {
-    final operation = Amplify.API.mutate<String>(
-      request: GraphQLRequest(
-        document: 'schemaTest.graphql',
-        apiName: 'awsamplify',
-      ),
-    );
-    final response = await operation.response;
-    final data = response.data;
-    safePrint('data: $data');
-  }
+
 }

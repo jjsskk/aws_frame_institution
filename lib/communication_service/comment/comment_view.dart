@@ -33,10 +33,12 @@ class _CommentViewPageState extends State<CommentViewPage> {
   // 해당 값을 평균내서 50%이상 움직였을때 데이터 불러오는 작업을 하게됨.
   double _dragDistance = 0;
 
+  // using variables for fetching previous month comment whenever scrolling below
   late var year;
   late var current_year;
   late var month;
   late var current_month;
+
   List<Map<String, dynamic>> _comments = [];
 
   List<Map<String, dynamic>> _foundComments = [];
@@ -55,6 +57,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
   late Stream<GraphQLResponse>? stream;
 
   StreamSubscription<GraphQLResponse<dynamic>>? listener = null;
+
+  late var commentProvider;
 
   //user dropdown button
   Map<String, String> _userData = {};
@@ -91,6 +95,43 @@ class _CommentViewPageState extends State<CommentViewPage> {
     }
   }
 
+  void refreshData(String columnName) {
+    gql
+        .listInstitutionCommentBoard(columnName, selectedId, '$current_year',
+            current_month < 10 ? '0${current_month}' : '$current_month',
+            nextToken: null)
+        .then((result) {
+      print(result);
+      storeAndSort(result);
+      setCurrentDate();
+      if (mounted) {
+        setState(() {
+          _foundComments = _foundComments;
+        });
+      }
+    });
+  }
+
+  /*
+   only called when this institution CRUD comment not when other institution CRUD comment
+   -> detectCommentChange func is used
+  */
+  void detectCommentChange(String userId) {
+    if (userId == selectedId && selectedName != '전체') {
+      refreshData('USER_ID');
+    }
+
+    if (selectedName == '전체') {
+      refreshData('INSTITUTION_ID');
+    }
+  }
+
+  /*
+  called not only when this institution CRUD comment but also when other institution CRUD comment
+   -> generate resource waste if using graphql subscribe query(api)
+   refer Comment Table of sort key and partition key
+   -> subscribeCommentChange func is not used
+  */
   void subscribeCommentChange() {
     listener = stream!.listen(
       (snapshot) {
@@ -99,48 +140,16 @@ class _CommentViewPageState extends State<CommentViewPage> {
         var item = data['onsubscribeInstitutionCommentBoardTable'];
         if (snapshot.data == null || item == null) {
           print('errors: ${snapshot.errors}');
+          return;
         }
         InstitutionCommentBoardTable comment =
             InstitutionCommentBoardTable.fromJson(item);
         if (comment.USER_ID == selectedId && selectedName != '전체') {
-          gql
-              .listInstitutionCommentBoard(
-                  'USER_ID',
-                  selectedId,
-                  '$current_year',
-                  current_month < 10 ? '0${current_month}' : '$current_month',
-                  nextToken: null)
-              .then((result) {
-            print(result);
-            storeAndSort(result);
-            setCurrentDate();
-            if (mounted) {
-              setState(() {
-                _foundComments = _foundComments;
-              });
-            }
-          });
+          refreshData('USER_ID');
         }
 
         if (comment.INSTITUTION_ID == selectedId && selectedName == '전체') {
-          gql
-              .listInstitutionCommentBoard(
-                  'INSTITUTION_ID',
-                  selectedId,
-                  '$current_year',
-                  current_month < 10 ? '0${current_month}' : '$current_month',
-                  nextToken: null)
-              .then((result) {
-                print('here');
-            print(result);
-            storeAndSort(result);
-            setCurrentDate();
-            if (mounted) {
-              setState(() {
-                _foundComments = _foundComments;
-              });
-            }
-          });
+          refreshData('INSTITUTION_ID');
         }
       },
       onError: (Object e) => safePrint('Error in subscription stream: $e'),
@@ -283,11 +292,15 @@ class _CommentViewPageState extends State<CommentViewPage> {
   void dispose() {
     super.dispose();
     if (listener != null) listener?.cancel();
+    commentProvider.detectCommentChange = null;
   }
 
   @override
   void initState() {
     super.initState();
+    commentProvider = Provider.of<LoginState>(context, listen: false);
+    commentProvider.detectCommentChange = detectCommentChange;
+
     year = DateTime.now().year;
     month = DateTime.now().month;
     current_year = year;
@@ -311,8 +324,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
       });
     });
     gql
-        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber, '$year',
-            month < 10 ? '0${month}' : '$month',
+        .listInstitutionCommentBoard('INSTITUTION_ID', gql.institutionNumber,
+            '$year', month < 10 ? '0${month}' : '$month',
             nextToken: null) //institution_id
         .then((result) {
       print(result);
@@ -329,9 +342,13 @@ class _CommentViewPageState extends State<CommentViewPage> {
         });
       }
     });
+
+    /*
+    // using subscribe api for comment CRUD update
     stream = gql.subscribeInstitutionCommentBoard();
     print(stream);
     subscribeCommentChange();
+     */
   }
 
   @override
@@ -339,6 +356,13 @@ class _CommentViewPageState extends State<CommentViewPage> {
     var appState = context.watch<LoginState>();
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           '코멘트 모아보기',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -355,7 +379,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.add,
+              Icons.add_circle_outline,
+              size: 30,
             ),
             onPressed: () {
               Navigator.push(
@@ -389,7 +414,6 @@ class _CommentViewPageState extends State<CommentViewPage> {
                             width: MediaQuery.of(context).size.width / 2,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-
                               image: DecorationImage(
                                 image: AssetImage("image/report (20).png"),
                                 // 여기에 배경 이미지 경로를 지정합니다.
@@ -398,7 +422,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                             ),
                             child: Center(
                               child: DropdownButton<String>(
-                                dropdownColor:  const Color(0xff1f43f3),
+                                dropdownColor: const Color(0xff1f43f3),
                                 icon: Icon(
                                   // Add this
                                   Icons.arrow_drop_down, // Add this
@@ -417,7 +441,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                     if (value == mapValue) {
                                       late String columnName;
                                       if (value == '전체') {
-                                        selectedId = gql.institutionNumber; //institution_id
+                                        selectedId = gql
+                                            .institutionNumber; //institution_id
                                         selectedName = value!;
                                         columnName = 'INSTITUTION_ID';
                                       } else {
@@ -527,11 +552,9 @@ class _CommentViewPageState extends State<CommentViewPage> {
                               : Container(
                                   height:
                                       MediaQuery.of(context).size.height / 27,
-                                  width:
-                                      MediaQuery.of(context).size.width / 5,
+                                  width: MediaQuery.of(context).size.width / 5,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-
                                     image: DecorationImage(
                                       image:
                                           AssetImage("image/report (20).png"),
@@ -542,7 +565,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                   ),
                                   child: Center(
                                     child: DropdownButton<String>(
-                                      dropdownColor:  const Color(0xff1f43f3),
+                                      dropdownColor: const Color(0xff1f43f3),
                                       icon: Icon(
                                         // Add this
                                         Icons.arrow_drop_down, // Add this

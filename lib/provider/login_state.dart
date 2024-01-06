@@ -1,5 +1,6 @@
 import 'package:aws_frame_institution/bottomappbar/globalkey.dart';
 import 'package:aws_frame_institution/login_page.dart';
+import 'package:aws_frame_institution/models/InstitutionCommentBoardTable.dart';
 import 'package:aws_frame_institution/sign_up_page.dart';
 import 'package:aws_frame_institution/verification_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,8 +20,6 @@ class LoginState extends ChangeNotifier {
   // final _amplify = Amplify;
   late var _authService;
 
-
-
   set authService(value) {
     _authService = value;
   }
@@ -28,49 +27,46 @@ class LoginState extends ChangeNotifier {
   get authService => _authService;
 
   // institution's attribute info
-  String _managerEmail = '';
-  String _managerName = '';
-  String _managerPhonenumber = '';
-  String _institutionNumber = '';
+  // String _managerEmail = '';
+  // String _managerName = '';
+  // String _managerPhonenumber = '';
+  // String _institutionNumber = '';
 
+  // void resetVariables() {
+  //   print("provider!!!");
+  //   // protector's attribute info
+  //   _managerEmail = '';
+  //   _managerName = '';
+  //   _managerPhonenumber = '';
+  //   _institutionNumber = '';
+  //
+  //
+  //   // notifyListeners(); // don't use ->error occur
+  // }
 
-
-  void resetVariables() {
-    print("provider!!!");
-    // protector's attribute info
-    _managerEmail = '';
-    _managerName = '';
-    _managerPhonenumber = '';
-    _institutionNumber = '';
-
-
-    // notifyListeners(); // don't use ->error occur
-  }
-
-
-  String get managerEmail => _managerEmail;
-
-  set managerEmail(String value) {
-    _managerEmail = value;
-  }
-
-  String get managerName => _managerName;
-
-  set managerName(String value) {
-    _managerName = value;
-  }
-
-  String get managerPhonenumber => _managerPhonenumber;
-
-  set managerPhonenumber(String value) {
-    _managerPhonenumber = value;
-  }
-
-  String get institutionNumber => _institutionNumber;
-
-  set institutionNumber(String value) {
-    _institutionNumber = value;
-  }
+  // String get managerEmail => _managerEmail;
+  //
+  // set managerEmail(String value) {
+  //   _managerEmail = value;
+  // }
+  //
+  // String get managerName => _managerName;
+  //
+  // set managerName(String value) {
+  //   _managerName = value;
+  // }
+  //
+  // String get managerPhonenumber => _managerPhonenumber;
+  //
+  // set managerPhonenumber(String value) {
+  //   _managerPhonenumber = value;
+  // }
+  //
+  // String get institutionNumber => _institutionNumber;
+  //
+  // set institutionNumber(String value) {
+  //   _institutionNumber = value;
+  // }
 
   //announcement
   bool _isannounceUpdated = false;
@@ -78,84 +74,109 @@ class LoginState extends ChangeNotifier {
   bool get isannounceUpdated => _isannounceUpdated;
 
   void announceUpdate() {
+    print("announce update");
     _isannounceUpdated = !_isannounceUpdated;
     notifyListeners(); // 프로바이더 변경 사항을 감지하는 리스너들에게 알립니다.
   }
 
-  //mews
+  //news
   bool _isnewsUpdated = false;
 
   bool get isNewsUpdated => _isnewsUpdated;
 
   void newsUpdate() {
+    print("news update");
     _isnewsUpdated = !isNewsUpdated;
     notifyListeners(); // 프로바이더 변경 사항을 감지하는 리스너들에게 알립니다.
   }
 
+  //comment
+  void Function(String userId)? _detectCommentChange =
+      null;
 
+  Function(String userId)? get detectCommentChange =>
+      _detectCommentChange;
 
+  set detectCommentChange(Function(String userId)? func) {
+    print('register detectCommentChange');
+    _detectCommentChange = func;
+      // notifyListeners();
+  }
 
-  // LoginState() {
-    // _configureAmplify();
-    // _authService.authStateController.stream.listen((snapshot) {
-    //   final context = NavigationService.naviagatorState.currentState!.overlay!.context;
-    //   if (snapshot!.authFlowStatus == AuthFlowStatus.start)
-    //     {
-    //       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
-    //           builder: (BuildContext context) =>
-    //               StartPage(shouldShowlogin: _authService.showLogin)), (route) => false);
-    //
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(
-    //       //       builder: (context) =>
-    //       //           StartPage(shouldShowlogin: _authService.showLogin)));
-    //     }
-    //
-    //   // Show Login Page
-    //   if (snapshot!.authFlowStatus == AuthFlowStatus.login)
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //             builder: (context) => LoginPage(
-    //                   shouldShowstart: _authService.showstart,
-    //                   didProvideCredentials: _authService.loginWithCredentials,
-    //                   shouldShowSignUp: _authService.showSignUp,
-    //                 )));
-    //
-    //   // Show Sign Up Page
-    //   if (snapshot!.authFlowStatus == AuthFlowStatus.signUp)
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //             builder: (context) => SignUpPage(
-    //                   shouldShowstart: _authService.showstart,
-    //                   didProvideCredentials: _authService.signUpWithCredentials,
-    //                   shouldShowLogin: _authService.showLogin,
-    //                 )));
-    //
-    //   // Show Verification Code Page
-    //   if (snapshot!.authFlowStatus == AuthFlowStatus.verification)
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //             builder: (context) => VerificationPage(
-    //                 didProvideVerificationCode: _authService.verifyCode)));
-    //
-    //   // Show Camera Flow
-    //   if (snapshot!.authFlowStatus == AuthFlowStatus.session)
-    //     Navigator.push(
-    //         context,
-    //         MaterialPageRoute(
-    //             builder: (context) =>
-    //                 HomePage(shouldLogOut: _authService.logOut)));
-    //
-    //   //   MaterialPage(
-    //   //   child: CameraFlow(shouldLogOut: _authService.logOut))
-    //   // });
-    // }
-    // );
+  //conversation(comment 댓글)
+  // void Function(String userId)? _detectCommentChange =
+  //     null;
+  //
+  // Function(String userId)? get detectCommentChange =>
+  //     _detectCommentChange;
+  //
+  // set detectCommentChange(Function(String userId)? func) {
+  //   print('register detectCommentChange');
+  //   _detectCommentChange = func;
+  //     // notifyListeners();
   // }
+
+// LoginState() {
+// _configureAmplify();
+// _authService.authStateController.stream.listen((snapshot) {
+//   final context = NavigationService.naviagatorState.currentState!.overlay!.context;
+//   if (snapshot!.authFlowStatus == AuthFlowStatus.start)
+//     {
+//       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+//           builder: (BuildContext context) =>
+//               StartPage(shouldShowlogin: _authService.showLogin)), (route) => false);
+//
+//       // Navigator.push(
+//       //   context,
+//       //   MaterialPageRoute(
+//       //       builder: (context) =>
+//       //           StartPage(shouldShowlogin: _authService.showLogin)));
+//     }
+//
+//   // Show Login Page
+//   if (snapshot!.authFlowStatus == AuthFlowStatus.login)
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => LoginPage(
+//                   shouldShowstart: _authService.showstart,
+//                   didProvideCredentials: _authService.loginWithCredentials,
+//                   shouldShowSignUp: _authService.showSignUp,
+//                 )));
+//
+//   // Show Sign Up Page
+//   if (snapshot!.authFlowStatus == AuthFlowStatus.signUp)
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => SignUpPage(
+//                   shouldShowstart: _authService.showstart,
+//                   didProvideCredentials: _authService.signUpWithCredentials,
+//                   shouldShowLogin: _authService.showLogin,
+//                 )));
+//
+//   // Show Verification Code Page
+//   if (snapshot!.authFlowStatus == AuthFlowStatus.verification)
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) => VerificationPage(
+//                 didProvideVerificationCode: _authService.verifyCode)));
+//
+//   // Show Camera Flow
+//   if (snapshot!.authFlowStatus == AuthFlowStatus.session)
+//     Navigator.push(
+//         context,
+//         MaterialPageRoute(
+//             builder: (context) =>
+//                 HomePage(shouldLogOut: _authService.logOut)));
+//
+//   //   MaterialPage(
+//   //   child: CameraFlow(shouldLogOut: _authService.logOut))
+//   // });
+// }
+// );
+// }
 
 // void init(){
 //   _configureAmplify();

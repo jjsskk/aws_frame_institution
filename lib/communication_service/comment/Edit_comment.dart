@@ -1,6 +1,8 @@
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/comment/new_message.dart';
+import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EditCommentPage extends StatefulWidget {
   EditCommentPage(
@@ -32,22 +34,28 @@ class _EditCommentPageState extends State<EditCommentPage> {
 
   final gql = GraphQLController.Obj;
 
+  late LoginState commentProvider;
+
   @override
   void initState() {
     super.initState();
+    commentProvider = Provider.of<LoginState>(context, listen: false);
+
     _titleController = TextEditingController(text: widget.title);
     _contentController = TextEditingController(text: widget.content);
-    // gql.getInstitutionCommentBoard(widget.user_id,widget.board_id).then((value){
-    //   print(value);
-    //   title=value.TITLE;
-    //   content=value.CONTENT;
-    // });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('코멘트 수정',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -170,9 +178,7 @@ class _EditCommentPageState extends State<EditCommentPage> {
                           ),
                         ),
                       ),
-
                       SizedBox(height: 16),
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -188,9 +194,13 @@ class _EditCommentPageState extends State<EditCommentPage> {
                                     .showSnackBar(SnackBar(
                                   content: Text(
                                     '코멘트가 저장되었습니다',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ));
+                                if (commentProvider.detectCommentChange != null)
+                                  commentProvider
+                                      .detectCommentChange!(widget.user_id);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                               } else {
@@ -198,7 +208,8 @@ class _EditCommentPageState extends State<EditCommentPage> {
                                     .showSnackBar(SnackBar(
                                   content: Text(
                                     '코멘트가 저장되지 못했습니다. 다시 시도해주세요.',
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ));
                               }
@@ -218,8 +229,6 @@ class _EditCommentPageState extends State<EditCommentPage> {
                           ),
                         ],
                       ),
-
-
                     ],
                   ),
                 ),

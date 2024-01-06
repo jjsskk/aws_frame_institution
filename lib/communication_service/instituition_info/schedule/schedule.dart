@@ -1000,39 +1000,47 @@ class _SchedulePageState extends State<SchedulePage> {
                                                     const SizedBox(
                                                       width: 8,
                                                     ),
-                                                    Stack(children: [
-                                                      hourMinute5IntervalStart(),
-                                                      Positioned(
-                                                          top: 40,
-                                                          left: 48,
-                                                          child: Text(
-                                                            ':',
+                                                    Expanded(
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Stack(children: [
+                                                            hourMinute5IntervalStart(),
+                                                            Positioned(
+                                                                top: 40,
+                                                                left: 48,
+                                                                child: Text(
+                                                                  ':',
+                                                                  style: TextStyle(
+                                                                      fontSize: 30),
+                                                                ))
+                                                          ]),
+                                                          const SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text(
+                                                            '~',
                                                             style: TextStyle(
                                                                 fontSize: 30),
-                                                          ))
-                                                    ]),
-                                                    const SizedBox(
-                                                      width: 10,
-                                                    ),
-                                                    Text(
-                                                      '~',
-                                                      style: TextStyle(
-                                                          fontSize: 30),
+                                                          ),
+
+                                                          Stack(
+                                                            children: [
+                                                              hourMinute5IntervalEnd(),
+                                                              Positioned(
+                                                                  top: 40,
+                                                                  left: 48,
+                                                                  child: Text(
+                                                                    ':',
+                                                                    style: TextStyle(
+                                                                        fontSize: 30),
+                                                                  ))
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
 
-                                                    Stack(
-                                                      children: [
-                                                        hourMinute5IntervalEnd(),
-                                                        Positioned(
-                                                            top: 40,
-                                                            left: 48,
-                                                            child: Text(
-                                                              ':',
-                                                              style: TextStyle(
-                                                                  fontSize: 30),
-                                                            ))
-                                                      ],
-                                                    ),
 
                                                     // Container(
                                                     //   margin: EdgeInsets.symmetric(vertical: 50),

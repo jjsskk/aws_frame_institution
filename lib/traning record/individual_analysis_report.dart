@@ -710,7 +710,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       mainAxisSpacing: 30,
       // 메인 축 간격 설정
       crossAxisSpacing: 4.0,
-      childAspectRatio: 0.7,
+      childAspectRatio: 0.8, // s21 -> 0.7
       // 가로 세로 비율 조절
       // 교차 축 간격 설정
       children: buttonLabels.keys
@@ -1424,17 +1424,20 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
 
-
+                          const SizedBox(
+                            height: 10,
+                          ),
                           Stack(
                             children: [
                               Container(
                                 height: MediaQuery.of(context).size.height / 2,
+                                width: MediaQuery.of(context).size.width,
                                 child: Image.asset("image/report (18).png"),
                               ),
                               Column(
                                 children: [
                                   SizedBox(
-                                    height: 70,
+                                    height: 63, //s21 ->70
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height /

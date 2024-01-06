@@ -24,6 +24,7 @@ class AuthService {
   AuthCredentials? _credentials = null;
   late BuildContext context;
 
+
   // 5 이는 AuthState 스트림을 signUp으로 업데이트하는 간단한 함수입니다.
   void showSignUp() {
     final state = AuthState(authFlowStatus: AuthFlowStatus.signUp);
@@ -297,10 +298,31 @@ class AuthService {
         authStateController.add(state);
       }
     } catch (authError) {
-      print(authError);
+      print("autherror: $authError");
       final state = AuthState(authFlowStatus: AuthFlowStatus.login);
       authStateController.add(state);
     }
+  }
+
+  Future<void> listenAuthHub() async {
+    Amplify.Hub.listen([HubChannel.Auth], (event) async {
+      switch (event.eventName) {
+        case "SIGNED_IN":
+          //Route to Splash Page to load user session.
+          print("listenAuthHub: SIGNED_IN");
+          break;
+        case "SIGNED_OUT":
+          //Route to Login Page
+          print("listenAuthHub : SIGNED_OUT");
+          break;
+        case "SESSION_EXPIRED":
+          //Route to Login Page
+          print("listenAuthHub : SESSION_EXPIRED");
+          final state = AuthState(authFlowStatus: AuthFlowStatus.login);
+          authStateController.add(state);
+          break;
+      }
+    });
   }
 
   Future<void> deleteUser() async {

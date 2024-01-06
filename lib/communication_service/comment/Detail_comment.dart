@@ -5,6 +5,7 @@ import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/comment/Edit_comment.dart';
 import 'package:aws_frame_institution/communication_service/comment/new_message.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
+import 'package:aws_frame_institution/models/InstitutionCommentBoardTable.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,18 +22,11 @@ class DetailCommentPage extends StatefulWidget {
 }
 
 class _DetailCommentPageState extends State<DetailCommentPage> {
-  final TextEditingController _titleController = TextEditingController();
 
-  final TextEditingController _contentController = TextEditingController();
   var blue = const Color(0xff1f43f3);
 
   List<Map<String, dynamic>> _conversations = [];
 
-  List<List<String>> data = [
-    ['홍길동', '안녕', '2022-2-22'],
-    ['김항도', '반가워', '2022-2-22'],
-    ['김한동', 'helo', '2023-2-22']
-  ];
   late var appState;
   final gql = GraphQLController.Obj;
   late Stream<GraphQLResponse>? stream;
@@ -41,44 +35,61 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
   String commentTitle = '';
   String commentContent = '';
   String user = '';
-  bool loading_comment = true;
-  bool loading_conversation = true;
   String date = '';
 
+  bool loading_comment = true;
+  bool loading_conversation = true;
+
+  late LoginState commentProvider;
+
+  /*
+   only called when this institution CRUD conversation(댓글) not when other institution CRUD converstaion(댓글)
+   ->  detectConversationChange func is used in this page
+  */
+  void detectConversationChange() {
+    gql
+        .listInstitutionCommentConversation(widget.board_id, nextToken: null)
+        .then((result) {
+      print(result);
+      _conversations = [];
+      result.forEach((value) {
+        // print(value.createdAt.toString().substring(0,10));
+        _conversations.add({
+          // 'date': value.createdAt.toString().substring(0, 10),
+          'date': value.createdAt.toString() ?? '',
+          'content': value.CONTENT ?? '',
+          'writer': value.WRITER ?? '',
+          'board_id': value.BOARD_ID ?? '',
+          'conversation_id': value.CONVERSATION_ID ?? '',
+          'email': value.EMAIL ?? ''
+        });
+      });
+      _conversations.sort((a, b) {
+        String aa = a['date'];
+
+        String bb = b['date'];
+        return aa.compareTo(bb);
+      });
+      if (mounted) {
+        setState(() {
+          _conversations = _conversations;
+          loading_conversation = false;
+        });
+      }
+    });
+  }
+
+  /*
+  called not only when this institution CRUD conversation(댓글) but also when other institution CRUD conversation(댓글)
+   -> generate resource waste if using graphql subscribe query(api)
+   refer conversation Table of sort key and partition key
+   -> subscribeConversationChange func is not used
+  */
   void subscribeConversationChange() {
     listener = stream!.listen(
       (snapshot) {
         print('data : ${snapshot.data!}');
-        gql
-            .listInstitutionCommentConversation(widget.board_id,
-                nextToken: null)
-            .then((result) {
-          print(result);
-          _conversations = [];
-          result.forEach((value) {
-            // print(value.createdAt.toString().substring(0,10));
-            _conversations.add({
-              // 'date': value.createdAt.toString().substring(0, 10),
-              'date': value.createdAt.toString() ?? '',
-              'content': value.CONTENT ?? '',
-              'writer': value.WRITER ?? '',
-              'board_id': value.BOARD_ID ?? '',
-              'conversation_id': value.CONVERSATION_ID ?? '',
-              'email': value.EMAIL ?? ''
-            });
-          });
-          _conversations.sort((a, b) {
-            String aa = a['date'];
-
-            String bb = b['date'];
-            return aa.compareTo(bb);
-          });
-          if (mounted) {
-            setState(() {
-              _conversations = _conversations;
-            });
-          }
-        });
+        detectConversationChange();
       },
       onError: (Object e) => safePrint('Error in subscription stream: $e'),
     );
@@ -93,6 +104,8 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
   @override
   void initState() {
     super.initState();
+    commentProvider = Provider.of<LoginState>(context, listen: false);
+
     gql
         .getInstitutionCommentBoard(widget.user_id, widget.board_id)
         .then((value) {
@@ -113,39 +126,14 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
       }
     });
 
-    gql
-        .listInstitutionCommentConversation(widget.board_id, nextToken: null)
-        .then((result) {
-      print(result);
-      result.forEach((value) {
-        // print(value.createdAt.toString().substring(0,10));
-        _conversations.add({
-          // 'date': value.createdAt.toString().substring(0, 10),
-          'date': value.createdAt.toString() ?? '',
-          'content': value.CONTENT ?? '',
-          'writer': value.WRITER ?? '',
-          'board_id': value.BOARD_ID ?? '',
-          'conversation_id': value.CONVERSATION_ID ?? '',
-          'email': value.EMAIL ?? ''
-        });
-      });
-      _conversations.sort((a, b) {
-        String aa = a['date'];
+    detectConversationChange();
 
-        String bb = b['date'];
-        return aa.compareTo(bb);
-      });
-
-      if (mounted) {
-        setState(() {
-          loading_conversation = false;
-        });
-      }
-    });
-
+    /*
+    // using subscribe api for conversation(댓글) CRUD update
     stream = gql.subscribeInstitutionCommentConversation();
     print(stream);
     subscribeConversationChange();
+     */
   }
 
   @override
@@ -154,6 +142,13 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_circle_left_outlined,
+              color: Colors.white, size: 35),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('코멘트 상세보기',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -206,6 +201,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                               );
                               if (check) {
                                 await listener?.cancel();
+                                //해당 comment의 댓글도 전부 삭제
                                 _conversations.forEach((value) async {
                                   await gql.deleteCommentConversationdata(
                                     value['board_id'],
@@ -221,6 +217,9 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                                   ),
                                 ));
                                 listener = null;
+                                if (commentProvider.detectCommentChange != null)
+                                  commentProvider
+                                      .detectCommentChange!(widget.user_id);
                                 Navigator.of(context).pop();
                                 Navigator.of(context).pop();
                               } else {
@@ -395,6 +394,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                         board_id: widget.board_id,
                         writer: gql.managerName,
                         email: gql.managerEmail,
+                        detectConversationChange: detectConversationChange,
                       ),
                     ],
                   ),
@@ -488,6 +488,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                                                     //     TextStyle(fontWeight: FontWeight.bold),
                                                     //   ),
                                                     // ));
+                                                    detectConversationChange();
                                                     Navigator.pop(context);
                                                   } else {
                                                     ScaffoldMessenger.of(
@@ -518,7 +519,7 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
                                   child: Text(
                                     'x',
                                     style: TextStyle(
-                                      fontSize: 15,
+                                        fontSize: 15,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -546,80 +547,6 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
           )
         ],
       );
-      // return Card(
-      //   child: ListTile(
-      //     leading: Icon(Icons.message),
-      //     title: Row(
-      //       children: [
-      //         Text(value['writer'], style: TextStyle(color: Colors.black)),
-      //         const SizedBox(
-      //           width: 10,
-      //         ),
-      //         Text(
-      //           value['date'].substring(0, 10) ==
-      //                   DateTime.now().toString().substring(0, 10)
-      //               ? value['date'].substring(11, 19)
-      //               : value['date'].substring(0, 10) +
-      //                   ' ' +
-      //                   value['date'].substring(11, 19),
-      //           style: TextStyle(color: Colors.black),
-      //         ),
-      //       ],
-      //     ),
-      //     subtitle: Text(value['content']),
-      //     trailing: gql.managerEmail == value['email']
-      //         ? IconButton(
-      //             onPressed: () {
-      //               showDialog(
-      //                   context: context,
-      //                   useRootNavigator: false,
-      //                   builder: (BuildContext context) {
-      //                     return AlertDialog(
-      //                       title: const Text('해당 댓글을 삭제하시겠습니까?'),
-      //                       actions: [
-      //                         TextButton(
-      //                             onPressed: () async {
-      //                               final check =
-      //                                   await gql.deleteCommentConversationdata(
-      //                                 value['board_id'],
-      //                                 value['conversation_id'],
-      //                               );
-      //                               if (check) {
-      //                                 // ScaffoldMessenger.of(context)
-      //                                 //     .showSnackBar(SnackBar(
-      //                                 //   content: Text(
-      //                                 //     '댓글이 삭제 되었습니다',
-      //                                 //     style:
-      //                                 //     TextStyle(fontWeight: FontWeight.bold),
-      //                                 //   ),
-      //                                 // ));
-      //                                 Navigator.pop(context);
-      //                               } else {
-      //                                 ScaffoldMessenger.of(context)
-      //                                     .showSnackBar(SnackBar(
-      //                                   content: const Text(
-      //                                     '댓글이 삭제 되지 못했습니다. 다시 시도해주세요.',
-      //                                     style: TextStyle(
-      //                                         fontWeight: FontWeight.bold),
-      //                                   ),
-      //                                 ));
-      //                                 Navigator.pop(context);
-      //                               }
-      //                             },
-      //                             child: const Text('네')),
-      //                         TextButton(
-      //                             onPressed: () {
-      //                               Navigator.pop(context);
-      //                             },
-      //                             child: const Text('아니요'))
-      //                       ],
-      //                     );
-      //                   });
-      //             },
-      //             icon: const Icon(Icons.delete))
-      //         : const SizedBox(),
-      //   ),
-      // );
     }).toList();
   }
 }
