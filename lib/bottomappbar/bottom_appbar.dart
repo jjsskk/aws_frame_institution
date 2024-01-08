@@ -24,30 +24,32 @@ class GlobalBottomAppBar extends StatelessWidget {
             const SizedBox(
               width: 40,
             ),
-            IconButton(
+            Expanded(
+                child: IconButton(
               onPressed: () {
                 // print(keyObj.key);
                 keyObj.key.currentState!.openDrawer();
               },
               icon: Icon(
                 Icons.menu,
-                size: 35,
+                size: 40,
               ),
-            ),
+            )),
             const SizedBox(
               width: 160,
             ),
-            IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.settings,
-                size: 35,
+            Expanded(
+              child: IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.settings,
+                  size: 40,
+                ),
               ),
             ),
             const SizedBox(
               width: 40,
             ),
-
           ],
         ),
       ),

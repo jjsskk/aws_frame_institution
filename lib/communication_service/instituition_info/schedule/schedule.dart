@@ -377,6 +377,7 @@ class _SchedulePageState extends State<SchedulePage> {
                                 ),
                               ),
                             ),
+                            // 날짜 선택을 위한 dropdown버튼 open source from pub deb
                             // Expanded(
                             //   child: DropdownDatePicker(
                             //     inputDecoration: InputDecoration(

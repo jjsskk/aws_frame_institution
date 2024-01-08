@@ -47,7 +47,8 @@ class _HomePageState extends State<HomePage> {
 
   var buttonTextStyle =
       TextStyle(color: Colors.white, fontWeight: FontWeight.bold);
-  var iconColor = Colors.white;
+  final iconColor = Colors.white;
+
   late final bottomappbar;
   late final keyObj;
   late var appState;
@@ -651,40 +652,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            //
-            // Stack(
-            //   children: [
-            //     Card(
-            //       child: ListTile(
-            //         title: Text(
-            //           comment['title'],
-            //           style: TextStyle(color: Colors.black),
-            //         ),
-            //         subtitle: Text(comment['username'] + ' 훈련자님'),
-            //         trailing: Text(comment['date']),
-            //         onTap: () {
-            //           Navigator.push(
-            //             context,
-            //             MaterialPageRoute(
-            //                 builder: (context) => DetailCommentPage(
-            //                       user_id: comment['user_id'],
-            //                       board_id: comment['board_id'],
-            //                     )),
-            //           );
-            //         },
-            //       ),
-            //     ),
-            //     comment['new_conversation'] == true
-            //         ? Container(
-            //             alignment: Alignment.topRight,
-            //             child: CircleAvatar(
-            //               backgroundColor: Colors.white,
-            //               backgroundImage: AssetImage('image/new_message.png'),
-            //             ),
-            //           )
-            //         : const SizedBox(),
-            //   ],
-            // ),
           ),
           const SizedBox(
             height: 5,

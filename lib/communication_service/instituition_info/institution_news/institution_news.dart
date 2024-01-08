@@ -74,6 +74,8 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
             }
 
             if (snapshot.hasData) {
+              snapshot.data!
+                  .sort((a, b) => b.createdAt!.compareTo(a.createdAt!));
               return ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (context, index) {

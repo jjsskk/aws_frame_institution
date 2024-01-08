@@ -24,6 +24,8 @@ class CommentViewPage extends StatefulWidget {
 const List<String> _filterlist = ['날짜', '제목'];
 
 class _CommentViewPageState extends State<CommentViewPage> {
+  final iconColor = Colors.white;
+
   final TextEditingController _searchController = TextEditingController();
 
   // final ScrollController _scrollController = ScrollController();
@@ -358,14 +360,14 @@ class _CommentViewPageState extends State<CommentViewPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_circle_left_outlined,
-              color: Colors.white, size: 35),
+              color: iconColor, size: 35),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text(
           '코멘트 모아보기',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.bold, color: iconColor),
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -378,6 +380,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
         ),
         actions: [
           IconButton(
+            color:iconColor,
             icon: const Icon(
               Icons.add_circle_outline,
               size: 30,
@@ -426,7 +429,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                 icon: Icon(
                                   // Add this
                                   Icons.arrow_drop_down, // Add this
-                                  color: Colors.white, // Add this
+                                  color: iconColor, // Add this
                                 ),
                                 value: dropdownValueForUser,
                                 onChanged: (String? value) {
@@ -482,7 +485,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                     value: value,
                                     child: Text(value,
                                         style: TextStyle(
-                                            color: Colors.white,
+                                            color: iconColor,
                                             fontWeight: FontWeight.bold)),
                                   );
                                 }).toList(),
@@ -569,7 +572,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                       icon: Icon(
                                         // Add this
                                         Icons.arrow_drop_down, // Add this
-                                        color: Colors.white, // Add this
+                                        color: iconColor, // Add this
                                       ),
                                       value: dropdownValueForFilter,
                                       onChanged: (String? value) {
@@ -589,7 +592,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                                           child: Text(
                                             value,
                                             style: TextStyle(
-                                                color: Colors.white,
+                                                color: iconColor,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                         );

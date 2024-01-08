@@ -25,7 +25,6 @@ class NewMessage extends StatefulWidget {
 
 class _NewMessageState extends State<NewMessage> {
   final _contentController = TextEditingController();
-  String _userEnterMessage = '';
   final gql = GraphQLController.Obj;
 
   late LoginState commentProvider;
@@ -86,13 +85,12 @@ class _NewMessageState extends State<NewMessage> {
               controller: _contentController,
               onChanged: (value) {
                 setState(() {
-                  _userEnterMessage = value;
                 });
               },
             ),
           ),
           IconButton(
-            onPressed: _userEnterMessage.trim().isEmpty ? null : _sendMessage,
+            onPressed: _contentController.text.trim().isEmpty ? null : _sendMessage,
             icon: Icon(Icons.send),
             color: Colors.blue,
           )

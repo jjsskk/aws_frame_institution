@@ -131,70 +131,6 @@ class GraphQLController {
     }
   }
 
-  Future<bool> createAnnounceData() async {
-    final row = {
-      'ANNOUNCEMENT_ID': '${TemporalDateTime.now()}',
-      'CONTENT': 'fdfdf',
-      'IMAGE': 'dfdf',
-      'INSTITUTION': 'String',
-      'INSTITUTION_ID': 'String!',
-      'TITLE': 'String',
-      'URL': 'String',
-      'createdAt': '${TemporalDateTime.now()}',
-      'updatedAt': '${TemporalDateTime.now()}'
-    };
-    // final row = UserTable(
-    //     ID: userid,
-    //     BIRTH: birth.toString(),
-    //     NAME: "김수",
-    //     INSTITUTION: "FRAME",
-    //     SEX: "남",
-    //     CREATEDAT: TemporalDateTime.now(),
-    //     UPDATEDAT: TemporalDateTime.now());
-    try {
-      final response = await Amplify.API
-          .mutate(
-            request: GraphQLRequest<String>(
-              document: '''
-            mutation CreateInstitutionAnnouncementTable(\$input: CreateInstitutionAnnouncementTableInput!) {
-                  createInstitutionAnnouncementTable(input: \$input) {
-                    ANNOUNCEMENT_ID
-                    CONTENT
-                    IMAGE
-                    INSTITUTION
-                    INSTITUTION_ID
-                    TITLE
-                    URL
-                    createdAt
-                    updatedAt
-               }  
-              }
-            ''',
-              variables: {
-                'input': row,
-              },
-            ),
-          )
-          .response;
-      {
-        final createdData = response.data;
-        if (createdData == null) {
-          safePrint('errors: ${response.errors}');
-          return false;
-        }
-        safePrint('Mutation result: ${createdData.toString()}');
-        // print('User created successfully: ${response.data}');
-        birth += 10000;
-        useridint++;
-        userid = "$useridint";
-      }
-    } on ApiException catch (e) {
-      safePrint('Mutation failed: $e');
-      return false;
-    }
-    return true;
-  }
-
   //공지사항용
   Future<bool> createAnnouncement(
       String content,
@@ -354,7 +290,7 @@ class GraphQLController {
     return true;
   }
 
-  //공지사항용
+  // 필수돌봄정보
   Future<bool> createEssentialCare(
       String age,
       String name,
@@ -376,7 +312,6 @@ class GraphQLController {
     print(medication);
     print(userId);
     print("sdf");
-
 
     String convertToE164(String phoneNumber, String countryCode) {
       // 전화번호의 맨 앞자리가 0인 경우, 국가 코드로 대체
@@ -897,91 +832,7 @@ class GraphQLController {
     return true;
   }
 
-  // Future<void> updateShuttleTime(String imageUrl, String institutionId) async {
-  //   //todo update날짜만 바꾸면 될 거 같은뎅..
-  //   final row = {
-  //     'IMAGE_URL': imageUrl,
-  //     'INSTITUTION_ID': institutionId,
-  //     'createdAt' : '${TemporalDateTime.now()}',
-  //     'updatedAt' : '${TemporalDateTime.now()}'
-  //   };
-  //   try {
-  //     final response = await Amplify.API.mutate(
-  //       request: GraphQLRequest<String>(
-  //         document: '''
-  //           mutation updateInstitutionShuttleTimeTable(\$input: UpdateInstitutionShuttleTimeTableInput!) {
-  //                 updateInstitutionShuttleTimeTable(input: \$input) {
-  //                   IMAGE_URL
-  //                   INSTITUTION_ID
-  //                   createdAt
-  //                   updatedAt
-  //              }
-  //             }
-  //           ''',
-  //         variables: {
-  //           'input': row,
-  //         },
-  //       ),
-  //
-  //     ).response;
-  //     {
-  //       final updateData = response.data;
-  //       if (updateData == null) {
-  //         safePrint('errors: ${response.errors}');
-  //         return;
-  //       }
-  //       safePrint('Mutation result: ${updateData.toString()}');
-  //     }
-  //   } on ApiException catch (e) {
-  //     safePrint('Mutation failed: $e');
-  //   }
-  // }
-
-  // Future<List<InstitutionAnnouncementTable>>
-  //     queryInstitutionAnnouncementsByInstitutionId(String institutionId) async {
-  //   try {
-  //     var operation = Amplify.API.query(
-  //       request: GraphQLRequest(
-  //         document: """
-  //         query ListInstitutionAnnouncementTables(\$INSTITUTION_ID: String) {
-  //           listInstitutionAnnouncementTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}) {
-  //             items {
-  //               ANNOUNCEMENT_ID
-  //               CONTENT
-  //               IMAGE
-  //               INSTITUTION
-  //               INSTITUTION_ID
-  //               TITLE
-  //               URL
-  //               createdAt
-  //               updatedAt
-  //             }
-  //           }
-  //         }
-  //       """,
-  //         variables: {
-  //           "INSTITUTION_ID": institutionId,
-  //         },
-  //       ),
-  //     );
-  //
-  //     var response = await operation.response;
-  //     List<InstitutionAnnouncementTable> announcements =
-  //         (jsonDecode(response.data)['listInstitutionAnnouncementTables']
-  //                 ['items'] as List)
-  //             .map((item) => InstitutionAnnouncementTable.fromJson(item))
-  //             .toList();
-  //     if (announcements == null) {
-  //       print('errors: ${response.errors}');
-  //       return const [];
-  //     }
-  //     return announcements;
-  //   } on ApiException catch (e) {
-  //     print('Query failed: $e');
-  //     return const [];
-  //   }
-  // }
-
+// 공지사항 데이터들 불러오기
   Future<List<InstitutionAnnouncementTable>>
       queryInstitutionAnnouncementsByInstitutionId(
           {required String institutionId, String? nextToken}) async {
@@ -1050,6 +901,7 @@ class GraphQLController {
     }
   }
 
+  // 뉴스 데이터들 불러오기
   Future<List<InstitutionNewsTable>> queryInstitutionNewsByInstitutionId(
       {required String institutionId, String? nextToken}) async {
     try {
@@ -1234,55 +1086,7 @@ class GraphQLController {
     return true;
   }
 
-  // Future<List<InstitutionEssentialCareTable>>
-  //     queryEssentialCareInformationByInstitutionId(String institutionId) async {
-  //   try {
-  //     var operation = Amplify.API.query(
-  //       request: GraphQLRequest(
-  //         document: """
-  //         query listInstitutionEssentialCareTables(\$INSTITUTION_ID: String) {
-  //           listInstitutionEssentialCareTables(filter: {INSTITUTION_ID: {eq: \$INSTITUTION_ID}}) {
-  //             items {
-  //               BIRTH
-  //               INSTITUTION
-  //               INSTITUTION_ID
-  //               MEDICATION
-  //               IMAGE
-  //               MEDICATION_WAY
-  //               NAME
-  //               PHONE_NUMBER
-  //               USER_ID
-  //               createdAt
-  //               updatedAt
-  //             }
-  //           }
-  //         }
-  //       """,
-  //         variables: {
-  //           "INSTITUTION_ID": institutionId,
-  //         },
-  //       ),
-  //     );
-  //
-  //     var response = await operation.response;
-  //
-  //     List<InstitutionEssentialCareTable> essentialCare =
-  //         (jsonDecode(response.data)['listInstitutionEssentialCareTables']
-  //                 ['items'] as List)
-  //             .map((item) => InstitutionEssentialCareTable.fromJson(item))
-  //             .toList();
-  //
-  //     if (essentialCare == null) {
-  //       print('errors: ${response.errors}');
-  //       return const [];
-  //     }
-  //     print(essentialCare);
-  //     return essentialCare;
-  //   } on ApiException catch (e) {
-  //     print('Query failed: $e');
-  //     return const [];
-  //   }
-  // }
+
 
 //todo: 안됨
   Future<List<InstitutionEssentialCareTable>>
@@ -1443,153 +1247,6 @@ class GraphQLController {
     }
   }
 
-  //
-  // //todo 봉인!!!
-  // Future<MonthlyBrainSignalTable?> queryMonthlyDBItem() async {
-  //   try {
-  //     var ID = '2';
-  //
-  //     var operation = Amplify.API.query(
-  //       request: GraphQLRequest(
-  //         document: """
-  //       query ListMonthlyDBTests(\$id: ID) {
-  //         listMonthlyDBTests(
-  //           filter: {id: {eq: \$id}
-  //         ) {
-  //           items {
-  //             id
-  //             month
-  //             total_time
-  //             avg_att
-  //             avg_med
-  //             firsts_name
-  //             first_amt
-  //             second_name
-  //             second_amt
-  //             con_score
-  //             spacetime_score
-  //             exec_score
-  // 		        mem_score
-  // 		        ling_score
-  // 		        cal_score
-  // 		        reac_score
-  // 		        orient_score
-  // 		        createdAt
-  // 		        updatedAt
-  //           }
-  //         }
-  //       }
-  //     """,
-  //         variables: {
-  //           "id": ID,
-  //         },
-  //       ),
-  //     );
-  //
-  //     var response = await operation.response;
-  //     print("i love you");
-  //     print(response.data);
-  //
-  //     Map<String, dynamic> json = jsonDecode(response.data);
-  //     MonthlyBrainSignalTable monthlyDBTest =
-  //         (json['listMonthlyDBTests']['items'] as List)
-  //             .map((item) => MonthlyBrainSignalTable.fromJson(item))
-  //             .toList()
-  //             .first;
-  //
-  //     if (monthlyDBTest == null) {
-  //       print('errors: ${response.errors}');
-  //       return null;
-  //     }
-  //     print(monthlyDBTest);
-  //     return monthlyDBTest;
-  //   } on ApiException catch (e) {
-  //     print('Query failed: $e');
-  //     return null;
-  //   }
-  // }
-
-//   Future<MonthlyBrainSignalTable?>
-//     queryMonthlyDBItem({required String ID, String? nextToken}) async {
-//   try {
-//     var operation = Amplify.API.query(
-//       request: GraphQLRequest(
-//         apiName: "Institution_API_NEW",
-//         document: """
-//           query ListMonthlyBrainSignalTables(\$filter: TableMonthlyBrainSignalTableFilterInput, \$limit: Int, \$nextToken: String) {
-//             listMonthlyBrainSignalTables(filter: \$filter, limit: \$limit, nextToken: \$nextToken) {
-//               items {
-//                 id
-//                 month
-//                 total_time
-//                 avg_att
-//                 avg_med
-//                 firsts_name
-//                 first_amt
-//                 second_name
-//                 second_amt
-// 				con_score
-// 				spacetime_score
-// 				exec_score
-// 				mem_score
-// 				ling_score
-// 				cal_score
-// 				reac_score
-// 				orient_score
-// 			    createdAt
-// 			    updatedAt
-//               }
-//               nextToken
-//             }
-//           }
-//         """,
-//         variables: {
-//           "filter": {"id": {"eq": ID}},
-//           "limit": 1000,
-//           "nextToken": nextToken,
-//         },
-//       ),
-//     );
-//
-//     var response = await operation.response;
-//
-//     print(response.data);
-//
-//     var data = jsonDecode(response.data);
-//     var items = data['listMonthlyBrainSignalTables']['items'];
-//
-//      if (items == null || response.data == null) {
-//       print('errors: ${response.errors}');
-//       return null;
-//      }
-//
-//      MonthlyBrainSignalTable? monthlyDBTest =
-//        (items as List)
-//            .map((item) => MonthlyBrainSignalTable.fromJson(item))
-//            .toList()
-//            .first;
-//
-//      var newNextToken = data['listInstitutionNewsTables']['nextToken'];
-//
-//      if (newNextToken != null) {
-//        // recursive call for next page's data
-//        var additionalItems =
-//            await queryMonthlyDBItem(ID : ID , nextToken : newNextToken);
-//
-//        // Since you are returning only the first item in the list and not a list of all items. We need to handle how we want to merge this additionalItems into food. Here I'm just showing an example where we just replace the current item if there is more.
-//
-//        if(additionalItems != null){
-//          monthlyDBTest = additionalItems;
-//        }
-//      }
-//
-//      return monthlyDBTest;
-//
-//   } on ApiException catch (e) {
-//       print('Query failed: $e');
-//       return null;
-//   }
-// }
 
   Future<void> createMonthlyData() async {
     final row = {
@@ -1656,6 +1313,7 @@ class GraphQLController {
     }
   }
 
+  // 기관 요약 보고서에서 뇌신호 데이터 가져오기(BrainSignalTable = Monthly DB)
   //BETWEEN
   Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItemsBetween(
       {required String ID,
@@ -1749,6 +1407,8 @@ class GraphQLController {
 
 /*  ----------- jinsu method ------------------        */
 
+
+  //기관의 스케줄 CRUD 페이지 관련 함수들
   Future<bool?> createScheduledata(String schedule_id, String content,
       List<String> tag, String classtime, String date) async {
     var time = '${TemporalDateTime.now()}';
@@ -1806,6 +1466,7 @@ class GraphQLController {
     }
   }
 
+  //기관이 등록한 스케줄들을 한달단위로 불러오는 함수
   Future<List<InstitutionEventScheduleTable?>>
       queryInstitutionScheduleByInstitutionId(String date,
           {String? nextToken}) async {
@@ -2016,6 +1677,7 @@ class GraphQLController {
     }
   }
 
+  //기관의 소속 훈련자 데이터 불려오기
   Future<List<UserTable?>> queryListUsers({String? nextToken}) async {
     try {
       var operation = Amplify.API.query(
@@ -2078,8 +1740,9 @@ class GraphQLController {
     }
   }
 
+  //comment 페이지 관련 함수들
   Future<bool?> createCommentBoarddata(String user_id, String title,
-       String content, String username, String inst_id) async {
+      String content, String username, String inst_id) async {
     final time = '${TemporalDateTime.now()}';
     final row = {
       'USER_ID': user_id,
@@ -2142,8 +1805,8 @@ class GraphQLController {
     }
   }
 
-  Stream<GraphQLResponse>? subscribeInstitutionCommentBoard(
-     ) {
+  // 코멘트 테이블의 CRUD 감지하도록 구독하는 함수
+  Stream<GraphQLResponse>? subscribeInstitutionCommentBoard() {
     String inst_id = 'aaa';
     try {
       var operation = Amplify.API.subscribe(
@@ -2184,6 +1847,7 @@ class GraphQLController {
     }
   }
 
+  //한달 단위로 코멘트 불러오기
   Future<List<InstitutionCommentBoardTable?>> listInstitutionCommentBoard(
       String filterName, String Id, String year, String month,
       {String? nextToken}) async {
@@ -2249,7 +1913,9 @@ class GraphQLController {
 
         if (newNextToken != null) {
           // recursive call for next page's data
-          var nextComments = await listInstitutionCommentBoard(filterName, Id, year, month, nextToken: newNextToken);
+          var nextComments = await listInstitutionCommentBoard(
+              filterName, Id, year, month,
+              nextToken: newNextToken);
           comments.addAll(nextComments!);
         }
 
@@ -2261,6 +1927,7 @@ class GraphQLController {
     }
   }
 
+  //특정 코멘트 하나만 불러오기
   Future<InstitutionCommentBoardTable?> getInstitutionCommentBoard(
       String user_id, String board_id) async {
     // String inst_id = 'aaa';
@@ -2413,6 +2080,7 @@ class GraphQLController {
     }
   }
 
+  // 상세 코멘트 보기 페이지 (Detail_comment.dart)에서 댓글을 위한 함수들 (conversation = 댓글)
   Future<bool?> createCommentConversationdata(
       String board_id, String writer, String content, String email) async {
     final time = '${TemporalDateTime.now()}';
@@ -2469,6 +2137,7 @@ class GraphQLController {
     }
   }
 
+  // 특정 코멘트의 댓글들 불러오기
   Future<List<InstitutionCommentConversationTable?>>
       listInstitutionCommentConversation(String boardId,
           {String? nextToken}) async {
@@ -2680,6 +2349,7 @@ class GraphQLController {
     }
   }
 
+  //기관에서 최신 댓글을 달았음을 NEW_CONVERSATION_INST column을 true로 표시하도록 업데이트
   Future<bool?> updateCommentBoarddataForNewConversation(
       String user_id, String board_id) async {
     final time = '${TemporalDateTime.now()}';
@@ -2729,6 +2399,7 @@ class GraphQLController {
     }
   }
 
+  // 보호자가 최신 댓글 단 코멘트를 기관이 읽었음을 저장하기 위한 함수
   Future<bool?> updateCommentBoarddataForReadConversation(
       String user_id, String board_id) async {
     final time = '${TemporalDateTime.now()}';
@@ -2872,89 +2543,7 @@ class GraphQLController {
     }
   }
 
-  // Future<List<MonthlyBrainSignalTable?>> queryListMonthlyDBItems(
-  //     {required String ID, String? nextToken}) async {
-  //   try {
-  //     // var ID = '1';
-  //
-  //     var operation = Amplify.API.query(
-  //       request: GraphQLRequest(
-  //         apiName: "Institution_API_NEW",
-  //         document: """
-  //         query listMonthlyBrainSignalTables(\$filter: TableMonthlyBrainSignalTableFilterInput, \$limit: Int, \$nextToken: String) {
-  //           listMonthlyBrainSignalTables(
-  //             filter: \$filter,
-  //             limit: \$limit,
-  //             nextToken: \$nextToken
-  //           ) {
-  //             items {
-  //               id
-  //               month
-  //               total_time
-  //               avg_att
-  //               avg_med
-  //               firsts_name
-  //               first_amt
-  //               second_name
-  //               second_amt
-  //               con_score
-  //               spacetime_score
-  //               exec_score
-  //               mem_score
-  //               ling_score
-  //               cal_score
-  //               reac_score
-  //               orient_score
-  //               createdAt
-  //               updatedAt
-  //             }
-  //             nextToken
-  //           }
-  //         }
-  //       """,
-  //         variables: {
-  //           "filter": {
-  //             "id": {"eq": ID},
-  //           },
-  //           "limit": 1000,
-  //           "nextToken": nextToken,
-  //         },
-  //       ),
-  //     );
-  //
-  //     var response = await operation.response;
-  //     {
-  //       print("asdf");
-  //       print(response.data);
-  //       print("1234");
-  //
-  //       var data = jsonDecode(response.data);
-  //       var items = data['listMonthlyBrainSignalTables']['items'];
-  //
-  //       if (items == null || response.data == null) {
-  //         print('errors: ${response.errors}');
-  //         return const [];
-  //       }
-  //       // Handle items as needed
-  //       List<MonthlyBrainSignalTable?> monthlyDBTests = (items as List)
-  //           .map((item) => MonthlyBrainSignalTable.fromJson(item))
-  //           .toList();
-  //       var newNextToken = data['listMonthlyBrainSignalTables']['nextToken'];
-  //
-  //       if (newNextToken != null) {
-  //         // recursive call for next page's data
-  //         var additionalItems =
-  //             await queryListMonthlyDBItems(ID: ID, nextToken: newNextToken);
-  //         monthlyDBTests.addAll(additionalItems);
-  //       }
-  //
-  //       return monthlyDBTests;
-  //     }
-  //   } on ApiException catch (e) {
-  //     print('Query failed: $e');
-  //     return const [];
-  //   }
-  // }
+  //개별 분석 보고서 페이지에서 같은 나이대의 훈련자들의 데이터를 불러오기
   Future<List<UserTable?>> queryListUserDBItemsForAverageAge(int start, int end,
       {String? nextToken}) async {
     try {
@@ -3023,6 +2612,7 @@ class GraphQLController {
     }
   }
 
+  //개별 분석 보고서에서 특정 유저(훈련자)의 인지 훈련 데이터 불러오기
   Future<List<MonthlyBrainSignalTable?>> queryMonthlyDBRequiredItem(
       String selectedAgeUserId, int yearMonth,
       {String? nextToken}) async {
@@ -3111,308 +2701,4 @@ class GraphQLController {
       return const [];
     }
   }
-
-// Future<void> createMonthlyData() async {
-//   try {
-//     final row = MonthlyDBTest(
-//       id: "3",
-//       month: brainmonth,
-//       avg_att: Random().nextInt(100) + 1,
-//       avg_med: Random().nextInt(100) + 1,
-//       con_score: Random().nextInt(100) + 1,
-//       spacetime_score: Random().nextInt(100) + 1,
-//       exec_score: Random().nextInt(100) + 1,
-//       mem_score: Random().nextInt(100) + 1,
-//       ling_score: Random().nextInt(100) + 1,
-//       cal_score: Random().nextInt(100) + 1,
-//       reac_score: Random().nextInt(100) + 1,
-//       orient_score: Random().nextInt(100) + 1,
-//     );
-//     final request = ModelMutations.create(row);
-//     final response = await Amplify.API.mutate(request: request).response;
-//     int month = int.parse(brainmonth);
-//     month += 100;
-//     brainmonth = "$month";
-//
-//     final createdUser = response.data;
-//     if (createdUser == null) {
-//       safePrint('errors: ${response.errors}');
-//       return;
-//     }
-//     safePrint('Mutation result: ${createdUser.month}');
-//   } on ApiException catch (e) {
-//     safePrint('Mutation failed: $e');
-//   }
-// }
-
-// Future<MonthlyDBTest?> queryMonthlyDBItem() async {
-//   try {
-//     var ID = '3';
-//     int limit =
-//         1; // Fetch the latest 1 data items, you can change this value to fetch more or less
-//     String sortDirection =
-//         "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
-//
-//     var operation = Amplify.API.query(
-//       request: GraphQLRequest(
-//         document: """
-//         query ListMonthlyDBTests(\$id: ID, \$limit: Int, \$sortDirection: ModelSortDirection) {
-//           listMonthlyDBTests(
-//             id: \$id,
-//             limit: \$limit,
-//             sortDirection: \$sortDirection
-//           ) {
-//             items {
-//               id
-//               month
-//               total_time
-//               avg_att
-//               avg_med
-//               firsts_name
-//               first_amt
-//               second_name
-//               second_amt
-//               con_score
-//               spacetime_score
-//               exec_score
-//               mem_score
-//               ling_score
-//               cal_score
-//               reac_score
-//               orient_score
-//               createdAt
-//               updatedAt
-//             }
-//           }
-//         }
-//       """,
-//         variables: {
-//           "id": ID,
-//           "limit": limit,
-//           "sortDirection": sortDirection,
-//         },
-//       ),
-//     );
-//
-//     var response = await operation.response;
-//     // print(response.data);
-//     // Map<String, dynamic> json = jsonDecode(response.data);
-//     // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
-//     MonthlyDBTest monthlyDBTest =
-//         (jsonDecode(response.data)['listMonthlyDBTests']['items'] as List)
-//             .map((item) => MonthlyDBTest.fromJson(item))
-//             .toList()
-//             .first;
-//     if (monthlyDBTest == null) {
-//       safePrint('errors: ${response.errors}');
-//       // safePrint('errors: ${response}');
-//     }
-//     return monthlyDBTest;
-//   } on ApiException catch (e) {
-//     safePrint('Query failed: $e');
-//     return null;
-//   }
-// }
-//
-// // Future<List<MonthlyDBTest?>> queryListMonthlyDBItems(int yearMonth) async {
-// //   var ID = '3';
-// //   // final queryPredicate = MonthlyDBTest.ID.eq(ID);
-// //   //20240211- 10000 + 50
-// //   //if( yearmonth >  )2
-// //   print("yearmonth:${yearMonth - 10000 + 50}");
-// //   final queryPredicateDateMax = MonthlyDBTest.MONTH.le("$yearMonth");
-// //   final queryPredicateDatemin =
-// //       MonthlyDBTest.MONTH.gt("${yearMonth - 10000 + 50}");
-// //   final queryPredicateall = MonthlyDBTest.ID
-// //       .eq(ID)
-// //       .and(queryPredicateDateMax)
-// //       .and(queryPredicateDatemin);
-// //
-// //   try {
-// //     final request = ModelQueries.list<MonthlyDBTest>(MonthlyDBTest.classType,
-// //         where: queryPredicateall);
-// //     final response = await Amplify.API.query(request: request).response;
-// //
-// //     final items = response.data?.items;
-// //     if (items == null) {
-// //       print('errors: ${response.errors}');
-// //       return const [];
-// //     }
-// //     return items;
-// //   } on ApiException catch (e) {
-// //     print('Query failed: $e');
-// //     return const [];
-// //   }
-// // }
-//
-
-//
-// // Future<List<MonthlyDBTest?>> queryMonthlyDBTwoItems(int yearMonth) async {
-// //   var ID = '3';
-// //   // final queryPredicate = MonthlyDBTest.ID.eq(ID);
-// //   //20240211- 10000 + 50
-// //   //if( yearmonth >  )2
-// //   print("yearmonth:${yearMonth - 10000 + 50}");
-// //   final queryPredicateDateMax = MonthlyDBTest.MONTH.le("$yearMonth");
-// //   final queryPredicateDatemin =
-// //   MonthlyDBTest.MONTH.gt("${yearMonth - 10000 + 50}");
-// //   final queryPredicateall = MonthlyDBTest.ID
-// //       .eq(ID)
-// //       .and(queryPredicateDateMax)
-// //       .and(queryPredicateDatemin);
-// //
-// //   try {
-// //     final request = ModelQueries.list<MonthlyDBTest>(MonthlyDBTest.classType,
-// //         where: queryPredicateall,
-// //    );
-// //     final response = await Amplify.API.query(request: request).response;
-// //
-// //     final items = response.data?.items;
-// //     if (items == null) {
-// //       print('errors: ${response.errors}');
-// //       return const [];
-// //     }
-// //     return items;
-// //   } on ApiException catch (e) {
-// //     print('Query failed: $e');
-// //     return const [];
-// //   }
-// // }
-//
-// Future<List<MonthlyDBTest?>> queryMonthlyDBLatestTwoItems() async {
-//   try {
-//     var ID = '3';
-//     int limit =
-//         2; // Fetch the latest 2 data items, you can change this value to fetch more or less
-//     String sortDirection =
-//         "DESC"; // Set to "ASC" for ascending order, or "DESC" for descending order
-//
-//     var operation = Amplify.API.query(
-//       request: GraphQLRequest(
-//         document: """
-//         query ListMonthlyDBTests(\$id: ID, \$limit: Int, \$sortDirection: ModelSortDirection) {
-//           listMonthlyDBTests(
-//             id: \$id,
-//             limit: \$limit,
-//             sortDirection: \$sortDirection
-//           ) {
-//             items {
-//               id
-//               month
-//               total_time
-//               avg_att
-//               avg_med
-//               firsts_name
-//               first_amt
-//               second_name
-//               second_amt
-//               con_score
-//               spacetime_score
-//               exec_score
-//               mem_score
-//               ling_score
-//               cal_score
-//               reac_score
-//               orient_score
-//               createdAt
-//               updatedAt
-//             }
-//           }
-//         }
-//       """,
-//         variables: {
-//           "id": ID,
-//           "limit": limit,
-//           "sortDirection": sortDirection,
-//         },
-//       ),
-//     );
-//
-//     var response = await operation.response;
-//     // print(response.data);
-//     // Map<String, dynamic> json = jsonDecode(response.data);
-//     // in Dart, you can use the jsonDecode function from the dart:convert library. The jsonDecode function parses a JSON string and returns the corresponding Dart object.
-//     List<MonthlyDBTest> monthlyDBTests =
-//         (jsonDecode(response.data)['listMonthlyDBTests']['items'] as List)
-//             .map((item) => MonthlyDBTest.fromJson(item))
-//             .toList();
-//     if (monthlyDBTests == null) {
-//       print('errors: ${response.errors}');
-//       return const [];
-//     }
-//     return monthlyDBTests;
-//   } on ApiException catch (e) {
-//     print('Query failed: $e');
-//     return const [];
-//   }
-// }
-//
-// Future<MonthlyDBTest?> queryMonthlyDBRequiredItem(
-//     String id, int yearMonth) async {
-//   print(yearMonth + 40);
-//   final queryPredicateDate = MonthlyDBTest.MONTH
-//       .between(yearMonth.toString(), (yearMonth + 40).toString());
-//   final queryPredicateboth = MonthlyDBTest.ID.eq(id).and(queryPredicateDate);
-//
-//   try {
-//     final request = ModelQueries.list<MonthlyDBTest>(
-//       MonthlyDBTest.classType,
-//       where: queryPredicateboth,
-//     );
-//     final response = await Amplify.API.query(request: request).response;
-//     final test = response.data?.items.last; // latest data
-//     if (test == null) {
-//       safePrint('errors: ${response.errors}');
-//       return null;
-//     }
-//     print(test.toString());
-//     return test;
-//   } on ApiException catch (e) {
-//     safePrint('Query failed: $e');
-//     return null;
-//   }
-// }
-//
-// Future<UserDBTest?> queryUserDBItem(String id) async {
-//   const ID = '1';
-//
-//   final queryPredicate = UserDBTest.ID.eq(ID);
-//   // final queryPredicateboth = UserDBTest.BIRTH.between(start, end).and(queryPredicateId);
-//
-//   try {
-//     final request = ModelQueries.list<UserDBTest>(
-//       UserDBTest.classType,
-//       where: queryPredicate,
-//     );
-//     final response = await Amplify.API.query(request: request).response;
-//     final test = response.data?.items.first;
-//     if (test == null) {
-//       safePrint('errors: ${response.errors}');
-//     }
-//     print(test.toString());
-//     return test;
-//   } on ApiException catch (e) {
-//     safePrint('Query failed: $e');
-//     return null;
-//   }
-// }
-//
-// Future<List<UserDBTest?>> queryListUserDBItems(int start, int end) async {
-//   final queryPredicate = UserDBTest.BIRTH.between(start, end);
-//   try {
-//     final request =
-//         ModelQueries.list(UserDBTest.classType, where: queryPredicate);
-//     final response = await Amplify.API.query(request: request).response;
-//
-//     final items = response.data?.items;
-//     if (items == null) {
-//       print('errors: ${response.errors}');
-//       return <UserDBTest?>[];
-//     }
-//     return items;
-//   } on ApiException catch (e) {
-//     print('Query failed: $e');
-//   }
-//   return <UserDBTest?>[];
-// }
 }

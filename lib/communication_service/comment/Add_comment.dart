@@ -13,6 +13,8 @@ class AddCommentPage extends StatefulWidget {
 }
 
 class _AddCommentPageState extends State<AddCommentPage> {
+  final iconColor = Colors.white;
+
   Map<String, String> _userData = {};
   String selectedUserId = '';
   String selectedUserName = '';
@@ -55,13 +57,14 @@ class _AddCommentPageState extends State<AddCommentPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_circle_left_outlined,
-              color: Colors.white, size: 35),
+              color: iconColor, size: 35),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text('코멘트 추가',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: iconColor)),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -108,7 +111,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                               icon: Icon(
                                 // Add this
                                 Icons.arrow_drop_down, // Add this
-                                color: Colors.white, // Add this
+                                color: iconColor, // Add this
                               ),
                               dropdownColor: const Color(0xff1f43f3),
                               value: dropdownValue,
@@ -131,7 +134,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
                                   value: value,
                                   child: Text(value,
                                       style: TextStyle(
-                                          color: Colors.white,
+                                          color: iconColor,
                                           fontWeight: FontWeight.bold)),
                                 );
                               }).toList(),

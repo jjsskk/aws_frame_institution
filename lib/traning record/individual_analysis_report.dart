@@ -23,6 +23,8 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
   bool loadingForAverage = true;
   bool loadingForGraph = true;
 
+  final iconColor = Colors.white;
+
   var userbutton = '유저 데이터 추가';
   var brainbutton = '뇌파 데이터 추가';
   late final gql;
@@ -710,7 +712,8 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       mainAxisSpacing: 30,
       // 메인 축 간격 설정
       crossAxisSpacing: 4.0,
-      childAspectRatio: 0.8, // s21 -> 0.7
+      childAspectRatio: 0.8,
+      // s21 -> 0.7
       // 가로 세로 비율 조절
       // 교차 축 간격 설정
       children: buttonLabels.keys
@@ -806,72 +809,6 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                             ? nameDeepPng[label]!
                             : nameLightPng[label]!)),
 
-                    // ElevatedButton(
-                    //   style: ElevatedButton.styleFrom(
-                    //     padding: EdgeInsets.symmetric(horizontal: 1),
-                    //     shape: CircleBorder(),
-                    //     fixedSize: Size(10.0, 5.0),
-                    //     // primary: selectedLabel == label
-                    //     //     ? Color(0xFF2B3FF0)
-                    //     //     : null, // 선택된 라벨에 따라 색상 변경
-                    //     backgroundColor: Colors.transparent
-                    //   ),
-                    //   onPressed: () {
-                    //     for (var result in results) {
-                    //       String? month = result?.month.substring(4, 6);
-                    //       var value;
-                    //       switch (label) {
-                    //         case "avg_att":
-                    //           value = result?.avg_att;
-                    //           break;
-                    //         case "avg_med":
-                    //           value = result?.avg_med;
-                    //           break;
-                    //         case "con_score":
-                    //           value = result?.con_score;
-                    //           break;
-                    //         case "spacetime_score":
-                    //           value = result?.spacetime_score;
-                    //           break;
-                    //         case "exec_score":
-                    //           value = result?.exec_score;
-                    //           break;
-                    //         case "mem_score":
-                    //           value = result?.mem_score;
-                    //           break;
-                    //         case "ling_score":
-                    //           value = result?.ling_score;
-                    //           break;
-                    //         case "cal_score":
-                    //           value = result?.cal_score;
-                    //           break;
-                    //         case "reac_score":
-                    //           value = result?.reac_score;
-                    //           break;
-                    //         case "orient_score":
-                    //           value = result?.orient_score;
-                    //           break;
-                    //         default:
-                    //           value = null;
-                    //       }
-                    //       setState(() {
-                    //         selectedLabel = label;
-                    //       });
-                    //       print("Month: $month, $label: $value");
-                    //     }
-                    //   },
-                    //   child: Text(
-                    //     buttonLabels[label]!,
-                    //     style: TextStyle(
-                    //       fontSize: 16.0,
-                    //       height: 1.3,
-                    //       fontWeight: FontWeight.w500,
-                    //       color: selectedLabel == label
-                    //           ? Colors.white
-                    //           : Color(0xFF2B3FF0),
-                    //     ),
-                    //   ),
-                    // ),
                   ),
                   Expanded(
                     child: Text(
@@ -1078,13 +1015,14 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_circle_left_outlined,
-              color: Colors.white, size: 35),
+              color: iconColor, size: 35),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text('개별 분석 보고서',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: iconColor)),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -1116,7 +1054,8 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                               ? Container(
                                   height:
                                       MediaQuery.of(context).size.height / 25,
-                                  width: MediaQuery.of(context).size.width / 1.9,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.9,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
@@ -1161,7 +1100,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                     icon: Icon(
                                       // Add this
                                       Icons.arrow_drop_down, // Add this
-                                      color: Colors.white, // Add this
+                                      color: iconColor, // Add this
                                     ),
                                     onChanged: (String? value) {
                                       setState(
@@ -1181,7 +1120,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                         child: Text(
                                           value,
                                           style: TextStyle(
-                                              color: Colors.white,
+                                              color: iconColor,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       );
@@ -1203,12 +1142,12 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 ),
                                 child: Center(
                                   child: DropdownButton<String>(
-                                    dropdownColor:  const Color(0xff1f43f3),
+                                    dropdownColor: const Color(0xff1f43f3),
                                     value: dropdownMonth,
                                     icon: Icon(
                                       // Add this
                                       Icons.arrow_drop_down, // Add this
-                                      color: Colors.white, // Add this
+                                      color: iconColor, // Add this
                                     ),
                                     onChanged: (String? value) {
                                       setState(
@@ -1229,7 +1168,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                         child: Text(
                                           value,
                                           style: TextStyle(
-                                              color: Colors.white,
+                                              color: iconColor,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       );
@@ -1290,7 +1229,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                 width: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
-                                  color: Colors.white,
+                                  color: iconColor,
                                 ),
                                 child: Center(
                                   child: IconButton(
@@ -1594,7 +1533,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(10),
                                   ),
-                                  color: Colors.white.withOpacity(0.5)),
+                                  color: iconColor.withOpacity(0.5)),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 10, horizontal: 10),

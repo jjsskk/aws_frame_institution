@@ -131,7 +131,7 @@ class _Find_Password_PageState extends State<Find_Password_Page> {
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     style: TextButton.styleFrom(
-                        primary: iconColor,
+                        iconColor: iconColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),

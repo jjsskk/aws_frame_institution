@@ -28,6 +28,8 @@ class EditCommentPage extends StatefulWidget {
 }
 
 class _EditCommentPageState extends State<EditCommentPage> {
+  final iconColor = Colors.white;
+
   late TextEditingController _titleController;
 
   late TextEditingController _contentController;
@@ -51,13 +53,14 @@ class _EditCommentPageState extends State<EditCommentPage> {
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_circle_left_outlined,
-              color: Colors.white, size: 35),
+              color: iconColor, size: 35),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         title: Text('코멘트 수정',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold, color: iconColor)),
         centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -117,7 +120,7 @@ class _EditCommentPageState extends State<EditCommentPage> {
                                     width: 35,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
-                                      color: Colors.white,
+                                      color: iconColor,
                                     ),
                                   ),
                                   const SizedBox(

@@ -69,8 +69,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    var appState = context.watch<LoginState>();
-    appState.authService = _authService;
+
     return MaterialApp(
       title: 'protector app for showing brain signal',
       theme: ThemeData(

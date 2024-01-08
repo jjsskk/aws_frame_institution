@@ -169,7 +169,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
                         ),
                         style: TextButton.styleFrom(
-                            primary: iconColor,
+                            iconColor: iconColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             backgroundColor: theme.primaryColorLight),
