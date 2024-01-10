@@ -1,4 +1,4 @@
-# Frame 기관 앱
+# Frame Android 기관 앱
 
 Flutter + AWS Amplify project.
 

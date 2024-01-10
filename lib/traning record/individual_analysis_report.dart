@@ -712,7 +712,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
       mainAxisSpacing: 30,
       // 메인 축 간격 설정
       crossAxisSpacing: 4.0,
-      childAspectRatio: 0.8,
+      childAspectRatio: 0.7,
       // s21 -> 0.7
       // 가로 세로 비율 조절
       // 교차 축 간격 설정
@@ -937,33 +937,6 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
     fetchOneYearBrainDataForGraph();
   }
 
-// void fetchLatestOneBrainData(String ID) {
-//   gql.queryMonthlyDBOneItem(ID: ID).then((results) {
-//     print(results);
-//
-//     results.sort((a, b) {
-//       String aa = a.month;
-//
-//       String bb = b.month;
-//       return bb.compareTo(aa);
-//     });
-//
-//     var result = results.first;
-//     setState(() {
-//       CON_SCORE = "${result!.con_score}";
-//       SPACETIME_SCORE = "${result!.spacetime_score}";
-//       EXEC_SCORE = "${result!.exec_score}";
-//       MEM_SCORE = "${result!.mem_score}";
-//       LING_SCORE = "${result!.ling_score}";
-//       CAL_SCORE = "${result!.cal_score}";
-//       REAC_SCORE = "${result!.reac_score}";
-//       ORIENT_SCORE = "${result!.orient_score}";
-//       AVG_ATT = "${result!.avg_att}";
-//       AVG_MED = "${result!.avg_med}";
-//       // loading = false;
-//     });
-//   });
-// }
 
   @override
   void initState() {
@@ -1176,6 +1149,7 @@ class _IndividualAnalysisPageState extends State<IndividualAnalysisPage> {
                                   ),
                                 ),
                               ),
+                              // pub deb에서 받은 오픈소스 날짜 드랍 다운 박스 ->디지인 asset 파일에 입힐수 없어서 주석처리
                               // Expanded(
                               //   child: DropdownDatePicker(
                               //     inputDecoration: InputDecoration(

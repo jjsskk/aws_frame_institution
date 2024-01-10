@@ -1,19 +1,11 @@
-
-
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
 import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
-// import 'package:aws_frame_institution/communication_service/comment_view.dart';
-import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/communication_service/user_activity.dart';
-// import 'package:aws_frame_institution/communication_service/user_care_information.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
-import 'package:aws_frame_institution/traning%20record/analyzing_report.dart';
 import 'package:aws_frame_institution/traning%20record/individual_analysis_report.dart';
 import 'package:aws_frame_institution/traning%20record/institution_summary_report.dart';
-// import 'package:aws_frame_institution/traning%20record/brain_signal_graph.dart';
-// import 'package:aws_frame_institution/traning%20record/traning_report.dart';
 import 'package:flutter/material.dart';
 
 class GlobalDrawer {
@@ -121,11 +113,6 @@ class GlobalDrawer {
 
               GestureDetector(
                 onTap: () {
-                  // 탭하면 훈련 보고서 페이지로 이동합니다.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) =>  CommunicationYardPage()),
-                  );
                 },
                 child: Container(
                   padding: EdgeInsets.all(12.0), // 버튼 주위의 패딩 설정

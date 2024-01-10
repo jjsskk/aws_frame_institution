@@ -54,10 +54,9 @@ class _DetailCommentPageState extends State<DetailCommentPage> {
       print(result);
       _conversations = [];
       result.forEach((value) {
-        // print(value.createdAt.toString().substring(0,10));
         _conversations.add({
-          // 'date': value.createdAt.toString().substring(0, 10),
-          'date': value.createdAt.toString() ?? '',
+          // 'date': value.createdAt.toString() ?? '',
+          'date': DateTime.parse(value.createdAt.toString()).toLocal().toString(), //UTC ->KST
           'content': value.CONTENT ?? '',
           'writer': value.WRITER ?? '',
           'board_id': value.BOARD_ID ?? '',

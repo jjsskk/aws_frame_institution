@@ -28,8 +28,6 @@ class _CommentViewPageState extends State<CommentViewPage> {
 
   final TextEditingController _searchController = TextEditingController();
 
-  // final ScrollController _scrollController = ScrollController();
-  // final double _scrollThreshold = 200.0; // 임의의 threshold 값
 
   // 드레그 거리를 체크하기 위함
   // 해당 값을 평균내서 50%이상 움직였을때 데이터 불러오는 작업을 하게됨.
@@ -173,7 +171,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
     result.forEach((value) {
       // print(value.createdAt.toString().substring(0,10));
       _comments.add({
-        'date': value.createdAt.toString().substring(0, 10) ?? '',
+        // 'date': value.createdAt.toString().substring(0, 10) ?? '',
+        'date': DateTime.parse(value.createdAt.toString()).toLocal().toString().substring(0, 10), //UTC ->KST
         'title': value.TITLE ?? '',
         'username': value.USERNAME ?? '',
         'content': value.CONTENT ?? '',
@@ -181,7 +180,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
         'board_id': value.BOARD_ID ?? '',
         'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
         'new_conversation_createdat':
-            value.NEW_CONVERSATION_CREATEDAT.toString()
+            value.NEW_CONVERSATION_CREATEDAT.toString() //sorting 용도로만 쓰니까 그냥 UTC 쓰자
       });
     });
     _comments.sort((a, b) {
@@ -255,7 +254,8 @@ class _CommentViewPageState extends State<CommentViewPage> {
               result.forEach((value) {
                 // print(value.createdAt.toString().substring(0,10));
                 _commentsTemp.add({
-                  'date': value.createdAt.toString().substring(0, 10) ?? '',
+                  // 'date': value.createdAt.toString().substring(0, 10) ?? '',
+                  'date': DateTime.parse(value.createdAt.toString()).toLocal().toString().substring(0, 10), //UTC ->KST
                   'title': value.TITLE ?? '',
                   'username': value.USERNAME ?? '',
                   'user_id': value.USER_ID ?? '',
@@ -263,7 +263,7 @@ class _CommentViewPageState extends State<CommentViewPage> {
                   'board_id': value.BOARD_ID ?? '',
                   'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
                   'new_conversation_createdat':
-                      value.NEW_CONVERSATION_CREATEDAT.toString()
+                      value.NEW_CONVERSATION_CREATEDAT.toString() //sorting 용도로만 쓰니까 그냥 UTC 쓰자
                 });
               });
               _commentsTemp.sort((a, b) {

@@ -125,6 +125,7 @@ class _SchedulePageState extends State<SchedulePage> {
     makeYearDropdownValues();
     _selectedDay = _focusedDay;
     getEventDataFromDB();
+
     // stream = gql.subscribeInstitutionSchedule("1234");
     // print(stream);
     // subscribeScheduleChange();
@@ -609,12 +610,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                                               9
                                                           ? '${_selectedDay!.day}'
                                                           : '0${_selectedDay!.day}';
-                                                      String SCHE_ID =
-                                                          '${DateTime.now()}';
-                                                      final date = DateTime.utc(
-                                                          _selectedDay!.year,
-                                                          _selectedDay!.month,
-                                                          _selectedDay!.day);
 
                                                       bool isChecked = isCheckedAddOrUpdate
                                                           ? await gql.updateScheduledata(
@@ -628,7 +623,6 @@ class _SchedulePageState extends State<SchedulePage> {
                                                               '$start ~ $end',
                                                               '${_selectedDay!.year}$monthStr$dateStr')
                                                           : await gql.createScheduledata(
-                                                              SCHE_ID,
                                                               _programController
                                                                   .text
                                                                   .trim()

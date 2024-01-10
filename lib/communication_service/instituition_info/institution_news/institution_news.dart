@@ -43,8 +43,8 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
   @override
   void initState() {
     super.initState();
-    _news =
-        gql.queryInstitutionNewsByInstitutionId(institutionId: gql.institutionNumber);
+    _news = gql.queryInstitutionNewsByInstitutionId(
+        institutionId: gql.institutionNumber);
     // Provider 구독 설정
     newsProvider = Provider.of<LoginState>(context, listen: false);
 
@@ -109,8 +109,10 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    getYearMonthDay(
-                                        news.createdAt.toString()),
+                                    getYearMonthDay(DateTime.parse(
+                                            news.createdAt.toString())
+                                        .toLocal()
+                                        .toString()), //UTC ->KST
                                     style: TextStyle(
                                         color: Colors.black,
                                         backgroundColor: Colors.transparent,
@@ -147,30 +149,33 @@ class _InstitutionNewsPageState extends State<InstitutionNewsPage> {
 class InstitutionNewsDetailPage extends StatefulWidget {
   final InstitutionNewsTable news;
   final StorageService storageService;
+
   InstitutionNewsDetailPage(
       {Key? key, required this.news, required this.storageService})
       : super(key: key);
 
   @override
-  State<InstitutionNewsDetailPage> createState() => _InstitutionNewsDetailPageState();
+  State<InstitutionNewsDetailPage> createState() =>
+      _InstitutionNewsDetailPageState();
 }
 
 class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
   final gql = GraphQLController.Obj;
   late InstitutionNewsTable news;
-  String title = '', content  = '', url = '', image = 'loading';
+  String title = '', content = '', url = '', image = 'loading';
 
   String getYearMonthDay(String dateString) {
     return dateString.substring(0, 10);
   }
+
   @override
   void initState() {
     // TODO: implement initState
 
     title = widget.news.TITLE!;
-    widget.news.CONTENT  != null ? content = widget.news.CONTENT!: content = '';
-    widget.news.URL!=null ?url = widget.news.URL!:url = '';
-    widget.news.IMAGE!=null?image = widget.news.IMAGE!: image = '';
+    widget.news.CONTENT != null ? content = widget.news.CONTENT! : content = '';
+    widget.news.URL != null ? url = widget.news.URL! : url = '';
+    widget.news.IMAGE != null ? image = widget.news.IMAGE! : image = '';
     super.initState();
   }
 
@@ -187,7 +192,8 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
         ),
         title: Text(
           '기관소식 세부 정보',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
         flexibleSpace: Container(
@@ -205,20 +211,25 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => updateInstitutionNewsPage(
-                        news: widget.news, storageService: widget.storageService),
+                        news: widget.news,
+                        storageService: widget.storageService),
                   ),
                 );
 
                 if (result != null) {
                   setState(() {
                     title = result['title'];
-                    result['content'] != null? content = result['content'] : content ='';
-                    result['url']!= null? url = result['url']: url = '';
-                    result['image'] != null? image = result['image']:image = '';
+                    result['content'] != null
+                        ? content = result['content']
+                        : content = '';
+                    result['url'] != null ? url = result['url'] : url = '';
+                    result['image'] != null
+                        ? image = result['image']
+                        : image = '';
                   });
                 }
               },
-              icon: Icon(Icons.create, color: Colors.white,size: 25)),
+              icon: Icon(Icons.create, color: Colors.white, size: 25)),
           IconButton(
               onPressed: () async {
                 // showDialog 함수를 사용하여 다이얼로그 표시
@@ -263,7 +274,11 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                   }
                 }
               },
-              icon: Icon(Icons.delete, color: Colors.white,size: 25,))
+              icon: Icon(
+                Icons.delete,
+                color: Colors.white,
+                size: 25,
+              ))
         ],
       ),
       body: Container(
@@ -283,10 +298,14 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
               children: [
                 Text(title,
                     style:
-                    TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 SizedBox(height: 8),
                 Text('작성일: ' +
-                    getYearMonthDay(widget.news.createdAt.toString())),
+                    getYearMonthDay(
+                        DateTime.parse(widget.news.createdAt.toString())
+                            .toLocal()
+                            .toString()),
+                ), //UTC ->KST
                 SizedBox(height: 8),
                 Divider(),
                 SizedBox(height: 8),
@@ -296,30 +315,30 @@ class _InstitutionNewsDetailPageState extends State<InstitutionNewsDetailPage> {
                 SizedBox(height: 16),
                 image != 'loading'
                     ? image != ''
-                    ? FutureBuilder<String>(
-                    future: widget.storageService
-                        .getImageUrlFromS3(image),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<String> snapshot) {
-
-                      if(snapshot.connectionState == ConnectionState.waiting)
-                        return const Center(child: CircularProgressIndicator(),);
-                      if (snapshot.hasData) {
-                        String foodImageUrl = snapshot.data!;
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(10.0),  // 모서리를 둥글게
-                          child: Image.network(foodImageUrl),
-                        );
-
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('이미지를 불러올 수 없습니다.'));
-                      }
-                      return Center(child: Text(''));
-                    })
-                    : Center(child: Text(''))
+                        ? FutureBuilder<String>(
+                            future:
+                                widget.storageService.getImageUrlFromS3(image),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<String> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting)
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              if (snapshot.hasData) {
+                                String foodImageUrl = snapshot.data!;
+                                return ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.circular(10.0), // 모서리를 둥글게
+                                  child: Image.network(foodImageUrl),
+                                );
+                              } else if (snapshot.hasError) {
+                                return Center(child: Text('이미지를 불러올 수 없습니다.'));
+                              }
+                              return Center(child: Text(''));
+                            })
+                        : Center(child: Text(''))
                     : Center(child: CircularProgressIndicator()),
-
-
               ],
             ),
           ),

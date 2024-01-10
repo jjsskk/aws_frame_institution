@@ -1,17 +1,13 @@
 import 'package:aws_frame_institution/GraphQL_Method/graphql_controller.dart';
-import 'package:aws_frame_institution/auth_flow/auth_service.dart';
 import 'package:aws_frame_institution/backey/backKey_dialog.dart';
 import 'package:aws_frame_institution/bottomappbar/bottom_appbar.dart';
-import 'package:aws_frame_institution/camera_gallary/graph_page.dart';
 import 'package:aws_frame_institution/communication_service/comment/Detail_comment.dart';
 import 'package:aws_frame_institution/communication_service/comment/comment_view.dart';
-import 'package:aws_frame_institution/communication_service/communication_yard.dart';
 import 'package:aws_frame_institution/communication_service/essential_care_information/essential_care_information.dart';
 import 'package:aws_frame_institution/communication_service/instituition_info/institution_information.dart';
 import 'package:aws_frame_institution/drawer/drawer.dart';
 import 'package:aws_frame_institution/bottomappbar/globalkey.dart';
 import 'package:aws_frame_institution/loading_page/loading_page.dart';
-import 'package:aws_frame_institution/login_session.dart';
 import 'package:aws_frame_institution/provider/login_state.dart';
 import 'package:aws_frame_institution/traning%20record/institution_summary_report.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,22 +17,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 
-import '../traning record/analyzing_report.dart';
 import '../traning record/individual_analysis_report.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage(
-      {Key? key,
-      required this.didtogglegallery,
-      // required this.didtogglegraph,
-      required this.pickedimageurl,
-      required this.shouldLogOut})
-      : super(key: key);
-  final VoidCallback didtogglegallery;
+  HomePage({Key? key, required this.shouldLogOut}) : super(key: key);
 
-  // final VoidCallback didtogglegraph;
   final VoidCallback shouldLogOut;
-  String pickedimageurl = '';
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -65,16 +51,16 @@ class _HomePageState extends State<HomePage> {
   void storeAndSort(var result) {
     _comments = [];
     result.forEach((value) {
-      // print(value.createdAt.toString().substring(0,10));
       _comments.add({
-        'date': value.createdAt.toString().substring(0, 10) ?? '',
+        // 'date': value.createdAt.toString().substring(0, 10) ?? '',
+        'date': DateTime.parse(value.createdAt.toString()).toLocal().toString().substring(0, 10), //UTC ->KST
         'title': value.TITLE ?? '',
         'username': value.USERNAME ?? '',
         'user_id': value.USER_ID ?? '',
         'board_id': value.BOARD_ID ?? '',
         'new_conversation': value.NEW_CONVERSATION_PROTECTOR,
         'new_conversation_createdat':
-            value.NEW_CONVERSATION_CREATEDAT.toString()
+            value.NEW_CONVERSATION_CREATEDAT.toString() //sorting 용도로만 쓰니까 그냥 UTC 쓰자
       });
     });
     _comments.sort((a, b) {
@@ -609,9 +595,8 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailCommentPage(
-                          user_id: comment['user_id'],
-                          board_id: comment['board_id']
-                        )),
+                        user_id: comment['user_id'],
+                        board_id: comment['board_id'])),
               );
             },
             child: Container(
@@ -651,7 +636,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-
           ),
           const SizedBox(
             height: 5,

@@ -140,6 +140,7 @@ class GraphQLController {
       String title,
       String url,
       userId) async {
+    final time = '${TemporalDateTime.now()}';
     final row = {
       'ANNOUNCEMENT_ID': userId,
       'CONTENT': content,
@@ -148,8 +149,8 @@ class GraphQLController {
       'INSTITUTION_ID': institution_id,
       'TITLE': title,
       'URL': url,
-      'createdAt': '${TemporalDateTime.now()}',
-      'updatedAt': '${TemporalDateTime.now()}'
+      'createdAt': time,
+      'updatedAt': time
     };
     try {
       final response = await Amplify.API
@@ -1086,8 +1087,6 @@ class GraphQLController {
     return true;
   }
 
-
-
 //todo: 안됨
   Future<List<InstitutionEssentialCareTable>>
       queryEssentialCareInformationByInstitutionId(
@@ -1246,7 +1245,6 @@ class GraphQLController {
       return null;
     }
   }
-
 
   Future<void> createMonthlyData() async {
     final row = {
@@ -1407,9 +1405,8 @@ class GraphQLController {
 
 /*  ----------- jinsu method ------------------        */
 
-
   //기관의 스케줄 CRUD 페이지 관련 함수들
-  Future<bool?> createScheduledata(String schedule_id, String content,
+  Future<bool?> createScheduledata(String content,
       List<String> tag, String classtime, String date) async {
     var time = '${TemporalDateTime.now()}';
     var row = {
@@ -1852,9 +1849,11 @@ class GraphQLController {
       String filterName, String Id, String year, String month,
       {String? nextToken}) async {
     final time = '${TemporalDateTime.now()}';
-    var remain = time.substring(12);
+    var remain = time.substring(10); //12
     var start = '$year-$month-00$remain';
     var end = '$year-$month-40$remain';
+    print('start: $time');
+    print('start: $start');
     try {
       var operation = Amplify.API.query(
         request: GraphQLRequest(
@@ -2084,7 +2083,8 @@ class GraphQLController {
   Future<bool?> createCommentConversationdata(
       String board_id, String writer, String content, String email) async {
     final time = '${TemporalDateTime.now()}';
-
+    // print('time :${DateTime.now()}');
+    // print('time :${DateTime.parse(time).toLocal()}');
     final row = {
       'BOARD_ID': board_id,
       'CONVERSATION_ID': time,
