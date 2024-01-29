@@ -4,7 +4,7 @@ Flutter + AWS Amplify project.
 
 [최종 보고서](https://drive.google.com/file/d/1p2kfNvh7ggvk-zcfftQzJV5YQBPxHXj-/view?usp=drive_link)
 
-## Getting Started
+## Project Setup
 
 Flutter version
 ```
